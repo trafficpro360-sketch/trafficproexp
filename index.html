@@ -1,49 +1,83 @@
-export default function App() {
+import { useState } from "react";
+import { DollarSign, TrendingUp, TrendingDown, LayoutDashboard, Wallet, CheckSquare } from "lucide-react";
+
+export default function FinancePlatform() {
+  const [active, setActive] = useState("dashboard");
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-blue-950 text-zinc-100 font-sans">
-      {/* Header */}
-      <header className="w-full px-8 py-5 flex justify-between items-center border-b border-zinc-800">
-        <h1 className="text-2xl font-semibold tracking-tight text-blue-400">
-          Controle<span className="text-white">Ads</span>
-        </h1>
-        <div className="flex gap-3">
-          <button className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 transition font-medium">
-            Entrar
+    <div className="min-h-screen flex bg-gradient-to-br from-black via-zinc-900 to-blue-950 text-zinc-100">
+      {/* Sidebar */}
+      <aside className="w-64 bg-black/60 backdrop-blur border-r border-zinc-800 p-6">
+        <h1 className="text-2xl font-bold text-blue-500 mb-10">Finance<span className="text-white">Pro</span></h1>
+        <nav className="flex flex-col gap-4">
+          <button onClick={() => setActive("dashboard")} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${active === "dashboard" ? "bg-blue-600" : "hover:bg-zinc-800"}`}>
+            <LayoutDashboard size={18} /> Dashboard
           </button>
-          <button className="px-4 py-2 rounded-xl border border-blue-600 text-blue-400 hover:bg-blue-600 hover:text-white transition font-medium">
-            Criar Conta
+          <button onClick={() => setActive("receitas")} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${active === "receitas" ? "bg-blue-600" : "hover:bg-zinc-800"}`}>
+            <TrendingUp size={18} /> Receitas
           </button>
-        </div>
-      </header>
+          <button onClick={() => setActive("despesas")} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${active === "despesas" ? "bg-blue-600" : "hover:bg-zinc-800"}`}>
+            <TrendingDown size={18} /> Despesas
+          </button>
+          <button onClick={() => setActive("tarefas")} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${active === "tarefas" ? "bg-blue-600" : "hover:bg-zinc-800"}`}>
+            <CheckSquare size={18} /> Tarefas
+          </button>
+        </nav>
+      </aside>
 
-      {/* Main */}
-      <main className="flex items-center justify-center px-6 py-20">
-        <div className="max-w-4xl w-full text-center">
-          <h2 className="text-5xl font-bold mb-6 leading-tight">
-            Controle financeiro e operacional
-            <span className="block text-blue-400">simples, moderno e visual</span>
-          </h2>
-
-          <p className="text-lg text-zinc-400 mb-10">
-            Um sistema moderno para acompanhar receitas, despesas, tarefas e desempenho
-            sem planilhas confusas ou ferramentas ultrapassadas.
-          </p>
-
-          <div className="flex justify-center gap-4">
-            <button className="px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 transition text-lg font-semibold shadow-lg shadow-blue-600/30">
-              Começar grátis
-            </button>
-            <button className="px-8 py-4 rounded-2xl border border-zinc-700 hover:border-blue-500 transition text-lg">
-              Ver demonstração
-            </button>
-          </div>
-        </div>
+      {/* Main Content */}
+      <main className="flex-1 p-10">
+        {active === "dashboard" && <Dashboard />}
+        {active === "receitas" && <Placeholder title="Receitas" />}
+        {active === "despesas" && <Placeholder title="Despesas" />}
+        {active === "tarefas" && <Placeholder title="Tarefas" />}
       </main>
+    </div>
+  );
+}
 
-      {/* Footer */}
-      <footer className="w-full text-center py-6 text-sm text-zinc-500 border-t border-zinc-800">
-        © {new Date().getFullYear()} ControleAds. Todos os direitos reservados.
-      </footer>
+function Dashboard() {
+  return (
+    <div className="space-y-10">
+      <h2 className="text-3xl font-bold">Visão Geral</h2>
+
+      {/* Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card title="Receita Total" value="R$ 25.000" icon={<TrendingUp />} color="green" />
+        <Card title="Despesas" value="R$ 12.800" icon={<TrendingDown />} color="red" />
+        <Card title="Saldo" value="R$ 12.200" icon={<DollarSign />} color="blue" />
+      </div>
+
+      {/* Chart Placeholder */}
+      <div className="rounded-2xl bg-black/50 border border-zinc-800 p-6 h-72 flex items-center justify-center text-zinc-500">
+        Gráfico financeiro (receitas x despesas)
+      </div>
+    </div>
+  );
+}
+
+function Card({ title, value, icon, color }) {
+  const colors = {
+    green: "bg-green-600/20 text-green-400",
+    red: "bg-red-600/20 text-red-400",
+    blue: "bg-blue-600/20 text-blue-400",
+  };
+
+  return (
+    <div className="rounded-2xl bg-black/50 border border-zinc-800 p-6 flex items-center gap-4">
+      <div className={`p-3 rounded-xl ${colors[color]}`}>{icon}</div>
+      <div>
+        <p className="text-sm text-zinc-400">{title}</p>
+        <h3 className="text-2xl font-bold">{value}</h3>
+      </div>
+    </div>
+  );
+}
+
+function Placeholder({ title }) {
+  return (
+    <div className="rounded-2xl bg-black/50 border border-zinc-800 p-10 text-center text-zinc-400">
+      Área de {title} em construção
     </div>
   );
 }
