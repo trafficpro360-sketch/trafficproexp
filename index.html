@@ -130,7 +130,6 @@
       font-size: 14px;
     }
 
-    /* Remove setinhas do input number */
     input[type=number]::-webkit-outer-spin-button,
     input[type=number]::-webkit-inner-spin-button {
       -webkit-appearance: none;
@@ -138,7 +137,7 @@
     }
 
     input[type=number] {
-      -moz-appearance: textfield; /* Firefox */
+      -moz-appearance: textfield;
     }
 
     .controls button {
@@ -163,7 +162,7 @@
 
     .toggle button {
       flex: 1;
-      padding: 14px 0; /* Ajuste vertical */
+      padding: 14px 0;
       border: none;
       background: transparent;
       color: #94a3b8;
@@ -220,12 +219,26 @@
       color: #e5e7eb;
     }
 
-    .records button {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: #38bdf8;
+    .records input {
+      background: #020617;
+      border: 1px solid #1e293b;
+      color: #e5e7eb;
+      border-radius: 8px;
+      padding: 4px 8px;
+      width: 100px;
+      margin-right: 6px;
       font-size: 14px;
+    }
+
+    .records .edit-buttons button {
+      background: linear-gradient(135deg, #2563eb, #38bdf8);
+      border: none;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 2px;
+      font-size: 12px;
     }
 
   </style>
@@ -372,13 +385,16 @@
         }
 
         const li = document.createElement('li');
+        const valorFormatado = d.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
         li.innerHTML = `
-          <span>${d.valor.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})} - ${d.mes}</span>
-          <span>
-            <button onclick="editarItem(${d.id})">✏️</button>
+          <span class="item-text">${valorFormatado} - ${d.mes}</span>
+          <span class="edit-buttons">
+            <button onclick="iniciarEdicao(${d.id})">✏️</button>
             <button onclick="excluirItem(${d.id})">🗑️</button>
           </span>
         `;
+
         if(d.tipo === 'receita') listaReceita.appendChild(li);
         else if(d.tipo === 'despesa') listaDespesa.appendChild(li);
         else if(d.tipo === 'patrimonio') listaPatrimonio.appendChild(li);
@@ -404,14 +420,29 @@
       cardSaldo.style.color = totalSaldo > 0 ? '#22c55e' : totalSaldo < 0 ? '#ef4444' : '#e5e7eb';
     }
 
-    function editarItem(id) {
-      const item = dados.find(d=>d.id===id);
+    function iniciarEdicao(id) {
+      const item = dados.find(d => d.id === id);
       if(!item) return;
-      const novoValor = prompt('Digite o novo valor:', item.valor);
-      if(novoValor===null) return;
-      item.valor = Number(novoValor);
-      localStorage.setItem('financeiro', JSON.stringify(dados));
-      atualizar();
+
+      const li = [...document.querySelectorAll('.records li')].find(li => li.querySelector('button')?.onclick.toString().includes(`${id}`));
+      if(!li) return;
+
+      li.innerHTML = `
+        <input type="number" value="${item.valor}" id="edit-${id}">
+        <button class="save-btn">💾</button>
+        <button class="cancel-btn">❌</button>
+      `;
+
+      li.querySelector('.save-btn').onclick = () => {
+        const novoValor = Number(document.getElementById(`edit-${id}`).value);
+        if(novoValor) {
+          item.valor = novoValor;
+          localStorage.setItem('financeiro', JSON.stringify(dados));
+          atualizar();
+        }
+      };
+
+      li.querySelector('.cancel-btn').onclick = () => atualizar();
     }
 
     function excluirItem(id) {
@@ -425,3 +456,4 @@
 
 </body>
 </html>
+
