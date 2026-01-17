@@ -1,81 +1,49 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { DollarSign, TrendingDown, TrendingUp } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-
-const data = [
-  { month: "Jan", receita: 12000, despesa: 8000 },
-  { month: "Fev", receita: 15000, despesa: 9000 },
-  { month: "Mar", receita: 18000, despesa: 11000 },
-  { month: "Abr", receita: 20000, despesa: 13000 },
-];
-
-export default function Dashboard() {
-  const receita = data.reduce((acc, d) => acc + d.receita, 0);
-  const despesa = data.reduce((acc, d) => acc + d.despesa, 0);
-  const saldo = receita - despesa;
-
+export default function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 p-8">
-      <h1 className="text-3xl font-bold mb-8 text-zinc-800">Dashboard Financeiro</h1>
+    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-blue-950 text-zinc-100 font-sans">
+      {/* Header */}
+      <header className="w-full px-8 py-5 flex justify-between items-center border-b border-zinc-800">
+        <h1 className="text-2xl font-semibold tracking-tight text-blue-400">
+          Controle<span className="text-white">Ads</span>
+        </h1>
+        <div className="flex gap-3">
+          <button className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 transition font-medium">
+            Entrar
+          </button>
+          <button className="px-4 py-2 rounded-xl border border-blue-600 text-blue-400 hover:bg-blue-600 hover:text-white transition font-medium">
+            Criar Conta
+          </button>
+        </div>
+      </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <Card className="rounded-2xl shadow-md bg-white">
-          <CardContent className="p-6 flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-green-100 text-green-600">
-              <TrendingUp />
-            </div>
-            <div>
-              <p className="text-sm text-zinc-500">Receita</p>
-              <h2 className="text-2xl font-bold text-green-600">R$ {receita.toLocaleString()}</h2>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Main */}
+      <main className="flex items-center justify-center px-6 py-20">
+        <div className="max-w-4xl w-full text-center">
+          <h2 className="text-5xl font-bold mb-6 leading-tight">
+            Controle financeiro e operacional
+            <span className="block text-blue-400">simples, moderno e visual</span>
+          </h2>
 
-        <Card className="rounded-2xl shadow-md bg-white">
-          <CardContent className="p-6 flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-red-100 text-red-600">
-              <TrendingDown />
-            </div>
-            <div>
-              <p className="text-sm text-zinc-500">Despesas</p>
-              <h2 className="text-2xl font-bold text-red-600">R$ {despesa.toLocaleString()}</h2>
-            </div>
-          </CardContent>
-        </Card>
+          <p className="text-lg text-zinc-400 mb-10">
+            Um sistema moderno para acompanhar receitas, despesas, tarefas e desempenho
+            sem planilhas confusas ou ferramentas ultrapassadas.
+          </p>
 
-        <Card className="rounded-2xl shadow-md bg-white">
-          <CardContent className="p-6 flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-blue-100 text-blue-600">
-              <DollarSign />
-            </div>
-            <div>
-              <p className="text-sm text-zinc-500">Saldo</p>
-              <h2 className="text-2xl font-bold text-blue-600">R$ {saldo.toLocaleString()}</h2>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card className="rounded-2xl shadow-md bg-white">
-        <CardContent className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-zinc-700">Receitas x Despesas</h2>
-            <Button className="rounded-xl">Adicionar Dados</Button>
+          <div className="flex justify-center gap-4">
+            <button className="px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 transition text-lg font-semibold shadow-lg shadow-blue-600/30">
+              Começar grátis
+            </button>
+            <button className="px-8 py-4 rounded-2xl border border-zinc-700 hover:border-blue-500 transition text-lg">
+              Ver demonstração
+            </button>
           </div>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data}>
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="receita" strokeWidth={3} />
-                <Line type="monotone" dataKey="despesa" strokeWidth={3} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="w-full text-center py-6 text-sm text-zinc-500 border-t border-zinc-800">
+        © {new Date().getFullYear()} ControleAds. Todos os direitos reservados.
+      </footer>
     </div>
   );
 }
