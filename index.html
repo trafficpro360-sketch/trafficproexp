@@ -1,64 +1,81 @@
-// ============================
-// DASHBOARD – RECEITA, DESPESA, SALDO + GRÁFICO
-// Stack: React + Vite + Tailwind CSS + Recharts
-// Layout moderno SaaS (rounded, clean)
-// ============================
-
-// ============================
-// src/pages/Dashboard.tsx
-// ============================
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { DollarSign, TrendingDown, TrendingUp } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 const data = [
-  { name: "Jan", receita: 5000, despesa: 2200 },
-  { name: "Fev", receita: 6200, despesa: 3100 },
-  { name: "Mar", receita: 4800, despesa: 2600 },
-  { name: "Abr", receita: 7100, despesa: 3900 },
+  { month: "Jan", receita: 12000, despesa: 8000 },
+  { month: "Fev", receita: 15000, despesa: 9000 },
+  { month: "Mar", receita: 18000, despesa: 11000 },
+  { month: "Abr", receita: 20000, despesa: 13000 },
 ];
 
 export default function Dashboard() {
-  const receita = 23100;
-  const despesa = 11800;
+  const receita = data.reduce((acc, d) => acc + d.receita, 0);
+  const despesa = data.reduce((acc, d) => acc + d.despesa, 0);
   const saldo = receita - despesa;
 
   return (
-    <main className="p-8 space-y-8">
-      <header>
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <p className="text-sm text-zinc-500">Resumo financeiro</p>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 p-8">
+      <h1 className="text-3xl font-bold mb-8 text-zinc-800">Dashboard Financeiro</h1>
 
-      {/* Cards */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card title="Receita" value={`R$ ${receita}`} />
-        <Card title="Despesas" value={`R$ ${despesa}`} />
-        <Card title="Saldo" value={`R$ ${saldo}`} highlight />
-      </section>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <Card className="rounded-2xl shadow-md bg-white">
+          <CardContent className="p-6 flex items-center gap-4">
+            <div className="p-3 rounded-xl bg-green-100 text-green-600">
+              <TrendingUp />
+            </div>
+            <div>
+              <p className="text-sm text-zinc-500">Receita</p>
+              <h2 className="text-2xl font-bold text-green-600">R$ {receita.toLocaleString()}</h2>
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Gráfico */}
-      <section className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-6">
-        <h2 className="text-lg font-medium mb-4">Receitas x Despesas</h2>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="receita" radius={[6, 6, 0, 0]} />
-              <Bar dataKey="despesa" radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </section>
-    </main>
-  );
-}
+        <Card className="rounded-2xl shadow-md bg-white">
+          <CardContent className="p-6 flex items-center gap-4">
+            <div className="p-3 rounded-xl bg-red-100 text-red-600">
+              <TrendingDown />
+            </div>
+            <div>
+              <p className="text-sm text-zinc-500">Despesas</p>
+              <h2 className="text-2xl font-bold text-red-600">R$ {despesa.toLocaleString()}</h2>
+            </div>
+          </CardContent>
+        </Card>
 
-function Card({ title, value, highlight }: { title: string; value: string; highlight?: boolean }) {
-  return (
-    <div className={`bg-white rounded-2xl border border-zinc-200 shadow-sm p-6 ${highlight ? "ring-2 ring-zinc-900" : ""}`}>
-      <p className="text-sm text-zinc-500">{title}</p>
-      <h3 className="text-2xl font-semibold mt-1">{value}</h3>
+        <Card className="rounded-2xl shadow-md bg-white">
+          <CardContent className="p-6 flex items-center gap-4">
+            <div className="p-3 rounded-xl bg-blue-100 text-blue-600">
+              <DollarSign />
+            </div>
+            <div>
+              <p className="text-sm text-zinc-500">Saldo</p>
+              <h2 className="text-2xl font-bold text-blue-600">R$ {saldo.toLocaleString()}</h2>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="rounded-2xl shadow-md bg-white">
+        <CardContent className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold text-zinc-700">Receitas x Despesas</h2>
+            <Button className="rounded-xl">Adicionar Dados</Button>
+          </div>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={data}>
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="receita" strokeWidth={3} />
+                <Line type="monotone" dataKey="despesa" strokeWidth={3} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
