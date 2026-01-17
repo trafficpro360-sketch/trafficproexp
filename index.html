@@ -84,11 +84,11 @@
       margin-top: 10px;
       font-size: 26px;
       font-weight: 700;
-      transition: color .3s ease;
     }
 
     .blue h2 { color: #38bdf8; }
     .red h2 { color: #ef4444; }
+    .green h2 { color: #22c55e; }
 
     .controls {
       display: grid;
@@ -97,7 +97,7 @@
       margin-bottom: 30px;
     }
 
-    .controls input, .controls select, .controls button {
+    .controls input, .controls button {
       background: #020617;
       border: 1px solid #1e293b;
       color: #e5e7eb;
@@ -111,6 +111,38 @@
       border: none;
       cursor: pointer;
       font-weight: 600;
+    }
+
+    /* TOGGLE RECEITA / DESPESA */
+    .tipo-toggle {
+      display: flex;
+      gap: 10px;
+    }
+
+    .tipo-btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid #1e293b;
+      background: #020617;
+      color: #e5e7eb;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .25s ease;
+    }
+
+    .tipo-btn.receita.active {
+      background: linear-gradient(135deg, #2563eb, #38bdf8);
+      border: none;
+    }
+
+    .tipo-btn.despesa.active {
+      background: linear-gradient(135deg, #dc2626, #ef4444);
+      border: none;
+    }
+
+    .tipo-btn:not(.active):hover {
+      background: #1e293b;
     }
 
     .chart {
@@ -144,7 +176,7 @@
       <span>Despesas</span>
       <h2 id="cardDespesa">R$ 0</h2>
     </div>
-    <div class="card">
+    <div class="card green">
       <span>Saldo</span>
       <h2 id="cardSaldo">R$ 0</h2>
     </div>
@@ -152,10 +184,18 @@
 
   <section class="controls">
     <input type="number" id="valor" placeholder="Valor (R$)">
-    <select id="tipo">
-      <option value="receita">Receita</option>
-      <option value="despesa">Despesa</option>
-    </select>
+
+    <div class="tipo-toggle">
+      <button type="button" class="tipo-btn receita active" onclick="setTipo('receita')">
+        Receita
+      </button>
+      <button type="button" class="tipo-btn despesa" onclick="setTipo('despesa')">
+        Despesa
+      </button>
+    </div>
+
+    <input type="hidden" id="tipo" value="receita">
+
     <input type="month" id="mes">
     <button onclick="adicionar()">Adicionar</button>
   </section>
@@ -185,16 +225,14 @@
     options: { responsive: true, maintainAspectRatio: false }
   });
 
-  function atualizarCorSaldo(valor) {
-    const saldoEl = document.getElementById('cardSaldo');
+  function setTipo(tipo) {
+    document.getElementById('tipo').value = tipo;
 
-    if (valor > 0) {
-      saldoEl.style.color = '#22c55e';
-    } else if (valor < 0) {
-      saldoEl.style.color = '#ef4444';
-    } else {
-      saldoEl.style.color = '#ffffff';
-    }
+    document.querySelectorAll('.tipo-btn').forEach(btn =>
+      btn.classList.remove('active')
+    );
+
+    document.querySelector('.tipo-btn.' + tipo).classList.add('active');
   }
 
   function adicionar() {
@@ -229,20 +267,14 @@
     chart.data.datasets[2].data = saldo;
     chart.update();
 
-    const totalReceita = receitas.reduce((a,b)=>a+b,0);
-    const totalDespesa = despesas.reduce((a,b)=>a+b,0);
-    const totalSaldo = saldo.reduce((a,b)=>a+b,0);
-
     document.getElementById('cardReceita').innerText =
-      'R$ ' + totalReceita.toLocaleString('pt-BR');
+      'R$ ' + receitas.reduce((a,b)=>a+b,0).toLocaleString('pt-BR');
 
     document.getElementById('cardDespesa').innerText =
-      'R$ ' + totalDespesa.toLocaleString('pt-BR');
+      'R$ ' + despesas.reduce((a,b)=>a+b,0).toLocaleString('pt-BR');
 
     document.getElementById('cardSaldo').innerText =
-      'R$ ' + totalSaldo.toLocaleString('pt-BR');
-
-    atualizarCorSaldo(totalSaldo);
+      'R$ ' + saldo.reduce((a,b)=>a+b,0).toLocaleString('pt-BR');
   }
 
   atualizar();
