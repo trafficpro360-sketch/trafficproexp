@@ -42,6 +42,13 @@
       border-radius: 14px;
       text-align: left;
       font-size: 15px;
+      cursor: pointer;
+      transition: all .3s;
+    }
+
+    .menu button:hover {
+      background: #1e293b;
+      color: #fff;
     }
 
     .menu .active {
@@ -52,7 +59,6 @@
     .content {
       flex: 1;
       padding: 40px;
-      overflow-y: auto;
     }
 
     .header {
@@ -65,14 +71,15 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
     .card {
-      background: #020617;
+      background: linear-gradient(135deg, #020617, #020617);
       border: 1px solid #1e293b;
       border-radius: 22px;
       padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
     }
 
     .card span {
@@ -84,40 +91,17 @@
       margin-top: 10px;
       font-size: 26px;
       font-weight: 700;
+      transition: color .3s ease;
     }
 
-    .blue h2 { color: #38bdf8; }
-    .red h2 { color: #ef4444; }
-    .green h2 { color: #22c55e; }
-
-    .controls {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-bottom: 30px;
-    }
-
-    .controls input, .controls select, .controls button {
-      background: #020617;
-      border: 1px solid #1e293b;
-      color: #e5e7eb;
-      padding: 14px;
-      border-radius: 14px;
-      font-size: 14px;
-    }
-
-    .controls button {
-      background: linear-gradient(135deg, #2563eb, #38bdf8);
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-    }
+    .card.blue h2 { color: #38bdf8; }
+    .card.red h2 { color: #ef4444; }
 
     .chart {
       height: 300px;
       border-radius: 24px;
       border: 1px solid #1e293b;
-      background: #020617;
+      background: linear-gradient(135deg, #020617, #020617);
       padding: 20px;
     }
   </style>
@@ -125,111 +109,132 @@
 
 <body>
 
-<aside class="sidebar">
-  <div class="logo">Finance<span style="color:#fff">Pro</span></div>
-  <div class="menu">
-    <button class="active">Dashboard</button>
-  </div>
-</aside>
-
-<main class="content">
-  <div class="header">Visão Geral Financeira</div>
-
-  <section class="cards">
-    <div class="card blue">
-      <span>Receita Total</span>
-      <h2 id="cardReceita">R$ 0</h2>
+  <aside class="sidebar">
+    <div class="logo">Finance<span style="color:#fff">Pro</span></div>
+    <div class="menu">
+      <button class="active">Dashboard</button>
     </div>
-    <div class="card red">
-      <span>Despesas</span>
-      <h2 id="cardDespesa">R$ 0</h2>
+  </aside>
+
+  <main class="content">
+    <div class="header">Visão Geral Financeira</div>
+
+    <section class="cards">
+      <div class="card blue">
+        <span>Receita Total</span>
+        <h2 id="cardReceita">R$ 0</h2>
+      </div>
+
+      <div class="card red">
+        <span>Despesas</span>
+        <h2 id="cardDespesa">R$ 0</h2>
+      </div>
+
+      <div class="card">
+        <span>Saldo</span>
+        <h2 id="cardSaldo">R$ 0</h2>
+      </div>
+    </section>
+
+    <div class="chart">
+      <canvas id="financeChart"></canvas>
     </div>
-    <div class="card green">
-      <span>Saldo</span>
-      <h2 id="cardSaldo">R$ 0</h2>
-    </div>
-  </section>
 
-  <!-- INPUTS FUNCIONAIS -->
-  <section class="controls">
-    <input type="number" id="valor" placeholder="Valor (R$)">
-    <select id="tipo">
-      <option value="receita">Receita</option>
-      <option value="despesa">Despesa</option>
-    </select>
-    <input type="month" id="mes">
-    <button onclick="adicionar()">Adicionar</button>
-  </section>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <div class="chart">
-    <canvas id="financeChart"></canvas>
-  </div>
-</main>
+    <script>
+      const receitas = [8000, 9500, 11000, 13000, 15000, 17000];
+      const despesas = [4000, 5200, 6000, 7200, 8200, 9000];
+      const saldo = receitas.map((r, i) => r - despesas[i]);
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      const totalReceita = receitas.reduce((a, b) => a + b, 0);
+      const totalDespesa = despesas.reduce((a, b) => a + b, 0);
+      const totalSaldo = totalReceita - totalDespesa;
 
-<script>
-  let dados = JSON.parse(localStorage.getItem('financeiro')) || [];
+      function animateValue(id, value) {
+        let current = 0;
+        const el = document.getElementById(id);
+        const step = Math.ceil(Math.abs(value) / 60) || 1;
 
-  const labels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'];
-
-  const chart = new Chart(document.getElementById('financeChart'), {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        { label: 'Receita', data: [], borderColor: '#38bdf8', tension: .35 },
-        { label: 'Despesas', data: [], borderColor: '#ef4444', tension: .35 },
-        { label: 'Saldo', data: [], borderColor: '#22c55e', tension: .35 }
-      ]
-    },
-    options: { responsive: true, maintainAspectRatio: false }
-  });
-
-  function adicionar() {
-    const valor = Number(document.getElementById('valor').value);
-    const tipo = document.getElementById('tipo').value;
-    const mes = document.getElementById('mes').value;
-
-    if (!valor || !mes) return;
-
-    dados.push({ valor, tipo, mes });
-    localStorage.setItem('financeiro', JSON.stringify(dados));
-    atualizar();
-  }
-
-  function atualizar() {
-    let receitas = Array(6).fill(0);
-    let despesas = Array(6).fill(0);
-
-    dados.forEach(d => {
-      const index = Number(d.mes.split('-')[1]) - 1;
-      if (index >= 0 && index < 6) {
-        d.tipo === 'receita'
-          ? receitas[index] += d.valor
-          : despesas[index] += d.valor;
+        const interval = setInterval(() => {
+          current += step;
+          if (current >= Math.abs(value)) {
+            current = Math.abs(value);
+            clearInterval(interval);
+          }
+          el.innerText = 'R$ ' + (value < 0 ? '-' : '') + current.toLocaleString('pt-BR');
+        }, 16);
       }
-    });
 
-    const saldo = receitas.map((r, i) => r - despesas[i]);
+      function updateSaldoColor(value) {
+        const saldoEl = document.getElementById('cardSaldo');
 
-    chart.data.datasets[0].data = receitas;
-    chart.data.datasets[1].data = despesas;
-    chart.data.datasets[2].data = saldo;
-    chart.update();
+        if (value > 0) {
+          saldoEl.style.color = '#22c55e'; // verde
+        } else if (value < 0) {
+          saldoEl.style.color = '#ef4444'; // vermelho
+        } else {
+          saldoEl.style.color = '#ffffff'; // branco
+        }
+      }
 
-    document.getElementById('cardReceita').innerText =
-      'R$ ' + receitas.reduce((a,b)=>a+b,0).toLocaleString('pt-BR');
+      animateValue('cardReceita', totalReceita);
+      animateValue('cardDespesa', totalDespesa);
+      animateValue('cardSaldo', totalSaldo);
+      updateSaldoColor(totalSaldo);
 
-    document.getElementById('cardDespesa').innerText =
-      'R$ ' + despesas.reduce((a,b)=>a+b,0).toLocaleString('pt-BR');
+      const ctx = document.getElementById('financeChart').getContext('2d');
 
-    document.getElementById('cardSaldo').innerText =
-      'R$ ' + saldo.reduce((a,b)=>a+b,0).toLocaleString('pt-BR');
-  }
-
-  atualizar();
-</script>
+      const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+          datasets: [
+            {
+              label: 'Receita',
+              data: receitas,
+              borderColor: '#38bdf8',
+              borderWidth: 2,
+              tension: 0.35,
+              pointRadius: 3,
+              pointBackgroundColor: '#38bdf8'
+            },
+            {
+              label: 'Despesas',
+              data: despesas,
+              borderColor: '#ef4444',
+              borderWidth: 2,
+              tension: 0.35,
+              pointRadius: 3,
+              pointBackgroundColor: '#ef4444'
+            },
+            {
+              label: 'Saldo',
+              data: saldo,
+              borderColor: '#22c55e',
+              borderWidth: 2,
+              tension: 0.35,
+              pointRadius: 3,
+              pointBackgroundColor: '#22c55e'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: '#e5e7eb' }
+            }
+          },
+          scales: {
+            x: { ticks: { color: '#94a3b8' } },
+            y: { ticks: { color: '#94a3b8' } }
+          }
+        }
+      });
+    </script>
+  </main>
 
 </body>
 </html>
