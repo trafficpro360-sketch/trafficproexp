@@ -42,8 +42,6 @@
       border-radius: 14px;
       text-align: left;
       font-size: 15px;
-      cursor: pointer;
-      transition: all .3s;
     }
 
     .menu .active {
@@ -67,15 +65,14 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
     }
 
     .card {
-      background: linear-gradient(135deg, #020617, #020617);
+      background: #020617;
       border: 1px solid #1e293b;
       border-radius: 22px;
       padding: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
     }
 
     .card span {
@@ -89,24 +86,14 @@
       font-weight: 700;
     }
 
-    .card.blue h2 { color: #38bdf8; }
-    .card.green h2 { color: #22c55e; }
-    .card.red h2 { color: #ef4444; }
+    .blue h2 { color: #38bdf8; }
+    .red h2 { color: #ef4444; }
+    .green h2 { color: #22c55e; }
 
-    .chart {
-      height: 300px;
-      border-radius: 24px;
-      border: 1px solid #1e293b;
-      background: linear-gradient(135deg, #020617, #020617);
-      padding: 20px;
-      margin-bottom: 40px;
-    }
-
-    /* ===== ADIÇÕES ===== */
     .controls {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
       margin-bottom: 30px;
     }
 
@@ -125,88 +112,124 @@
       cursor: pointer;
       font-weight: 600;
     }
+
+    .chart {
+      height: 300px;
+      border-radius: 24px;
+      border: 1px solid #1e293b;
+      background: #020617;
+      padding: 20px;
+    }
   </style>
 </head>
 
 <body>
 
-  <aside class="sidebar">
-    <div class="logo">Finance<span style="color:#fff">Pro</span></div>
-    <div class="menu">
-      <button class="active">Dashboard</button>
+<aside class="sidebar">
+  <div class="logo">Finance<span style="color:#fff">Pro</span></div>
+  <div class="menu">
+    <button class="active">Dashboard</button>
+  </div>
+</aside>
+
+<main class="content">
+  <div class="header">Visão Geral Financeira</div>
+
+  <section class="cards">
+    <div class="card blue">
+      <span>Receita Total</span>
+      <h2 id="cardReceita">R$ 0</h2>
     </div>
-  </aside>
-
-  <main class="content">
-    <div class="header">Visão Geral Financeira</div>
-
-    <section class="cards">
-      <div class="card blue">
-        <span>Receita Total</span>
-        <h2 id="cardReceita">R$ 0</h2>
-      </div>
-      <div class="card red">
-        <span>Despesas</span>
-        <h2 id="cardDespesa">R$ 0</h2>
-      </div>
-      <div class="card green">
-        <span>Saldo</span>
-        <h2 id="cardSaldo">R$ 0</h2>
-      </div>
-    </section>
-
-    <!-- ===== ADIÇÃO: CONTROLES ===== -->
-    <section class="controls">
-      <input type="number" id="valor" placeholder="Valor (R$)">
-      <select id="tipo">
-        <option value="receita">Receita</option>
-        <option value="despesa">Despesa</option>
-      </select>
-      <input type="month" id="periodo">
-      <button onclick="adicionar()">Adicionar</button>
-    </section>
-
-    <div class="chart">
-      <canvas id="financeChart"></canvas>
+    <div class="card red">
+      <span>Despesas</span>
+      <h2 id="cardDespesa">R$ 0</h2>
     </div>
+    <div class="card green">
+      <span>Saldo</span>
+      <h2 id="cardSaldo">R$ 0</h2>
+    </div>
+  </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- INPUTS FUNCIONAIS -->
+  <section class="controls">
+    <input type="number" id="valor" placeholder="Valor (R$)">
+    <select id="tipo">
+      <option value="receita">Receita</option>
+      <option value="despesa">Despesa</option>
+    </select>
+    <input type="month" id="mes">
+    <button onclick="adicionar()">Adicionar</button>
+  </section>
 
-    <script>
-      let dados = JSON.parse(localStorage.getItem('financeiro')) || [];
+  <div class="chart">
+    <canvas id="financeChart"></canvas>
+  </div>
+</main>
 
-      function adicionar() {
-        const valor = Number(document.getElementById('valor').value);
-        const tipo = document.getElementById('tipo').value;
-        const periodo = document.getElementById('periodo').value;
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        if (!valor || !periodo) return;
+<script>
+  let dados = JSON.parse(localStorage.getItem('financeiro')) || [];
 
-        dados.push({ valor, tipo, periodo });
-        localStorage.setItem('financeiro', JSON.stringify(dados));
-        atualizar();
+  const labels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'];
+
+  const chart = new Chart(document.getElementById('financeChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Receita', data: [], borderColor: '#38bdf8', tension: .35 },
+        { label: 'Despesas', data: [], borderColor: '#ef4444', tension: .35 },
+        { label: 'Saldo', data: [], borderColor: '#22c55e', tension: .35 }
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+
+  function adicionar() {
+    const valor = Number(document.getElementById('valor').value);
+    const tipo = document.getElementById('tipo').value;
+    const mes = document.getElementById('mes').value;
+
+    if (!valor || !mes) return;
+
+    dados.push({ valor, tipo, mes });
+    localStorage.setItem('financeiro', JSON.stringify(dados));
+    atualizar();
+  }
+
+  function atualizar() {
+    let receitas = Array(6).fill(0);
+    let despesas = Array(6).fill(0);
+
+    dados.forEach(d => {
+      const index = Number(d.mes.split('-')[1]) - 1;
+      if (index >= 0 && index < 6) {
+        d.tipo === 'receita'
+          ? receitas[index] += d.valor
+          : despesas[index] += d.valor;
       }
+    });
 
-      function atualizar(filtroPeriodo = null) {
-        const filtrados = filtroPeriodo
-          ? dados.filter(d => d.periodo === filtroPeriodo)
-          : dados;
+    const saldo = receitas.map((r, i) => r - despesas[i]);
 
-        const receitas = filtrados.filter(d => d.tipo === 'receita').map(d => d.valor);
-        const despesas = filtrados.filter(d => d.tipo === 'despesa').map(d => d.valor);
+    chart.data.datasets[0].data = receitas;
+    chart.data.datasets[1].data = despesas;
+    chart.data.datasets[2].data = saldo;
+    chart.update();
 
-        const totalReceita = receitas.reduce((a,b)=>a+b,0);
-        const totalDespesa = despesas.reduce((a,b)=>a+b,0);
-        const saldo = totalReceita - totalDespesa;
+    document.getElementById('cardReceita').innerText =
+      'R$ ' + receitas.reduce((a,b)=>a+b,0).toLocaleString('pt-BR');
 
-        document.getElementById('cardReceita').innerText = 'R$ ' + totalReceita.toLocaleString('pt-BR');
-        document.getElementById('cardDespesa').innerText = 'R$ ' + totalDespesa.toLocaleString('pt-BR');
-        document.getElementById('cardSaldo').innerText = 'R$ ' + saldo.toLocaleString('pt-BR');
-      }
+    document.getElementById('cardDespesa').innerText =
+      'R$ ' + despesas.reduce((a,b)=>a+b,0).toLocaleString('pt-BR');
 
-      atualizar();
-    </script>
-  </main>
+    document.getElementById('cardSaldo').innerText =
+      'R$ ' + saldo.reduce((a,b)=>a+b,0).toLocaleString('pt-BR');
+  }
+
+  atualizar();
+</script>
 
 </body>
 </html>
