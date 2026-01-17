@@ -1,83 +1,130 @@
-import { useState } from "react";
-import { DollarSign, TrendingUp, TrendingDown, LayoutDashboard, Wallet, CheckSquare } from "lucide-react";
-
-export default function FinancePlatform() {
-  const [active, setActive] = useState("dashboard");
-
-  return (
-    <div className="min-h-screen flex bg-gradient-to-br from-black via-zinc-900 to-blue-950 text-zinc-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-black/60 backdrop-blur border-r border-zinc-800 p-6">
-        <h1 className="text-2xl font-bold text-blue-500 mb-10">Finance<span className="text-white">Pro</span></h1>
-        <nav className="flex flex-col gap-4">
-          <button onClick={() => setActive("dashboard")} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${active === "dashboard" ? "bg-blue-600" : "hover:bg-zinc-800"}`}>
-            <LayoutDashboard size={18} /> Dashboard
-          </button>
-          <button onClick={() => setActive("receitas")} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${active === "receitas" ? "bg-blue-600" : "hover:bg-zinc-800"}`}>
-            <TrendingUp size={18} /> Receitas
-          </button>
-          <button onClick={() => setActive("despesas")} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${active === "despesas" ? "bg-blue-600" : "hover:bg-zinc-800"}`}>
-            <TrendingDown size={18} /> Despesas
-          </button>
-          <button onClick={() => setActive("tarefas")} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${active === "tarefas" ? "bg-blue-600" : "hover:bg-zinc-800"}`}>
-            <CheckSquare size={18} /> Tarefas
-          </button>
-        </nav>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 p-10">
-        {active === "dashboard" && <Dashboard />}
-        {active === "receitas" && <Placeholder title="Receitas" />}
-        {active === "despesas" && <Placeholder title="Despesas" />}
-        {active === "tarefas" && <Placeholder title="Tarefas" />}
-      </main>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plataforma Financeira</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #020617, #020617, #0f172a);
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+    }
+    .sidebar {
+      width: 260px;
+      background: rgba(2,6,23,0.9);
+      border-right: 1px solid #1e293b;
+      padding: 24px;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-bottom: 40px;
+    }
+    .menu button {
+      width: 100%;
+      background: none;
+      border: none;
+      color: #cbd5f5;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border-radius: 14px;
+      text-align: left;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all .3s;
+    }
+    .menu button:hover {
+      background: #1e293b;
+      color: #fff;
+    }
+    .menu .active {
+      background: linear-gradient(135deg, #2563eb, #38bdf8);
+      color: #fff;
+    }
+    .content {
+      flex: 1;
+      padding: 40px;
+    }
+    .header {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .card {
+      background: linear-gradient(135deg, #020617, #020617);
+      border: 1px solid #1e293b;
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .card span {
+      font-size: 14px;
+      color: #94a3b8;
+    }
+    .card h2 {
+      margin-top: 10px;
+      font-size: 26px;
+      font-weight: 700;
+    }
+    .card.blue h2 { color: #38bdf8; }
+    .card.green h2 { color: #22c55e; }
+    .card.red h2 { color: #ef4444; }
+    .chart {
+      height: 300px;
+      border-radius: 24px;
+      border: 1px solid #1e293b;
+      background: linear-gradient(135deg, #020617, #020617);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="logo">Finance<span style="color:#fff">Pro</span></div>
+    <div class="menu">
+      <button class="active">Dashboard</button>
+      <button>Receitas</button>
+      <button>Despesas</button>
+      <button>Tarefas</button>
+      <button>Relatórios</button>
     </div>
-  );
-}
+  </aside>
 
-function Dashboard() {
-  return (
-    <div className="space-y-10">
-      <h2 className="text-3xl font-bold">Visão Geral</h2>
+  <main class="content">
+    <div class="header">Visão Geral Financeira</div>
 
-      {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card title="Receita Total" value="R$ 25.000" icon={<TrendingUp />} color="green" />
-        <Card title="Despesas" value="R$ 12.800" icon={<TrendingDown />} color="red" />
-        <Card title="Saldo" value="R$ 12.200" icon={<DollarSign />} color="blue" />
+    <section class="cards">
+      <div class="card blue">
+        <span>Receita Total</span>
+        <h2>R$ 28.400</h2>
       </div>
-
-      {/* Chart Placeholder */}
-      <div className="rounded-2xl bg-black/50 border border-zinc-800 p-6 h-72 flex items-center justify-center text-zinc-500">
-        Gráfico financeiro (receitas x despesas)
+      <div class="card red">
+        <span>Despesas</span>
+        <h2>R$ 13.900</h2>
       </div>
-    </div>
-  );
-}
-
-function Card({ title, value, icon, color }) {
-  const colors = {
-    green: "bg-green-600/20 text-green-400",
-    red: "bg-red-600/20 text-red-400",
-    blue: "bg-blue-600/20 text-blue-400",
-  };
-
-  return (
-    <div className="rounded-2xl bg-black/50 border border-zinc-800 p-6 flex items-center gap-4">
-      <div className={`p-3 rounded-xl ${colors[color]}`}>{icon}</div>
-      <div>
-        <p className="text-sm text-zinc-400">{title}</p>
-        <h3 className="text-2xl font-bold">{value}</h3>
+      <div class="card green">
+        <span>Saldo</span>
+        <h2>R$ 14.500</h2>
       </div>
-    </div>
-  );
-}
+    </section>
 
-function Placeholder({ title }) {
-  return (
-    <div className="rounded-2xl bg-black/50 border border-zinc-800 p-10 text-center text-zinc-400">
-      Área de {title} em construção
-    </div>
-  );
-}
+    <div class="chart">Gráfico financeiro (visual)</div>
+  </main>
+</body>
+</html>
