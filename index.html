@@ -2,243 +2,196 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plataforma Financeira</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Dashboard Financeiro</title>
+
+  <!-- Fonte moderna -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #020617, #020617, #0f172a);
-      color: #e5e7eb;
-      min-height: 100vh;
-      display: flex;
     }
-    .sidebar {
-      width: 260px;
-      background: rgba(2,6,23,0.9);
-      border-right: 1px solid #1e293b;
-      padding: 24px;
-    }
-    .logo {
-      font-size: 22px;
-      font-weight: 700;
-      color: #38bdf8;
-      margin-bottom: 40px;
-    }
-    .menu button {
-      width: 100%;
-      background: none;
-      border: none;
-      color: #cbd5f5;
-      padding: 14px 16px;
-      margin-bottom: 12px;
-      border-radius: 14px;
-      text-align: left;
-      font-size: 15px;
-      cursor: pointer;
-      transition: all .3s;
-    }
-    .menu button:hover {
-      background: #1e293b;
+
+    body {
+      background: linear-gradient(180deg, #0b1220, #05080f);
       color: #fff;
+      padding: 30px;
     }
-    .menu .active {
-      background: linear-gradient(135deg, #2563eb, #38bdf8);
-      color: #fff;
+
+    .dashboard {
+      max-width: 1100px;
+      margin: auto;
     }
-    .content {
-      flex: 1;
-      padding: 40px;
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 25px;
     }
-    .header {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 30px;
-    }
+
+    /* Cards */
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
     }
+
     .card {
-      background: linear-gradient(135deg, #020617, #020617);
-      border: 1px solid #1e293b;
-      border-radius: 22px;
-      padding: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      background: #0f172a;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     }
+
     .card span {
       font-size: 14px;
       color: #94a3b8;
     }
+
     .card h2 {
-      margin-top: 10px;
-      font-size: 26px;
-      font-weight: 700;
+      font-size: 28px;
+      margin-top: 8px;
     }
-    .card.blue h2 { color: #38bdf8; }
-    .card.green h2 { color: #22c55e; }
-    .card.red h2 { color: #ef4444; }
-    .chart {
-      height: 300px;
-      border-radius: 24px;
-      border: 1px solid #1e293b;
-      background: linear-gradient(135deg, #020617, #020617);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #64748b;
-      font-size: 18px;
+
+    /* Gráfico */
+    .chart-card {
+      background: #0f172a;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    canvas {
+      max-height: 260px;
     }
   </style>
 </head>
 <body>
-  <aside class="sidebar">
-    <div class="logo">Finance<span style="color:#fff">Pro</span></div>
-    <div class="menu">
-      <button class="active">Dashboard</button>
-    </div>
-  </aside>
 
-  <main class="content">
-    <div class="header">Visão Geral Financeira</div>
+  <div class="dashboard">
+    <h1>Visão Financeira</h1>
 
-    <section class="cards">
-      <div class="card blue">
-        <span>Receita Total</span>
-        <h2 id="cardReceita">R$ 0</h2>
+    <div class="cards">
+      <div class="card">
+        <span>Receita</span>
+        <h2 id="receita">R$ 0</h2>
       </div>
-      <div class="card red">
-        <span>Despesas</span>
-        <h2 id="cardDespesa">R$ 0</h2>
+
+      <div class="card">
+        <span>Despesa</span>
+        <h2 id="despesa">R$ 0</h2>
       </div>
-      <div class="card green">
+
+      <div class="card">
         <span>Saldo</span>
-        <h2 id="cardSaldo">R$ 0</h2>
+        <h2 id="saldo">R$ 0</h2>
       </div>
-    </section>
+    </div>
 
-    <div class="chart">
+    <div class="chart-card">
       <canvas id="financeChart"></canvas>
     </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-      const receitas = [8000, 9500, 11000, 13000, 15000, 17000];
-      const despesas = [4000, 5200, 6000, 7200, 8200, 9000];
-      const saldo = receitas.map((r, i) => r - despesas[i]);
+  <script>
+    // Dados simulados (depois você conecta ao sistema)
+    const receita = 8500;
+    const despesa = 4200;
+    const saldo = receita - despesa;
 
-      const totalReceita = receitas.reduce((a, b) => a + b, 0);
-      const totalDespesa = despesas.reduce((a, b) => a + b, 0);
-      const totalSaldo = totalReceita - totalDespesa;
+    // Animação de contagem
+    function animateValue(id, value) {
+      let start = 0;
+      const duration = 800;
+      const step = value / (duration / 16);
 
-      function animateValue(id, value) {
-        let current = 0;
-        const el = document.getElementById(id);
-        const step = Math.ceil(value / 60);
-        const interval = setInterval(() => {
-          current += step;
-          if (current >= value) {
-            current = value;
-            clearInterval(interval);
+      const el = document.getElementById(id);
+
+      const interval = setInterval(() => {
+        start += step;
+        if (start >= value) {
+          start = value;
+          clearInterval(interval);
+        }
+        el.innerText = `R$ ${Math.floor(start).toLocaleString('pt-BR')}`;
+      }, 16);
+    }
+
+    animateValue("receita", receita);
+    animateValue("despesa", despesa);
+    animateValue("saldo", saldo);
+
+    // Gráfico
+    const ctx = document.getElementById('financeChart');
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+        datasets: [
+          {
+            label: 'Receita',
+            data: [3000, 4500, 6000, 7000, 8000, receita],
+            borderColor: '#38bdf8',
+            borderWidth: 2,
+            tension: 0.4,
+            pointRadius: 0
+          },
+          {
+            label: 'Despesa',
+            data: [2000, 2800, 3500, 3900, 4100, despesa],
+            borderColor: '#64748b',
+            borderWidth: 2,
+            tension: 0.4,
+            pointRadius: 0
+          },
+          {
+            label: 'Saldo',
+            data: [1000, 1700, 2500, 3100, 3900, saldo],
+            borderColor: '#22c55e',
+            borderWidth: 2,
+            tension: 0.4,
+            pointRadius: 0
           }
-          el.innerText = 'R$ ' + current.toLocaleString();
-        }, 16);
-      }
-
-      animateValue('cardReceita', totalReceita);
-      animateValue('cardDespesa', totalDespesa);
-      animateValue('cardSaldo', totalSaldo);
-
-      const ctx = document.getElementById('financeChart').getContext('2d');
-      const chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-          datasets: [
-            {
-              label: 'Receita',
-              data: receitas,
-              borderColor: '#38bdf8',
-              backgroundColor: 'rgba(56,189,248,0.25)',
-              tension: 0.45,
-              fill: true,
-              pointRadius: 4,
-              pointHoverRadius: 7,
-              pointBackgroundColor: '#38bdf8'
-            },
-            {
-              label: 'Despesas',
-              data: despesas,
-              borderColor: '#ef4444',
-              backgroundColor: 'rgba(239,68,68,0.2)',
-              tension: 0.45,
-              fill: true,
-              pointRadius: 4,
-              pointHoverRadius: 7,
-              pointBackgroundColor: '#ef4444'
-            },
-            {
-              label: 'Saldo',
-              data: saldo,
-              borderColor: '#22c55e',
-              backgroundColor: 'rgba(34,197,94,0.25)',
-              tension: 0.45,
-              fill: true,
-              borderDash: [6, 6],
-              pointRadius: 4,
-              pointHoverRadius: 7,
-              pointBackgroundColor: '#22c55e'
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#cbd5f5'
             }
-          ]
+          }
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: {
-            mode: 'index',
-            intersect: false
-          },
-          plugins: {
-            legend: {
-              labels: {
-                color: '#e5e7eb',
-                font: { size: 13 }
-              },
-              onClick: (e, legendItem) => {
-                const index = legendItem.datasetIndex;
-                chart.toggleDataVisibility(index);
-                chart.update();
-              }
+        scales: {
+          x: {
+            grid: {
+              display: false
             },
-            tooltip: {
-              backgroundColor: '#020617',
-              borderColor: '#1e293b',
-              borderWidth: 1,
-              titleColor: '#38bdf8',
-              bodyColor: '#e5e7eb',
-              padding: 12,
-              cornerRadius: 12
+            ticks: {
+              color: '#94a3b8'
             }
           },
-          scales: {
-            x: {
-              ticks: { color: '#94a3b8' },
-              grid: { display: false }
+          y: {
+            grid: {
+              color: 'rgba(148,163,184,0.1)'
             },
-            y: {
-              ticks: { color: '#94a3b8' },
-              grid: {
-                color: 'rgba(30,41,59,0.4)',
-                borderDash: [4, 6]
-              }
+            ticks: {
+              color: '#94a3b8'
             }
           }
         }
-      });
-    </script>
-  </main>
+      }
+    });
+  </script>
+
 </body>
 </html>
