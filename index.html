@@ -92,13 +92,12 @@
 
     .controls {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 15px;
       margin-bottom: 30px;
     }
 
     .controls input,
-    .controls select,
     .controls button {
       background: #020617;
       border: 1px solid #1e293b;
@@ -109,15 +108,59 @@
       font-family: 'Inter', sans-serif;
     }
 
-    .controls input::placeholder {
-      color: #64748b;
-    }
-
     .controls button {
       background: linear-gradient(135deg, #2563eb, #38bdf8);
       border: none;
       cursor: pointer;
       font-weight: 600;
+    }
+
+    /* ===============================
+       SELECT MODERNO RECEITA/DESPESA
+       =============================== */
+    .select-modern {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+
+      background: linear-gradient(135deg, #020617, #020617);
+      border: 1px solid #1e293b;
+      color: #e5e7eb;
+
+      padding: 14px 42px 14px 16px;
+      border-radius: 18px;
+
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+
+      cursor: pointer;
+      transition: all 0.25s ease;
+
+      background-image:
+        linear-gradient(45deg, transparent 50%, #94a3b8 50%),
+        linear-gradient(135deg, #94a3b8 50%, transparent 50%);
+      background-position:
+        calc(100% - 20px) 55%,
+        calc(100% - 15px) 55%;
+      background-size: 5px 5px;
+      background-repeat: no-repeat;
+    }
+
+    .select-modern:hover {
+      border-color: #38bdf8;
+    }
+
+    .select-modern:focus {
+      outline: none;
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+    }
+
+    .select-modern option {
+      background: #020617;
+      color: #e5e7eb;
+      padding: 12px;
     }
 
     .chart {
@@ -157,27 +200,16 @@
     </div>
   </section>
 
-  <!-- CONTROLES -->
   <section class="controls">
-    <input 
-      type="text" 
-      id="valor" 
-      placeholder="Valor (R$)" 
-      inputmode="decimal"
-    >
-
-    <select id="tipo">
+    <input type="number" id="valor" placeholder="Valor (R$)">
+    
+    <!-- SELECT MODERNO -->
+    <select id="tipo" class="select-modern">
       <option value="receita">Receita</option>
       <option value="despesa">Despesa</option>
     </select>
 
-    <input 
-      type="text" 
-      id="data" 
-      placeholder="Data (dd/mm/aaaa)"
-      maxlength="10"
-    >
-
+    <input type="date" id="mes">
     <button onclick="adicionar()">Adicionar</button>
   </section>
 
@@ -207,25 +239,14 @@
   });
 
   function adicionar() {
-    let valor = document.getElementById('valor').value
-      .replace(',', '.')
-      .replace(/[^\d.]/g, '');
-
-    valor = Number(valor);
-
+    const valor = Number(document.getElementById('valor').value);
     const tipo = document.getElementById('tipo').value;
-    const data = document.getElementById('data').value;
+    const mes = document.getElementById('mes').value;
 
-    if (!valor || !data.match(/^\d{2}\/\d{2}\/\d{4}$/)) return;
-
-    const mes = Number(data.split('/')[1]) - 1;
+    if (!valor || !mes) return;
 
     dados.push({ valor, tipo, mes });
     localStorage.setItem('financeiro', JSON.stringify(dados));
-
-    document.getElementById('valor').value = '';
-    document.getElementById('data').value = '';
-
     atualizar();
   }
 
@@ -234,10 +255,11 @@
     let despesas = Array(6).fill(0);
 
     dados.forEach(d => {
-      if (d.mes >= 0 && d.mes < 6) {
+      const index = new Date(d.mes).getMonth();
+      if (index >= 0 && index < 6) {
         d.tipo === 'receita'
-          ? receitas[d.mes] += d.valor
-          : despesas[d.mes] += d.valor;
+          ? receitas[index] += d.valor
+          : despesas[index] += d.valor;
       }
     });
 
@@ -254,12 +276,11 @@
     document.getElementById('cardDespesa').innerText =
       'R$ ' + despesas.reduce((a,b)=>a+b,0).toLocaleString('pt-BR');
 
-    const totalSaldo = saldo.reduce((a,b)=>a+b,0);
-    const cardSaldo = document.getElementById('cardSaldo');
+    const saldoTotal = saldo.reduce((a,b)=>a+b,0);
+    const saldoEl = document.getElementById('cardSaldo');
 
-    cardSaldo.innerText = 'R$ ' + totalSaldo.toLocaleString('pt-BR');
-    cardSaldo.style.color =
-      totalSaldo < 0 ? '#ef4444' : totalSaldo > 0 ? '#22c55e' : '#e5e7eb';
+    saldoEl.innerText = 'R$ ' + saldoTotal.toLocaleString('pt-BR');
+    saldoEl.style.color = saldoTotal > 0 ? '#22c55e' : saldoTotal < 0 ? '#ef4444' : '#e5e7eb';
   }
 
   atualizar();
