@@ -130,6 +130,17 @@
       font-size: 14px;
     }
 
+    /* Remove setinhas do input number */
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield; /* Firefox */
+    }
+
     .controls button {
       background: linear-gradient(135deg, #2563eb, #38bdf8);
       border: none;
@@ -152,7 +163,7 @@
 
     .toggle button {
       flex: 1;
-      padding: 14px 0; /* Ajuste vertical do padding */
+      padding: 14px 0; /* Ajuste vertical */
       border: none;
       background: transparent;
       color: #94a3b8;
