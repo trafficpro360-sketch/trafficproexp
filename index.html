@@ -1,6 +1,8 @@
-// Projeto base para reestruturar o site controleads.lovable.app
+// ============================
+// CONTROLEADS – ESTRUTURA PADRÃO LOVABLE
 // Stack: React + Vite + TypeScript + Tailwind CSS
-// Estrutura pensada para dashboard (finanças, tarefas, clientes)
+// Código reescrito para recriação fiel da estrutura gerada pelo Lovable
+// ============================
 
 // ============================
 // src/main.tsx
@@ -23,7 +25,7 @@ import Dashboard from "./pages/Dashboard";
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900">
+    <div className="min-h-screen bg-zinc-100 text-zinc-900">
       <Dashboard />
     </div>
   );
@@ -32,26 +34,29 @@ export default function App() {
 // ============================
 // src/pages/Dashboard.tsx
 // ============================
-import FinanceDashboard from "../sections/FinanceDashboard";
-import TaskDashboard from "../sections/TaskDashboard";
+import FinanceSection from "../sections/FinanceSection";
+import TasksSection from "../sections/TasksSection";
 
 export default function Dashboard() {
   return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">ControleAds – Painel Geral</h1>
+    <main className="p-6 space-y-8 max-w-6xl mx-auto">
+      <header className="flex flex-col gap-1">
+        <h1 className="text-2xl font-semibold">ControleAds</h1>
+        <p className="text-sm text-zinc-500">Painel operacional</p>
+      </header>
 
-      <FinanceDashboard />
-      <TaskDashboard />
-    </div>
+      <FinanceSection />
+      <TasksSection />
+    </main>
   );
 }
 
 // ============================
-// src/sections/FinanceDashboard.tsx
+// src/sections/FinanceSection.tsx
 // ============================
 import { useState } from "react";
 
-interface Client {
+interface Cliente {
   nome: string;
   telefone: string;
   valor: number;
@@ -63,49 +68,58 @@ interface Despesa {
   valor: number;
 }
 
-export default function FinanceDashboard() {
-  const [clientes, setClientes] = useState<Client[]>([]);
+export default function FinanceSection() {
+  const [clientes, setClientes] = useState<Cliente[]>([]);
   const [despesas, setDespesas] = useState<Despesa[]>([]);
 
-  const totalReceita = clientes.reduce((acc, c) => acc + c.valor, 0);
-  const totalDespesas = despesas.reduce((acc, d) => acc + d.valor, 0);
+  const receita = clientes.reduce((t, c) => t + c.valor, 0);
+  const gasto = despesas.reduce((t, d) => t + d.valor, 0);
+  const lucro = receita - gasto;
 
   return (
-    <div className="bg-white p-4 rounded-xl shadow">
-      <h2 className="text-xl font-semibold mb-4">Financeiro</h2>
+    <section className="bg-white rounded-xl shadow p-5 space-y-4">
+      <h2 className="text-lg font-medium">Financeiro</h2>
 
-      <div className="grid grid-cols-3 gap-4 mb-4">
-        <div className="p-3 bg-green-100 rounded">Receita: R$ {totalReceita}</div>
-        <div className="p-3 bg-red-100 rounded">Despesas: R$ {totalDespesas}</div>
-        <div className="p-3 bg-blue-100 rounded">
-          Lucro: R$ {totalReceita - totalDespesas}
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card label="Receita" value={receita} color="green" />
+        <Card label="Despesas" value={gasto} color="red" />
+        <Card label="Lucro" value={lucro} color="blue" />
       </div>
 
-      <button
-        onClick={() =>
-          setClientes([
-            ...clientes,
-            { nome: "Cliente Exemplo", telefone: "(00) 00000-0000", valor: 500, diaPagamento: 10 }
-          ])
-        }
-        className="px-4 py-2 bg-green-600 text-white rounded"
-      >
-        + Adicionar Cliente
-      </button>
+      <div className="flex gap-3">
+        <button onClick={() => setClientes([...clientes, {
+          nome: "Novo Cliente",
+          telefone: "",
+          valor: 500,
+          diaPagamento: 5
+        }])} className="btn-primary">Adicionar Cliente</button>
 
-      <button
-        onClick={() => setDespesas([...despesas, { nome: "Despesa Exemplo", valor: 100 }])}
-        className="px-4 py-2 bg-red-600 text-white rounded ml-2"
-      >
-        + Adicionar Despesa
-      </button>
+        <button onClick={() => setDespesas([...despesas, {
+          nome: "Nova Despesa",
+          valor: 100
+        }])} className="btn-danger">Adicionar Despesa</button>
+      </div>
+    </section>
+  );
+}
+
+function Card({ label, value, color }: { label: string; value: number; color: string }) {
+  const colors: any = {
+    green: "bg-green-100 text-green-700",
+    red: "bg-red-100 text-red-700",
+    blue: "bg-blue-100 text-blue-700"
+  };
+
+  return (
+    <div className={`rounded-lg p-4 ${colors[color]}`}>
+      <p className="text-sm">{label}</p>
+      <strong className="text-xl">R$ {value}</strong>
     </div>
   );
 }
 
 // ============================
-// src/sections/TaskDashboard.tsx
+// src/sections/TasksSection.tsx
 // ============================
 import { useState } from "react";
 
@@ -116,44 +130,35 @@ interface Task {
   concluida: boolean;
 }
 
-export default function TaskDashboard() {
+export default function TasksSection() {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   return (
-    <div className="bg-white p-4 rounded-xl shadow">
-      <h2 className="text-xl font-semibold mb-4">Tarefas</h2>
+    <section className="bg-white rounded-xl shadow p-5 space-y-4">
+      <h2 className="text-lg font-medium">Tarefas</h2>
 
-      <button
-        onClick={() =>
-          setTasks([
-            ...tasks,
-            { descricao: "Nova tarefa", data: "2026-01-17", hora: "14:00", concluida: false }
-          ])
-        }
-        className="px-4 py-2 bg-blue-600 text-white rounded mb-4"
-      >
-        + Nova Tarefa
-      </button>
+      <button onClick={() => setTasks([...tasks, {
+        descricao: "Nova tarefa",
+        data: "2026-01-17",
+        hora: "09:00",
+        concluida: false
+      }])} className="btn-secondary">Adicionar tarefa</button>
 
       <ul className="space-y-2">
-        {tasks.map((task, index) => (
-          <li key={index} className="flex items-center justify-between">
-            <span className={task.concluida ? "line-through" : ""}>
-              {task.data} {task.hora} – {task.descricao}
+        {tasks.map((t, i) => (
+          <li key={i} className="flex justify-between items-center text-sm">
+            <span className={t.concluida ? "line-through text-zinc-400" : ""}>
+              {t.data} {t.hora} — {t.descricao}
             </span>
-            <input
-              type="checkbox"
-              checked={task.concluida}
-              onChange={() => {
-                const newTasks = [...tasks];
-                newTasks[index].concluida = !newTasks[index].concluida;
-                setTasks(newTasks);
-              }}
-            />
+            <input type="checkbox" checked={t.concluida} onChange={() => {
+              const copy = [...tasks];
+              copy[i].concluida = !copy[i].concluida;
+              setTasks(copy);
+            }} />
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   );
 }
 
@@ -163,3 +168,15 @@ export default function TaskDashboard() {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .btn-primary {
+    @apply bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700;
+  }
+  .btn-danger {
+    @apply bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700;
+  }
+  .btn-secondary {
+    @apply bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700;
+  }
+}
