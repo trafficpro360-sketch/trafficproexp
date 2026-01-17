@@ -152,13 +152,17 @@
 
     .toggle button {
       flex: 1;
-      padding: 14px;
+      padding: 14px 0; /* Ajuste vertical do padding */
       border: none;
       background: transparent;
       color: #94a3b8;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.25s;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .toggle button.active.receita {
@@ -210,19 +214,19 @@
       <section class="cards">
         <div class="card blue">
           <span>Receita Total</span>
-          <h3 id="cardReceita">R$ 0</h3>
+          <h2 id="cardReceita">R$ 0</h2>
         </div>
         <div class="card red">
           <span>Despesas</span>
-          <h3 id="cardDespesa">R$ 0</h3>
+          <h2 id="cardDespesa">R$ 0</h2>
         </div>
         <div class="card yellow">
           <span>Patrimônio</span>
-          <h3 id="cardPatrimonio">R$ 0</h3>
+          <h2 id="cardPatrimonio">R$ 0</h2>
         </div>
         <div class="card green">
           <span>Saldo</span>
-          <h3 id="cardSaldo">R$ 0</h3>
+          <h2 id="cardSaldo">R$ 0</h2>
         </div>
       </section>
 
