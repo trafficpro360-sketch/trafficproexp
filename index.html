@@ -92,41 +92,25 @@
 
     .controls {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 15px;
       margin-bottom: 30px;
     }
 
-    /* INPUT VALOR */
-    .valor-wrapper {
-      position: relative;
-    }
-
-    .valor-wrapper span {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #94a3b8;
-      font-weight: 600;
-    }
-
-    .valor-wrapper input {
-      padding-left: 40px;
-    }
-
-    .controls input, .controls button {
+    .controls input,
+    .controls select,
+    .controls button {
       background: #020617;
       border: 1px solid #1e293b;
       color: #e5e7eb;
       padding: 14px;
       border-radius: 14px;
       font-size: 14px;
+      font-family: 'Inter', sans-serif;
     }
 
-    .controls input:focus {
-      outline: none;
-      border-color: #38bdf8;
+    .controls input::placeholder {
+      color: #64748b;
     }
 
     .controls button {
@@ -134,34 +118,6 @@
       border: none;
       cursor: pointer;
       font-weight: 600;
-    }
-
-    /* TOGGLE */
-    .tipo-toggle {
-      display: flex;
-      gap: 10px;
-    }
-
-    .tipo-btn {
-      flex: 1;
-      padding: 14px;
-      border-radius: 14px;
-      border: 1px solid #1e293b;
-      background: #020617;
-      color: #e5e7eb;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all .25s ease;
-    }
-
-    .tipo-btn.receita.active {
-      background: linear-gradient(135deg, #16a34a, #22c55e);
-      border: none;
-    }
-
-    .tipo-btn.despesa.active {
-      background: linear-gradient(135deg, #dc2626, #ef4444);
-      border: none;
     }
 
     .chart {
@@ -201,20 +157,26 @@
     </div>
   </section>
 
+  <!-- CONTROLES -->
   <section class="controls">
-    <div class="valor-wrapper">
-      <span>R$</span>
-      <input type="text" id="valor" placeholder="0,00">
-    </div>
+    <input 
+      type="text" 
+      id="valor" 
+      placeholder="Valor (R$)" 
+      inputmode="decimal"
+    >
 
-    <div class="tipo-toggle">
-      <button class="tipo-btn receita active" onclick="setTipo('receita')">Receita</button>
-      <button class="tipo-btn despesa" onclick="setTipo('despesa')">Despesa</button>
-    </div>
+    <select id="tipo">
+      <option value="receita">Receita</option>
+      <option value="despesa">Despesa</option>
+    </select>
 
-    <input type="hidden" id="tipo" value="receita">
-
-    <input type="date" id="data">
+    <input 
+      type="text" 
+      id="data" 
+      placeholder="Data (dd/mm/aaaa)"
+      maxlength="10"
+    >
 
     <button onclick="adicionar()">Adicionar</button>
   </section>
@@ -236,35 +198,34 @@
     data: {
       labels,
       datasets: [
-        { label: 'Receita', data: [], borderColor: '#22c55e', tension: .35 },
+        { label: 'Receita', data: [], borderColor: '#38bdf8', tension: .35 },
         { label: 'Despesas', data: [], borderColor: '#ef4444', tension: .35 },
-        { label: 'Saldo', data: [], borderColor: '#38bdf8', tension: .35 }
+        { label: 'Saldo', data: [], borderColor: '#22c55e', tension: .35 }
       ]
     },
     options: { responsive: true, maintainAspectRatio: false }
   });
 
-  function setTipo(tipo) {
-    document.getElementById('tipo').value = tipo;
-    document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.tipo-btn.' + tipo).classList.add('active');
-  }
-
-  document.getElementById('valor').addEventListener('input', e => {
-    let v = e.target.value.replace(/\D/g, '');
-    v = (Number(v) / 100).toFixed(2).replace('.', ',');
-    e.target.value = v;
-  });
-
   function adicionar() {
-    const valor = Number(document.getElementById('valor').value.replace(',', '.'));
+    let valor = document.getElementById('valor').value
+      .replace(',', '.')
+      .replace(/[^\d.]/g, '');
+
+    valor = Number(valor);
+
     const tipo = document.getElementById('tipo').value;
     const data = document.getElementById('data').value;
 
-    if (!valor || !data) return;
+    if (!valor || !data.match(/^\d{2}\/\d{2}\/\d{4}$/)) return;
 
-    dados.push({ valor, tipo, data });
+    const mes = Number(data.split('/')[1]) - 1;
+
+    dados.push({ valor, tipo, mes });
     localStorage.setItem('financeiro', JSON.stringify(dados));
+
+    document.getElementById('valor').value = '';
+    document.getElementById('data').value = '';
+
     atualizar();
   }
 
@@ -273,11 +234,10 @@
     let despesas = Array(6).fill(0);
 
     dados.forEach(d => {
-      const mes = new Date(d.data).getMonth();
-      if (mes < 6) {
+      if (d.mes >= 0 && d.mes < 6) {
         d.tipo === 'receita'
-          ? receitas[mes] += d.valor
-          : despesas[mes] += d.valor;
+          ? receitas[d.mes] += d.valor
+          : despesas[d.mes] += d.valor;
       }
     });
 
@@ -288,9 +248,18 @@
     chart.data.datasets[2].data = saldo;
     chart.update();
 
-    document.getElementById('cardReceita').innerText = 'R$ ' + receitas.reduce((a,b)=>a+b,0).toLocaleString('pt-BR');
-    document.getElementById('cardDespesa').innerText = 'R$ ' + despesas.reduce((a,b)=>a+b,0).toLocaleString('pt-BR');
-    document.getElementById('cardSaldo').innerText = 'R$ ' + saldo.reduce((a,b)=>a+b,0).toLocaleString('pt-BR');
+    document.getElementById('cardReceita').innerText =
+      'R$ ' + receitas.reduce((a,b)=>a+b,0).toLocaleString('pt-BR');
+
+    document.getElementById('cardDespesa').innerText =
+      'R$ ' + despesas.reduce((a,b)=>a+b,0).toLocaleString('pt-BR');
+
+    const totalSaldo = saldo.reduce((a,b)=>a+b,0);
+    const cardSaldo = document.getElementById('cardSaldo');
+
+    cardSaldo.innerText = 'R$ ' + totalSaldo.toLocaleString('pt-BR');
+    cardSaldo.style.color =
+      totalSaldo < 0 ? '#ef4444' : totalSaldo > 0 ? '#22c55e' : '#e5e7eb';
   }
 
   atualizar();
