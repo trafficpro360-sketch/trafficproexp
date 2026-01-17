@@ -219,26 +219,55 @@
       color: #e5e7eb;
     }
 
-    .records input {
-      background: #020617;
-      border: 1px solid #1e293b;
-      color: #e5e7eb;
-      border-radius: 8px;
-      padding: 4px 8px;
-      width: 100px;
-      margin-right: 6px;
-      font-size: 14px;
+    /* EDIÇÃO INLINE MODERNA */
+    .records li.editing {
+      background: #0f172a;
+      border: 1px solid #38bdf8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 12px;
     }
 
-    .records .edit-buttons button {
-      background: linear-gradient(135deg, #2563eb, #38bdf8);
+    .records li.editing input {
+      background: #020617;
+      border: 1px solid #38bdf8;
+      border-radius: 12px;
+      padding: 6px 10px;
+      font-size: 14px;
+      color: #e5e7eb;
+      width: 100px;
+      transition: all 0.2s;
+    }
+
+    .records li.editing input:focus {
+      outline: none;
+      box-shadow: 0 0 5px #38bdf8;
+    }
+
+    .records li.editing .edit-buttons button {
       border: none;
-      color: #fff;
-      padding: 4px 8px;
-      border-radius: 6px;
+      border-radius: 8px;
+      padding: 6px 10px;
       cursor: pointer;
-      margin-left: 2px;
-      font-size: 12px;
+      font-weight: 600;
+      margin-left: 4px;
+      transition: all 0.2s;
+    }
+
+    .records li.editing .edit-buttons button.save {
+      background: #38bdf8;
+      color: #020617;
+    }
+
+    .records li.editing .edit-buttons button.cancel {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .records li.editing .edit-buttons button:hover {
+      filter: brightness(1.2);
     }
 
   </style>
@@ -427,14 +456,20 @@
       const li = [...document.querySelectorAll('.records li')].find(li => li.querySelector('button')?.onclick.toString().includes(`${id}`));
       if(!li) return;
 
+      li.classList.add('editing');
       li.innerHTML = `
         <input type="number" value="${item.valor}" id="edit-${id}">
-        <button class="save-btn">💾</button>
-        <button class="cancel-btn">❌</button>
+        <div class="edit-buttons">
+          <button class="save">💾 Salvar</button>
+          <button class="cancel">❌ Cancelar</button>
+        </div>
       `;
 
-      li.querySelector('.save-btn').onclick = () => {
-        const novoValor = Number(document.getElementById(`edit-${id}`).value);
+      const input = li.querySelector(`#edit-${id}`);
+      input.focus();
+
+      li.querySelector('.save').onclick = () => {
+        const novoValor = Number(input.value);
         if(novoValor) {
           item.valor = novoValor;
           localStorage.setItem('financeiro', JSON.stringify(dados));
@@ -442,7 +477,7 @@
         }
       };
 
-      li.querySelector('.cancel-btn').onclick = () => atualizar();
+      li.querySelector('.cancel').onclick = () => atualizar();
     }
 
     function excluirItem(id) {
@@ -456,4 +491,5 @@
 
 </body>
 </html>
+
 
