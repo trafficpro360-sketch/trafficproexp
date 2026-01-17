@@ -108,15 +108,15 @@
     <section class="cards">
       <div class="card blue">
         <span>Receita Total</span>
-        <h2>R$ 28.400</h2>
+        <h2 id="cardReceita">R$ 0</h2>
       </div>
       <div class="card red">
         <span>Despesas</span>
-        <h2>R$ 13.900</h2>
+        <h2 id="cardDespesa">R$ 0</h2>
       </div>
       <div class="card green">
         <span>Saldo</span>
-        <h2>R$ 14.500</h2>
+        <h2 id="cardSaldo">R$ 0</h2>
       </div>
     </section>
 
@@ -126,15 +126,41 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+      const receitas = [8000, 9500, 11000, 13000, 15000, 17000];
+      const despesas = [4000, 5200, 6000, 7200, 8200, 9000];
+      const saldo = receitas.map((r, i) => r - despesas[i]);
+
+      const totalReceita = receitas.reduce((a, b) => a + b, 0);
+      const totalDespesa = despesas.reduce((a, b) => a + b, 0);
+      const totalSaldo = totalReceita - totalDespesa;
+
+      function animateValue(id, value) {
+        let current = 0;
+        const el = document.getElementById(id);
+        const step = Math.ceil(value / 60);
+        const interval = setInterval(() => {
+          current += step;
+          if (current >= value) {
+            current = value;
+            clearInterval(interval);
+          }
+          el.innerText = 'R$ ' + current.toLocaleString();
+        }, 16);
+      }
+
+      animateValue('cardReceita', totalReceita);
+      animateValue('cardDespesa', totalDespesa);
+      animateValue('cardSaldo', totalSaldo);
+
       const ctx = document.getElementById('financeChart').getContext('2d');
-      new Chart(ctx, {
+      const chart = new Chart(ctx, {
         type: 'line',
         data: {
           labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
           datasets: [
             {
               label: 'Receita',
-              data: [8000, 9500, 11000, 13000, 15000, 17000],
+              data: receitas,
               borderColor: '#38bdf8',
               backgroundColor: 'rgba(56,189,248,0.2)',
               tension: 0.4,
@@ -142,7 +168,7 @@
             },
             {
               label: 'Despesas',
-              data: [4000, 5200, 6000, 7200, 8200, 9000],
+              data: despesas,
               borderColor: '#ef4444',
               backgroundColor: 'rgba(239,68,68,0.15)',
               tension: 0.4,
@@ -150,23 +176,9 @@
             },
             {
               label: 'Saldo',
-              data: [4000, 4300, 5000, 5800, 6800, 8000],
+              data: saldo,
               borderColor: '#22c55e',
               backgroundColor: 'rgba(34,197,94,0.15)',
-              tension: 0.4,
-              fill: true
-            }
-          ],
-              borderColor: '#38bdf8',
-              backgroundColor: 'rgba(56,189,248,0.2)',
-              tension: 0.4,
-              fill: true
-            },
-            {
-              label: 'Despesas',
-              data: [4000, 5200, 6000, 7200, 8200, 9000],
-              borderColor: '#ef4444',
-              backgroundColor: 'rgba(239,68,68,0.15)',
               tension: 0.4,
               fill: true
             }
@@ -177,7 +189,12 @@
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              labels: { color: '#e5e7eb' }
+              labels: { color: '#e5e7eb' },
+              onClick: (e, legendItem, legend) => {
+                const index = legendItem.datasetIndex;
+                chart.toggleDataVisibility(index);
+                chart.update();
+              }
             }
           },
           scales: {
