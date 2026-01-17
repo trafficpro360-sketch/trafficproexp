@@ -111,6 +111,7 @@
     .blue h2 { color: #38bdf8; }
     .red h2 { color: #ef4444; }
     .green h2 { color: #22c55e; }
+    .yellow h2 { color: #facc15; }
 
     /* ===== CONTROLES ===== */
     .controls {
@@ -140,7 +141,7 @@
       transition: 0.25s;
     }
 
-    /* ===== TOGGLE RECEITA / DESPESA ===== */
+    /* ===== TOGGLE RECEITA / DESPESA / PATRIMONIO ===== */
     .toggle {
       display: flex;
       background: #020617;
@@ -170,6 +171,11 @@
       color: #ef4444;
     }
 
+    .toggle button.active.patrimonio {
+      background: rgba(250,204,21,0.15);
+      color: #facc15;
+    }
+
     /* ===== GRÁFICO ===== */
     .chart {
       height: 300px;
@@ -188,7 +194,7 @@
 
     <nav class="menu">
       <ul>
-        <li class="active"><a href="#" onclick="showTab('dashboard')">Dashboard</a></li>
+        <li class="active"><a href="#">Dashboard</a></li>
       </ul>
     </nav>
   </aside>
@@ -196,7 +202,7 @@
   <!-- ===== CONTEÚDO PRINCIPAL ===== -->
   <main class="content">
 
-    <!-- DASHBOARD (FINANCEIRO RENOMEADO) -->
+    <!-- DASHBOARD -->
     <div id="dashboard">
       <div class="header">Dashboard</div>
 
@@ -210,6 +216,10 @@
           <span>Despesas</span>
           <h2 id="cardDespesa">R$ 0</h2>
         </div>
+        <div class="card yellow">
+          <span>Patrimônio</span>
+          <h2 id="cardPatrimonio">R$ 0</h2>
+        </div>
         <div class="card green">
           <span>Saldo</span>
           <h2 id="cardSaldo">R$ 0</h2>
@@ -222,6 +232,7 @@
         <div class="toggle">
           <button class="active receita" onclick="setTipo('receita', this)">Receita</button>
           <button class="despesa" onclick="setTipo('despesa', this)">Despesa</button>
+          <button class="patrimonio" onclick="setTipo('patrimonio', this)">Patrimônio</button>
         </div>
         <input type="date" id="mes">
         <button onclick="adicionar()">Adicionar</button>
@@ -243,6 +254,7 @@
 
     const cardReceita = document.getElementById('cardReceita');
     const cardDespesa = document.getElementById('cardDespesa');
+    const cardPatrimonio = document.getElementById('cardPatrimonio');
     const cardSaldo = document.getElementById('cardSaldo');
 
     function setTipo(tipo, el) {
@@ -259,6 +271,7 @@
         datasets: [
           { label: 'Receita', data: [], borderColor: '#22c55e', tension: 0.35 },
           { label: 'Despesas', data: [], borderColor: '#ef4444', tension: 0.35 },
+          { label: 'Patrimônio', data: [], borderColor: '#facc15', tension: 0.35 },
           { label: 'Saldo', data: [], borderColor: '#38bdf8', tension: 0.35 }
         ]
       },
@@ -278,28 +291,33 @@
     function atualizar() {
       let receitas = Array(6).fill(0);
       let despesas = Array(6).fill(0);
+      let patrimonio = Array(6).fill(0);
 
       dados.forEach(d => {
         const i = new Date(d.mes).getMonth();
         if (i < 6) {
           if (d.tipo === 'receita') receitas[i] += d.valor;
-          else despesas[i] += d.valor;
+          else if (d.tipo === 'despesa') despesas[i] += d.valor;
+          else if (d.tipo === 'patrimonio') patrimonio[i] += d.valor;
         }
       });
 
-      const saldo = receitas.map((r, i) => r - despesas[i]);
+      const saldo = receitas.map((r,i) => r - despesas[i] + patrimonio[i]);
 
       chart.data.datasets[0].data = receitas;
       chart.data.datasets[1].data = despesas;
-      chart.data.datasets[2].data = saldo;
+      chart.data.datasets[2].data = patrimonio;
+      chart.data.datasets[3].data = saldo;
       chart.update();
 
-      const totalReceita = receitas.reduce((a,b) => a+b, 0);
-      const totalDespesa = despesas.reduce((a,b) => a+b, 0);
-      const totalSaldo = totalReceita - totalDespesa;
+      const totalReceita = receitas.reduce((a,b)=>a+b,0);
+      const totalDespesa = despesas.reduce((a,b)=>a+b,0);
+      const totalPatrimonio = patrimonio.reduce((a,b)=>a+b,0);
+      const totalSaldo = totalReceita - totalDespesa + totalPatrimonio;
 
       cardReceita.innerText = `R$ ${totalReceita.toLocaleString('pt-BR')}`;
       cardDespesa.innerText = `R$ ${totalDespesa.toLocaleString('pt-BR')}`;
+      cardPatrimonio.innerText = `R$ ${totalPatrimonio.toLocaleString('pt-BR')}`;
       cardSaldo.innerText = `R$ ${totalSaldo.toLocaleString('pt-BR')}`;
       cardSaldo.style.color = totalSaldo > 0 ? '#22c55e' : totalSaldo < 0 ? '#ef4444' : '#e5e7eb';
     }
