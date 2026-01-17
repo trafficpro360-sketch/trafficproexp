@@ -1,159 +1,64 @@
 // ============================
-// CONTROLEADS – RECRIAÇÃO DE LAYOUT (PADRÃO LOVABLE)
-// Estrutura e layout equivalentes ao app publicado
-// Stack: React + Vite + TypeScript + Tailwind CSS
+// DASHBOARD – RECEITA, DESPESA, SALDO + GRÁFICO
+// Stack: React + Vite + Tailwind CSS + Recharts
+// Layout moderno SaaS (rounded, clean)
 // ============================
-
-// ============================
-// src/main.tsx
-// ============================
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-import "./index.css";
-
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
-// ============================
-// src/App.tsx
-// ============================
-import Layout from "./layout/Layout";
-
-export default function App() {
-  return <Layout />;
-}
-
-// ============================
-// src/layout/Layout.tsx
-// ============================
-import Sidebar from "./Sidebar";
-import Dashboard from "../pages/Dashboard";
-
-export default function Layout() {
-  return (
-    <div className="flex h-screen bg-zinc-100">
-      <Sidebar />
-      <div className="flex-1 overflow-y-auto">
-        <Dashboard />
-      </div>
-    </div>
-  );
-}
-
-// ============================
-// src/layout/Sidebar.tsx
-// ============================
-export default function Sidebar() {
-  return (
-    <aside className="w-64 bg-white border-r px-6 py-6 flex flex-col gap-6">
-      <h1 className="text-xl font-semibold">ControleAds</h1>
-      <nav className="flex flex-col gap-3 text-sm">
-        <a className="font-medium">Dashboard</a>
-        <a className="text-zinc-500">Financeiro</a>
-        <a className="text-zinc-500">Tarefas</a>
-      </nav>
-    </aside>
-  );
-}
 
 // ============================
 // src/pages/Dashboard.tsx
 // ============================
-import FinanceCards from "../sections/FinanceCards";
-import ClientsTable from "../sections/ClientsTable";
-import TasksPanel from "../sections/TasksPanel";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+
+const data = [
+  { name: "Jan", receita: 5000, despesa: 2200 },
+  { name: "Fev", receita: 6200, despesa: 3100 },
+  { name: "Mar", receita: 4800, despesa: 2600 },
+  { name: "Abr", receita: 7100, despesa: 3900 },
+];
 
 export default function Dashboard() {
+  const receita = 23100;
+  const despesa = 11800;
+  const saldo = receita - despesa;
+
   return (
     <main className="p-8 space-y-8">
       <header>
-        <h2 className="text-2xl font-semibold">Visão geral</h2>
-        <p className="text-sm text-zinc-500">Resumo operacional</p>
+        <h1 className="text-2xl font-semibold">Dashboard</h1>
+        <p className="text-sm text-zinc-500">Resumo financeiro</p>
       </header>
 
-      <FinanceCards />
+      {/* Cards */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card title="Receita" value={`R$ ${receita}`} />
+        <Card title="Despesas" value={`R$ ${despesa}`} />
+        <Card title="Saldo" value={`R$ ${saldo}`} highlight />
+      </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ClientsTable />
-        <TasksPanel />
-      </div>
+      {/* Gráfico */}
+      <section className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-6">
+        <h2 className="text-lg font-medium mb-4">Receitas x Despesas</h2>
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data}>
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="receita" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="despesa" radius={[6, 6, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </section>
     </main>
   );
 }
 
-// ============================
-// src/sections/FinanceCards.tsx
-// ============================
-export default function FinanceCards() {
+function Card({ title, value, highlight }: { title: string; value: string; highlight?: boolean }) {
   return (
-    <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <Card title="Receita" value="R$ 5.000" />
-      <Card title="Despesas" value="R$ 1.200" />
-      <Card title="Lucro" value="R$ 3.800" />
-    </section>
-  );
-}
-
-function Card({ title, value }: { title: string; value: string }) {
-  return (
-    <div className="bg-white p-5 rounded-xl shadow-sm">
+    <div className={`bg-white rounded-2xl border border-zinc-200 shadow-sm p-6 ${highlight ? "ring-2 ring-zinc-900" : ""}`}>
       <p className="text-sm text-zinc-500">{title}</p>
-      <strong className="text-2xl">{value}</strong>
+      <h3 className="text-2xl font-semibold mt-1">{value}</h3>
     </div>
   );
 }
-
-// ============================
-// src/sections/ClientsTable.tsx
-// ============================
-export default function ClientsTable() {
-  return (
-    <section className="bg-white rounded-xl shadow-sm p-5">
-      <h3 className="font-medium mb-4">Clientes</h3>
-      <table className="w-full text-sm">
-        <thead className="text-left text-zinc-500">
-          <tr>
-            <th>Nome</th>
-            <th>Valor</th>
-            <th>Pagamento</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="border-t">
-            <td>Cliente Exemplo</td>
-            <td>R$ 500</td>
-            <td>Dia 10</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-  );
-}
-
-// ============================
-// src/sections/TasksPanel.tsx
-// ============================
-export default function TasksPanel() {
-  return (
-    <section className="bg-white rounded-xl shadow-sm p-5">
-      <h3 className="font-medium mb-4">Tarefas</h3>
-      <ul className="space-y-2 text-sm">
-        <li className="flex justify-between">
-          <span>Entrar em contato com cliente</span>
-          <input type="checkbox" />
-        </li>
-      </ul>
-    </section>
-  );
-}
-
-// ============================
-// src/index.css
-// ============================
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
