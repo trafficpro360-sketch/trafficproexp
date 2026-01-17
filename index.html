@@ -199,6 +199,35 @@
       background: #020617;
       padding: 20px;
     }
+
+    /* ===== REGISTROS ===== */
+    .records h3 {
+      margin-bottom: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #38bdf8;
+    }
+
+    .records li {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      background: #020617;
+      border: 1px solid #1e293b;
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #e5e7eb;
+    }
+
+    .records button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: #38bdf8;
+      font-size: 14px;
+    }
+
   </style>
 </head>
 <body>
@@ -257,6 +286,23 @@
       <div class="chart">
         <canvas id="financeChart"></canvas>
       </div>
+
+      <!-- REGISTROS DE ITENS -->
+      <section class="records" style="margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div>
+          <h3>Receitas</h3>
+          <ul id="listaReceita" style="list-style: none; padding: 0;"></ul>
+        </div>
+        <div>
+          <h3>Despesas</h3>
+          <ul id="listaDespesa" style="list-style: none; padding: 0;"></ul>
+        </div>
+        <div>
+          <h3>Patrimônio</h3>
+          <ul id="listaPatrimonio" style="list-style: none; padding: 0;"></ul>
+        </div>
+      </section>
+
     </div>
 
   </main>
@@ -271,6 +317,10 @@
     const cardDespesa = document.getElementById('cardDespesa');
     const cardPatrimonio = document.getElementById('cardPatrimonio');
     const cardSaldo = document.getElementById('cardSaldo');
+
+    const listaReceita = document.getElementById('listaReceita');
+    const listaDespesa = document.getElementById('listaDespesa');
+    const listaPatrimonio = document.getElementById('listaPatrimonio');
 
     function setTipo(tipo, el) {
       tipoSelecionado = tipo;
@@ -298,12 +348,17 @@
       const mes = document.getElementById('mes').value;
       if (!valor || !mes) return;
 
-      dados.push({ valor, tipo: tipoSelecionado, mes });
+      const novoItem = { id: Date.now(), valor, tipo: tipoSelecionado, mes };
+      dados.push(novoItem);
       localStorage.setItem('financeiro', JSON.stringify(dados));
       atualizar();
     }
 
     function atualizar() {
+      listaReceita.innerHTML = '';
+      listaDespesa.innerHTML = '';
+      listaPatrimonio.innerHTML = '';
+
       let receitas = Array(6).fill(0);
       let despesas = Array(6).fill(0);
       let patrimonio = Array(6).fill(0);
@@ -315,9 +370,21 @@
           else if (d.tipo === 'despesa') despesas[i] += d.valor;
           else if (d.tipo === 'patrimonio') patrimonio[i] += d.valor;
         }
+
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${d.valor.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})} - ${d.mes}</span>
+          <span>
+            <button onclick="editarItem(${d.id})">✏️</button>
+            <button onclick="excluirItem(${d.id})">🗑️</button>
+          </span>
+        `;
+        if(d.tipo === 'receita') listaReceita.appendChild(li);
+        else if(d.tipo === 'despesa') listaDespesa.appendChild(li);
+        else if(d.tipo === 'patrimonio') listaPatrimonio.appendChild(li);
       });
 
-      const saldo = receitas.map((r,i) => r - despesas[i] + patrimonio[i]);
+      const saldo = receitas.map((r,i)=>r-despesas[i]+patrimonio[i]);
 
       chart.data.datasets[0].data = receitas;
       chart.data.datasets[1].data = despesas;
@@ -337,7 +404,22 @@
       cardSaldo.style.color = totalSaldo > 0 ? '#22c55e' : totalSaldo < 0 ? '#ef4444' : '#e5e7eb';
     }
 
-    // Inicializa o dashboard
+    function editarItem(id) {
+      const item = dados.find(d=>d.id===id);
+      if(!item) return;
+      const novoValor = prompt('Digite o novo valor:', item.valor);
+      if(novoValor===null) return;
+      item.valor = Number(novoValor);
+      localStorage.setItem('financeiro', JSON.stringify(dados));
+      atualizar();
+    }
+
+    function excluirItem(id) {
+      dados = dados.filter(d=>d.id!==id);
+      localStorage.setItem('financeiro', JSON.stringify(dados));
+      atualizar();
+    }
+
     atualizar();
   </script>
 
