@@ -106,21 +106,26 @@ body{
 .controls{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:12px;
   margin-bottom:28px;
-  flex-wrap:nowrap;
+  flex-wrap:wrap;
+  width:100%;
 }
 .controls input{
-  padding:15px 18px;
-  border-radius:20px;
+  padding:13px 16px;
+  border-radius:18px;
   border:1px solid var(--border);
   background:rgba(15,23,42,.8);
   color:#fff;
-  font-size:17px;
+  font-size:15px;
 }
 .controls .valor-input{width:110px}
 .controls .data-input{width:120px}
-.controls .desc-input{flex:1;max-width:360px}
+.controls .desc-input{
+  flex:1;
+  max-width:none;   /* libera a largura total */
+  min-width:320px;
+}
 .controls button{
   padding:12px 16px;
   border-radius:16px;
