@@ -393,6 +393,25 @@ input[type=number] {
   align-items:center;
 }
 
+.acoes-topo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.exportar-area{
+  font-size:22px;
+  cursor:pointer;
+  padding:10px;
+  border-radius:14px;
+  transition:.2s;
+}
+
+.exportar-area:hover{
+  background:rgba(56,189,248,.15);
+}
+
+
 .notificacao-area{
   position:relative;
   font-size:22px;
@@ -461,6 +480,7 @@ input[type=number] {
   justify-content:space-between;
   align-items:center;
 }
+
 
 </style>
 </head>
@@ -541,6 +561,12 @@ input[type=number] {
 </div>
 
 </main>
+
+<div id="painelNotificacoes">
+  <h3>Notificações</h3>
+  <ul id="listaNotificacoes"></ul>
+</div>
+
 
 <!-- MODAIS -->
 <div class="modal" id="modalEdit">
