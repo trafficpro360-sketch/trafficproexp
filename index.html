@@ -343,6 +343,25 @@ body{
   border-radius:18px;
   margin-bottom:12px;
 }
+
+  /* === REMOÇÃO DAS SETAS DA BARRA DE ROLAGEM (ÚNICA ALTERAÇÃO) === */
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15,23,42,.7);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
 </style>
 </head>
 
