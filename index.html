@@ -302,6 +302,13 @@ input[type=number]{-moz-appearance:textfield}
 
   <div class="chart"><canvas id="financeChart"></canvas></div>
 
+  <!-- TRÊS GRÁFICOS ADICIONAIS ABAIXO DO PRINCIPAL -->
+  <div class="records" style="grid-template-columns:repeat(3,1fr);margin-bottom:28px">
+    <div class="box"><h3>Receitas por Mês</h3><canvas id="chartReceita"></canvas></div>
+    <div class="box"><h3>Despesas por Mês</h3><canvas id="chartDespesa"></canvas></div>
+    <div class="box"><h3>Patrimônio por Mês</h3><canvas id="chartPatrimonio"></canvas></div>
+  </div>
+
   <section class="records">
     <div class="box"><h3>Receitas</h3><ul id="listaReceita"></ul></div>
     <div class="box"><h3>Despesas</h3><ul id="listaDespesa"></ul></div>
@@ -370,6 +377,26 @@ function setTipo(tipo,el){
 }
 
 const chart=new Chart(document.getElementById('financeChart'),{
+  type:'line',
+  data:{labels:meses,datasets:[
+    {label:'Receita',data:Array(12).fill(0),borderColor:'#22c55e'},
+    {label:'Despesa',data:Array(12).fill(0),borderColor:'#ef4444'},
+    {label:'Patrimônio',data:Array(12).fill(0),borderColor:'#facc15'},
+    {label:'Saldo',data:Array(12).fill(0),borderColor:'#38bdf8'}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false}
+})
+
+// Gráficos individuais abaixo do principal
+const chartReceita = new Chart(document.getElementById('chartReceita'),{
+  type:'bar', data:{labels:meses,datasets:[{label:'Receita',data:Array(12).fill(0),borderColor:'#22c55e'}]}, options:{responsive:true,maintainAspectRatio:false}
+});
+const chartDespesa = new Chart(document.getElementById('chartDespesa'),{
+  type:'bar', data:{labels:meses,datasets:[{label:'Despesa',data:Array(12).fill(0),borderColor:'#ef4444'}]}, options:{responsive:true,maintainAspectRatio:false}
+});
+const chartPatrimonio = new Chart(document.getElementById('chartPatrimonio'),{
+  type:'bar', data:{labels:meses,datasets:[{label:'Patrimônio',data:Array(12).fill(0),borderColor:'#facc15'}]}, options:{responsive:true,maintainAspectRatio:false}
+});(document.getElementById('financeChart'),{
   type:'line',
   data:{labels:meses,datasets:[
     {label:'Receita',data:Array(12).fill(0),borderColor:'#22c55e'},
@@ -462,7 +489,19 @@ function atualizarFinanceiro(){
   chart.data.datasets[1].data=d
   chart.data.datasets[2].data=p
   chart.data.datasets[3].data=r.map((v,i)=>v-d[i]+p[i])
-  chart.update()
+  chart.data.datasets[0].data=r;
+  chart.data.datasets[1].data=d;
+  chart.data.datasets[2].data=p;
+  chart.data.datasets[3].data=r.map((v,i)=>v-d[i]+p[i]);
+  chart.update();
+
+  // Atualiza gráficos individuais
+  chartReceita.data.datasets[0].data = r;
+  chartDespesa.data.datasets[0].data = d;
+  chartPatrimonio.data.datasets[0].data = p;
+  chartReceita.update();
+  chartDespesa.update();
+  chartPatrimonio.update();
 }
 
 function limparFinanceiroForm(){
