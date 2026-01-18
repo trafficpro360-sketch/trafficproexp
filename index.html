@@ -460,20 +460,34 @@ const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','
 let tipoSelecionado='receita';
 let financeiro=JSON.parse(localStorage.getItem('financeiro'))||[];
 let clientes=JSON.parse(localStorage.getItem('clientes'))||[];
-let editandoId=null;
-let deletandoId=null;
+let editando=null;
+let apagando=null;
+
 function mostrarAba(id,el){
   document.querySelectorAll('main>div').forEach(d=>d.style.display='none');
   document.getElementById(id).style.display='block';
   document.querySelectorAll('.menu li').forEach(li=>li.classList.remove('active'));
   el.parentElement.classList.add('active');
 }
+
 function setTipo(tipo,el){
   tipoSelecionado=tipo;
   document.querySelectorAll('.toggle button').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
 }
-function formatar(v){return Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+
+function formatar(v){
+  return Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+}
+
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className=type+' active';
+  setTimeout(()=>t.classList.remove('active'),3000);
+}
+
+// Gráfico principal
 const chart=new Chart(document.getElementById('financeChart'),{
   type:'line',
   data:{labels:meses,datasets:[
@@ -484,88 +498,20 @@ const chart=new Chart(document.getElementById('financeChart'),{
   ]},
   options:{responsive:true,maintainAspectRatio:false}
 });
+
 const chartReceita=new Chart(document.getElementById('chartReceita'),{
-  type:'bar',
-  data:{labels:[],datasets:[{
-    label:'Receitas por descrição',
-    data:[],
-    backgroundColor:'#22c55e',
-    borderRadius:8
-  }]},
-  options:{
-    responsive:true,
-    maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{ticks:{color:'#e5e7eb'}},
-      y:{ticks:{color:'#e5e7eb'}}
-    }
-  }
+  type:'bar',data:{labels:[],datasets:[{data:[],backgroundColor:'#22c55e',borderRadius:8}]},
+  options:{responsive:true,maintainAspectRatio:false}
 });
-
 const chartDespesa=new Chart(document.getElementById('chartDespesa'),{
-  type:'bar',
-  data:{labels:[],datasets:[{
-    label:'Despesas por descrição',
-    data:[],
-    backgroundColor:'#ef4444',
-    borderRadius:8
-  }]},
-  options:{
-    responsive:true,
-    maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{ticks:{color:'#e5e7eb'}},
-      y:{ticks:{color:'#e5e7eb'}}
-    }
-  }
+  type:'bar',data:{labels:[],datasets:[{data:[],backgroundColor:'#ef4444',borderRadius:8}]},
+  options:{responsive:true,maintainAspectRatio:false}
+});
+const chartPatrimonio=new Chart(document.getElementById('chartPatrimonio'),{
+  type:'bar',data:{labels:[],datasets:[{data:[],backgroundColor:'#facc15',borderRadius:8}]},
+  options:{responsive:true,maintainAspectRatio:false}
 });
 
-const chartPatrimonio=new Chart(document.getElementById('chartPatrimonio'),{
-  type:'bar',
-  data:{labels:[],datasets:[{
-    label:'Patrimônio por descrição',
-    data:[],
-    backgroundColor:'#facc15',
-    borderRadius:8
-  }]},
-  options:{
-    responsive:true,
-    maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{ticks:{color:'#e5e7eb'}},
-      y:{ticks:{color:'#e5e7eb'}}
-    }
-  }
-});
-let editando=null; let apagando=null;
-function abrirEditar(id){editando=id;const it=financeiro.find(f=>f.id===id);if(!it)return;editValor.value=it.valor;editMes.value=it.mes;editDesc.value=it.descricao;document.getElementById('modalEdit').classList.add('active');}
-function salvarEdicao(){
-  const v=Number(editValor.value);
-  const m=editMes.value;
-  const d=editDesc.value.trim();
-  if(!v||!m||!d){
-    showToast('Preencha todos os campos','error');
-    return;
-  }
-  const idx=financeiro.findIndex(f=>f.id===editando);
-  if(idx>-1){financeiro[idx]={...financeiro[idx],valor:v,mes:m,descricao:d};}
-  localStorage.setItem('financeiro',JSON.stringify(financeiro));
-  fecharModal('modalEdit');
-  showToast('Alterações salvas','success');
-  atualizarFinanceiro();
-}}
-function pedirExcluir(id){apagando=id;document.getElementById('modalDelete').classList.add('active');}
-function confirmarExclusao(){
-  financeiro=financeiro.filter(f=>f.id!==apagando);
-  localStorage.setItem('financeiro',JSON.stringify(financeiro));
-  fecharModal('modalDelete');
-  showToast('Item excluído','success');
-  atualizarFinanceiro();
-}}
-function fecharModal(id){document.getElementById(id).classList.remove('active');}
 function adicionarLancamento(){
   const valor=Number(document.getElementById('valor').value);
   const mes=document.getElementById('mes').value;
@@ -581,63 +527,106 @@ function adicionarLancamento(){
   showToast('Lançamento adicionado','success');
   atualizarFinanceiro();
 }
+
+function abrirEditar(id){
+  editando=id;
+  const it=financeiro.find(f=>f.id===id);
+  if(!it) return;
+  editValor.value=it.valor;
+  editMes.value=it.mes;
+  editDesc.value=it.descricao;
+  document.getElementById('modalEdit').classList.add('active');
 }
+
+function salvarEdicao(){
+  const v=Number(editValor.value);
+  const m=editMes.value;
+  const d=editDesc.value.trim();
+  if(!v||!m||!d){
+    showToast('Preencha todos os campos','error');
+    return;
+  }
+  const idx=financeiro.findIndex(f=>f.id===editando);
+  if(idx>-1){financeiro[idx]={...financeiro[idx],valor:v,mes:m,descricao:d};}
+  localStorage.setItem('financeiro',JSON.stringify(financeiro));
+  fecharModal('modalEdit');
+  showToast('Alterações salvas','success');
+  atualizarFinanceiro();
+}
+
+function pedirExcluir(id){
+  apagando=id;
+  document.getElementById('modalDelete').classList.add('active');
+}
+
+function confirmarExclusao(){
+  financeiro=financeiro.filter(f=>f.id!==apagando);
+  localStorage.setItem('financeiro',JSON.stringify(financeiro));
+  fecharModal('modalDelete');
+  showToast('Item excluído','success');
+  atualizarFinanceiro();
+}
+
+function fecharModal(id){document.getElementById(id).classList.remove('active');}
+
 function atualizarFinanceiro(){
   let r=Array(12).fill(0), d=Array(12).fill(0), p=Array(12).fill(0);
   let mapR={}, mapD={}, mapP={};
-  listaReceita.innerHTML=''; listaDespesa.innerHTML=''; listaPatrimonio.innerHTML='';
+
+  listaReceita.innerHTML='';
+  listaDespesa.innerHTML='';
+  listaPatrimonio.innerHTML='';
+
   financeiro.forEach(i=>{
     const partes=i.mes.split('/');
     const idx=new Date(partes[2],partes[1]-1).getMonth();
+
     if(i.tipo==='receita') r[idx]+=i.valor;
     if(i.tipo==='despesa') d[idx]+=i.valor;
     if(i.tipo==='patrimonio') p[idx]+=i.valor;
+
     if(i.tipo==='receita') mapR[i.descricao]=(mapR[i.descricao]||0)+i.valor;
     if(i.tipo==='despesa') mapD[i.descricao]=(mapD[i.descricao]||0)+i.valor;
     if(i.tipo==='patrimonio') mapP[i.descricao]=(mapP[i.descricao]||0)+i.valor;
-    const bloco=`<div class='info'><span>${formatar(i.valor)} — ${i.mes}</span><span class='desc'>${i.descricao}</span></div>`;
-    const li=`<li>
-  <div class='info'>
-    ${formatar(i.valor)} — ${i.mes}
-    <div class='desc'>${i.descricao}</div>
-  </div>
-  <div class='btn-group'>
-    <button class='btn-edit' onclick='abrirEditar(${i.id})'>Editar</button>
-    <button class='btn-del' onclick='pedirExcluir(${i.id})'>Excluir</button>
-  </div>
-</li>`;
-    if(i.tipo==='receita') listaReceita.innerHTML+=li;
-    if(i.tipo==='despesa') listaDespesa.innerHTML+=li;
-    if(i.tipo==='patrimonio') listaPatrimonio.innerHTML+=li;
+
+    const li=document.createElement('li');
+    li.innerHTML=`<div class='info'>${formatar(i.valor)} — ${i.mes}<div class='desc'>${i.descricao}</div></div>
+      <div class='btn-group'><button class='btn-edit' onclick='abrirEditar(${i.id})'>Editar</button>
+      <button class='btn-del' onclick='pedirExcluir(${i.id})'>Excluir</button></div>`;
+
+    if(i.tipo==='receita') listaReceita.appendChild(li);
+    if(i.tipo==='despesa') listaDespesa.appendChild(li);
+    if(i.tipo==='patrimonio') listaPatrimonio.appendChild(li);
   });
+
   const totalR=r.reduce((a,b)=>a+b,0);
   const totalD=d.reduce((a,b)=>a+b,0);
   const totalP=p.reduce((a,b)=>a+b,0);
+
   cardReceita.textContent=formatar(totalR);
   cardDespesa.textContent=formatar(totalD);
   cardPatrimonio.textContent=formatar(totalP);
   cardSaldo.textContent=formatar(totalR-totalD+totalP);
+
   chart.data.datasets[0].data=r;
   chart.data.datasets[1].data=d;
   chart.data.datasets[2].data=p;
   chart.data.datasets[3].data=r.map((v,i)=>v-d[i]+p[i]);
   chart.update();
+
   chartReceita.data.labels=Object.keys(mapR);
   chartReceita.data.datasets[0].data=Object.values(mapR);
   chartReceita.update();
+
   chartDespesa.data.labels=Object.keys(mapD);
   chartDespesa.data.datasets[0].data=Object.values(mapD);
   chartDespesa.update();
+
   chartPatrimonio.data.labels=Object.keys(mapP);
   chartPatrimonio.data.datasets[0].data=Object.values(mapP);
   chartPatrimonio.update();
 }
-function abrirModalEditar(id){const item=financeiro.find(f=>f.id===id); if(!item) return; editandoId=id; editValor.value=item.valor; editMes.value=item.mes; editDesc.value=item.descricao; abrirModal('modalEdit');}
-function salvarEdicao(){const v=Number(editValor.value); const m=editMes.value; const d=editDesc.value.trim(); if(!v||!m||!d){alert('Preencha todos os campos');return;} const idx=financeiro.findIndex(f=>f.id===editandoId); if(idx>-1){financeiro[idx]={...financeiro[idx],valor:v,mes:m,descricao:d};} localStorage.setItem('financeiro',JSON.stringify(financeiro)); atualizarFinanceiro(); fecharModal('modalEdit');}
-function pedirExcluirLancamento(id){deletandoId=id; abrirModal('modalDelete');}
-function confirmarExclusao(){financeiro=financeiro.filter(f=>f.id!==deletandoId); localStorage.setItem('financeiro',JSON.stringify(financeiro)); atualizarFinanceiro(); fecharModal('modalDelete');}
-function abrirModal(id){document.getElementById(id).classList.add('active');}
-function fecharModal(id){document.getElementById(id).classList.remove('active');}
+
 function adicionarCliente(){
   const nome=clienteNome.value.trim();
   const tel=clienteTelefone.value.trim();
@@ -651,19 +640,20 @@ function adicionarCliente(){
   localStorage.setItem('clientes',JSON.stringify(clientes));
   showToast('Cliente adicionado','success');
   atualizarClientes();
-}}
-function atualizarClientes(){listaClientes.innerHTML=''; clientes.forEach(c=>{listaClientes.innerHTML+=`<li><span><strong>${c.nome}</strong> — ${formatar(c.val||c.valor)} ${c.data||''}</span></li>`;});}
-mostrarAba('dashboard',document.querySelector('.menu a'));
-atualizarFinanceiro(); atualizarClientes();
-</script>
-<div id="toast"></div>
-<script>
-function showToast(msg,type='success'){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.className=type+' active';
-  setTimeout(()=>{t.classList.remove('active');},3000);
 }
+
+function atualizarClientes(){
+  listaClientes.innerHTML='';
+  clientes.forEach(c=>{
+    const li=document.createElement('li');
+    li.textContent=`${c.nome} — ${formatar(c.val)}`;
+    listaClientes.appendChild(li);
+  });
+}
+
+mostrarAba('dashboard',document.querySelector('.menu a'));
+atualizarFinanceiro();
+atualizarClientes();
 </script>
 </body>
 </html>
