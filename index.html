@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Finance Pro — Painel Financeiro</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance Pro — Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -19,10 +19,20 @@
   --muted:#94a3b8;
 }
 
+/* ===== SCROLLBAR MODERNA ===== */
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:#0b1220;border-radius:20px}
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#2563eb,#38bdf8);
+  border-radius:20px;
+  border:2px solid #020617;
+}
+*{scrollbar-width:thin;scrollbar-color:#38bdf8 #0b1220}
+
 *{box-sizing:border-box;margin:0;padding:0}
 
 body{
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, Helvetica, sans-serif;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   background:radial-gradient(1200px 600px at 10% -10%, #0f172a, #020617);
   color:var(--text);
   min-height:100vh;
@@ -36,14 +46,8 @@ body{
   border-right:1px solid var(--border);
   padding:26px 24px;
 }
-.logo{
-  font-size:24px;
-  font-weight:700;
-  color:var(--blue);
-  margin-bottom:40px;
-}
+.logo{font-size:24px;font-weight:700;color:var(--blue);margin-bottom:40px}
 .menu ul{list-style:none}
-.menu li{margin-bottom:10px}
 .menu a{
   display:block;
   padding:14px 18px;
@@ -52,13 +56,9 @@ body{
   text-decoration:none;
   cursor:pointer;
 }
-.menu li.active a,
-.menu a:hover{
-  background:rgba(56,189,248,.18);
-  color:var(--blue);
-}
+.menu li.active a{background:rgba(56,189,248,.18);color:var(--blue)}
 
-/* LAYOUT */
+/* CONTEÚDO CENTRALIZADO */
 .content{
   flex:1;
   padding:32px 40px;
@@ -137,7 +137,6 @@ body{
   background:rgba(15,23,42,.7);
   margin-bottom:26px;
 }
-
 .charts-row{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -183,16 +182,13 @@ body{
 
 /* MODAIS */
 .modal{
-  position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
+  position:fixed;top:0;left:0;width:100%;height:100%;
   background:rgba(0,0,0,.6);
   display:none;
   align-items:center;
   justify-content:center;
 }
 .modal.active{display:flex}
-
 .modal-content{
   background:rgba(15,23,42,.97);
   border:1px solid var(--border);
@@ -236,12 +232,12 @@ body{
 
 <div id="dashboard">
 
-<div class="cards">
+<section class="cards">
   <div class="card blue"><span>Receita</span><h2 id="cardReceita">R$ 0</h2></div>
   <div class="card red"><span>Despesa</span><h2 id="cardDespesa">R$ 0</h2></div>
   <div class="card yellow"><span>Patrimônio</span><h2 id="cardPatrimonio">R$ 0</h2></div>
   <div class="card green"><span>Saldo</span><h2 id="cardSaldo">R$ 0</h2></div>
-</div>
+</section>
 
 <section class="controls">
   <input id="valor" type="number" placeholder="Valor (R$)">
@@ -257,6 +253,12 @@ body{
 </section>
 
 <div class="chart"><canvas id="financeChart"></canvas></div>
+
+<div class="charts-row">
+  <canvas id="chartReceita"></canvas>
+  <canvas id="chartDespesa"></canvas>
+  <canvas id="chartPatrimonio"></canvas>
+</div>
 
 <section class="records">
   <div><h3>Receitas</h3><ul id="listaReceita"></ul></div>
@@ -278,23 +280,22 @@ body{
 
 </main>
 
-<!-- MODAL EDITAR -->
+<!-- MODAIS -->
 <div class="modal" id="modalEdit">
   <div class="modal-content">
     <h3>Editar lançamento</h3>
-    <input id="editValor" type="number" placeholder="Valor">
-    <input id="editMes" placeholder="dd/mm/aaaa">
-    <input id="editDesc" placeholder="Descrição">
+    <input id="editValor" type="number">
+    <input id="editMes">
+    <input id="editDesc">
     <button onclick="salvarEdicao()">Salvar</button>
     <button onclick="fecharModal('modalEdit')">Cancelar</button>
   </div>
 </div>
 
-<!-- MODAL EXCLUIR -->
 <div class="modal" id="modalDelete">
   <div class="modal-content">
     <h3>Confirmar exclusão</h3>
-    <p>Tem certeza que deseja excluir?</p>
+    <p>Tem certeza?</p>
     <button onclick="confirmarExclusao()">Sim</button>
     <button onclick="fecharModal('modalDelete')">Cancelar</button>
   </div>
@@ -307,8 +308,7 @@ const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','
 let tipoSelecionado='receita';
 let financeiro=JSON.parse(localStorage.getItem('financeiro'))||[];
 let clientes=JSON.parse(localStorage.getItem('clientes'))||[];
-let editando=null;
-let apagando=null;
+let editando=null, apagando=null;
 
 function mostrarAba(id,el){
   document.querySelectorAll('main>div').forEach(d=>d.style.display='none');
@@ -346,17 +346,23 @@ const chart=new Chart(document.getElementById('financeChart'),{
   options:{responsive:true,maintainAspectRatio:false}
 });
 
+const chartReceita=new Chart(document.getElementById('chartReceita'),{
+  type:'bar',data:{labels:[],datasets:[{data:[],backgroundColor:'#22c55e'}]}
+});
+const chartDespesa=new Chart(document.getElementById('chartDespesa'),{
+  type:'bar',data:{labels:[],datasets:[{data:[],backgroundColor:'#ef4444'}]}
+});
+const chartPatrimonio=new Chart(document.getElementById('chartPatrimonio'),{
+  type:'bar',data:{labels:[],datasets:[{data:[],backgroundColor:'#facc15'}]}
+});
+
 function adicionarLancamento(){
-  const valor=Number(valor.value);
-  const mes=document.getElementById('mes').value;
-  const descricao=document.getElementById('descricao').value.trim();
+  const v=Number(valor.value);
+  const m=mes.value;
+  const d=descricao.value.trim();
+  if(!v||!m||!d){showToast('Preencha todos os campos','error');return;}
 
-  if(!valor||!mes||!descricao){
-    showToast('Preencha todos os campos','error');
-    return;
-  }
-
-  financeiro.push({id:Date.now(),valor,tipo:tipoSelecionado,mes,descricao});
+  financeiro.push({id:Date.now(),valor:v,tipo:tipoSelecionado,mes:m,descricao:d});
   localStorage.setItem('financeiro',JSON.stringify(financeiro));
   showToast('Lançamento adicionado','success');
   atualizarFinanceiro();
@@ -367,9 +373,8 @@ function atualizarFinanceiro(){
   listaDespesa.innerHTML='';
   listaPatrimonio.innerHTML='';
 
-  let r=Array(12).fill(0);
-  let d=Array(12).fill(0);
-  let p=Array(12).fill(0);
+  let r=Array(12).fill(0), d=Array(12).fill(0), p=Array(12).fill(0);
+  let mapR={}, mapD={}, mapP={};
 
   financeiro.forEach(i=>{
     const partes=i.mes.split('/');
@@ -379,13 +384,15 @@ function atualizarFinanceiro(){
     if(i.tipo==='despesa') d[idx]+=i.valor;
     if(i.tipo==='patrimonio') p[idx]+=i.valor;
 
+    if(i.tipo==='receita') mapR[i.descricao]=(mapR[i.descricao]||0)+i.valor;
+    if(i.tipo==='despesa') mapD[i.descricao]=(mapD[i.descricao]||0)+i.valor;
+    if(i.tipo==='patrimonio') mapP[i.descricao]=(mapP[i.descricao]||0)+i.valor;
+
     const li=document.createElement('li');
-    li.innerHTML=`
-      ${formatar(i.valor)} — ${i.mes}
+    li.innerHTML=`${formatar(i.valor)} — ${i.mes}
       <div>${i.descricao}</div>
       <button class="btn-edit" onclick="abrirEditar(${i.id})">Editar</button>
-      <button class="btn-del" onclick="pedirExcluir(${i.id})">Excluir</button>
-    `;
+      <button class="btn-del" onclick="pedirExcluir(${i.id})">Excluir</button>`;
 
     if(i.tipo==='receita') listaReceita.appendChild(li);
     if(i.tipo==='despesa') listaDespesa.appendChild(li);
@@ -406,6 +413,18 @@ function atualizarFinanceiro(){
   chart.data.datasets[2].data=p;
   chart.data.datasets[3].data=r.map((v,i)=>v-d[i]+p[i]);
   chart.update();
+
+  chartReceita.data.labels=Object.keys(mapR);
+  chartReceita.data.datasets[0].data=Object.values(mapR);
+  chartReceita.update();
+
+  chartDespesa.data.labels=Object.keys(mapD);
+  chartDespesa.data.datasets[0].data=Object.values(mapD);
+  chartDespesa.update();
+
+  chartPatrimonio.data.labels=Object.keys(mapP);
+  chartPatrimonio.data.datasets[0].data=Object.values(mapP);
+  chartPatrimonio.update();
 }
 
 function abrirEditar(id){
@@ -448,11 +467,7 @@ function fecharModal(id){
 function adicionarCliente(){
   const nome=clienteNome.value;
   const val=Number(clienteValor.value);
-
-  if(!nome||!val){
-    showToast('Nome e valor são obrigatórios','error');
-    return;
-  }
+  if(!nome||!val){showToast('Nome e valor obrigatórios','error');return;}
 
   clientes.push({id:Date.now(),nome,val});
   localStorage.setItem('clientes',JSON.stringify(clientes));
