@@ -415,7 +415,17 @@ const chartReceita=new Chart(document.getElementById('chartReceita'),{
   options:{
     responsive:true,
     plugins:{
-      legend:{position:'right',labels:{color:'#e5e7eb',padding:12}},
+      legend:{
+        position:'right',
+        labels:{
+          color:'#e5e7eb',
+          font:{size:13,weight:'600',family:'system-ui'},
+          padding:14,
+          boxWidth:14,
+          boxHeight:14,
+          usePointStyle:true
+        }
+      },
       tooltip:{
         callbacks:{label:(ctx)=>`${ctx.label}: ${Number(ctx.raw).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`}
       }
@@ -438,7 +448,17 @@ const chartDespesa=new Chart(document.getElementById('chartDespesa'),{
   options:{
     responsive:true,
     plugins:{
-      legend:{position:'right',labels:{color:'#e5e7eb',padding:12}},
+      legend:{
+        position:'right',
+        labels:{
+          color:'#e5e7eb',
+          font:{size:13,weight:'600',family:'system-ui'},
+          padding:14,
+          boxWidth:14,
+          boxHeight:14,
+          usePointStyle:true
+        }
+      },
       tooltip:{
         callbacks:{label:(ctx)=>`${ctx.label}: ${Number(ctx.raw).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`}
       }
@@ -461,7 +481,17 @@ const chartPatrimonio=new Chart(document.getElementById('chartPatrimonio'),{
   options:{
     responsive:true,
     plugins:{
-      legend:{position:'right',labels:{color:'#e5e7eb',padding:12}},
+      legend:{
+        position:'right',
+        labels:{
+          color:'#e5e7eb',
+          font:{size:13,weight:'600',family:'system-ui'},
+          padding:14,
+          boxWidth:14,
+          boxHeight:14,
+          usePointStyle:true
+        }
+      },
       tooltip:{
         callbacks:{label:(ctx)=>`${ctx.label}: ${Number(ctx.raw).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`}
       }
