@@ -291,11 +291,14 @@ input[type=number]{-moz-appearance:textfield}
   </section>
 
   <section class="controls">
+  <!-- Linha 1: dados do lançamento -->
   <div class="row">
     <input class="valor-input" type="number" id="valor" placeholder="Valor (R$)">
     <input class="data-input" type="text" id="mes" placeholder="dd/mm/aaaa">
     <input class="desc-input" type="text" id="descricao" placeholder="Descrição do lançamento">
   </div>
+
+  <!-- Linha 2: botão ANTES das opções de tipo (exatamente como você pediu) -->
   <div class="row">
     <button onclick="adicionarLancamento()">Adicionar lançamento</button>
     <div class="toggle">
