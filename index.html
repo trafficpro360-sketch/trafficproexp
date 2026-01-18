@@ -208,10 +208,25 @@ body{
   align-items:center;
   gap:12px;
 }
-.records .desc{
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.6;
+
+/* BOTÕES EDITAR / EXCLUIR */
+.btn-group{display:flex;gap:8px}
+.btn-edit,.btn-del{
+  border:none;
+  padding:8px 12px;
+  border-radius:14px;
+  font-size:12px;
+  cursor:pointer;
+}
+.btn-edit{
+  background:rgba(56,189,248,.15);
+  color:var(--blue);
+  border:1px solid var(--blue);
+}
+.btn-del{
+  background:rgba(239,68,68,.15);
+  color:var(--red);
+  border:1px solid var(--red);
 }
 
 /* MODAIS */
@@ -229,6 +244,23 @@ body{
   padding:26px 28px;
   width:380px;
 }
+
+/* TOAST INTERNO (sem alert) */
+#toast{
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  background:rgba(15,23,42,.95);
+  border:1px solid var(--border);
+  color:white;
+  padding:14px 18px;
+  border-radius:18px;
+  transform:translateY(120%);
+  transition:.25s;
+}
+#toast.active{transform:translateY(0)}
+#toast.success{border-left:4px solid var(--green)}
+#toast.error{border-left:4px solid var(--red)}
 
 /* CLIENTES */
 #clientes{display:none}
@@ -315,6 +347,30 @@ body{
 
 </main>
 
+<!-- MODAL EDITAR -->
+<div class="modal" id="modalEdit">
+  <div class="modal-content">
+    <h3>Editar lançamento</h3>
+    <input id="editValor" type="number" placeholder="Valor">
+    <input id="editMes" placeholder="dd/mm/aaaa">
+    <input id="editDesc" placeholder="Descrição">
+    <button onclick="salvarEdicao()">Salvar</button>
+    <button onclick="fecharModal('modalEdit')">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL EXCLUIR -->
+<div class="modal" id="modalDelete">
+  <div class="modal-content">
+    <h3>Confirmar exclusão</h3>
+    <p>Tem certeza que deseja excluir este item?</p>
+    <button onclick="confirmarExclusao()">Sim, excluir</button>
+    <button onclick="fecharModal('modalDelete')">Cancelar</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
 <script>
 const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 let tipoSelecionado='receita';
@@ -340,6 +396,13 @@ function formatar(v){
   return Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 }
 
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className=type+' active';
+  setTimeout(()=>t.classList.remove('active'),3000);
+}
+
 /* Gráfico principal */
 const chart=new Chart(document.getElementById('financeChart'),{
   type:'line',
@@ -355,31 +418,19 @@ const chart=new Chart(document.getElementById('financeChart'),{
 /* Gráficos de colunas por descrição */
 const chartReceita=new Chart(document.getElementById('chartReceita'),{
   type:'bar',
-  data:{labels:[],datasets:[{
-    data:[],
-    backgroundColor:'#22c55e',
-    borderRadius:8
-  }]},
+  data:{labels:[],datasets:[{data:[],backgroundColor:'#22c55e',borderRadius:8}]},
   options:{responsive:true,maintainAspectRatio:false}
 });
 
 const chartDespesa=new Chart(document.getElementById('chartDespesa'),{
   type:'bar',
-  data:{labels:[],datasets:[{
-    data:[],
-    backgroundColor:'#ef4444',
-    borderRadius:8
-  }]},
+  data:{labels:[],datasets:[{data:[],backgroundColor:'#ef4444',borderRadius:8}]},
   options:{responsive:true,maintainAspectRatio:false}
 });
 
 const chartPatrimonio=new Chart(document.getElementById('chartPatrimonio'),{
   type:'bar',
-  data:{labels:[],datasets:[{
-    data:[],
-    backgroundColor:'#facc15',
-    borderRadius:8
-  }]},
+  data:{labels:[],datasets:[{data:[],backgroundColor:'#facc15',borderRadius:8}]},
   options:{responsive:true,maintainAspectRatio:false}
 });
 
@@ -389,12 +440,13 @@ function adicionarLancamento(){
   const descricao=document.getElementById('descricao').value.trim();
 
   if(!valor||!mes||!descricao){
-    alert('Preencha valor, data e descrição');
+    showToast('Preencha valor, data e descrição','error');
     return;
   }
 
   financeiro.push({id:Date.now(),valor,tipo:tipoSelecionado,mes,descricao});
   localStorage.setItem('financeiro',JSON.stringify(financeiro));
+  showToast('Lançamento adicionado','success');
   atualizarFinanceiro();
 }
 
@@ -418,16 +470,21 @@ function atualizarFinanceiro(){
     if(i.tipo==='despesa') mapD[i.descricao]=(mapD[i.descricao]||0)+i.valor;
     if(i.tipo==='patrimonio') mapP[i.descricao]=(mapP[i.descricao]||0)+i.valor;
 
-    const li=`<li>
+    const li=document.createElement('li');
+    li.innerHTML=`
       <div>
         ${formatar(i.valor)} — ${i.mes}
         <div class="desc">${i.descricao}</div>
       </div>
-    </li>`;
+      <div class="btn-group">
+        <button class="btn-edit" onclick="abrirEditar(${i.id})">Editar</button>
+        <button class="btn-del" onclick="pedirExcluir(${i.id})">Excluir</button>
+      </div>
+    `;
 
-    if(i.tipo==='receita') listaReceita.innerHTML+=li;
-    if(i.tipo==='despesa') listaDespesa.innerHTML+=li;
-    if(i.tipo==='patrimonio') listaPatrimonio.innerHTML+=li;
+    if(i.tipo==='receita') listaReceita.appendChild(li);
+    if(i.tipo==='despesa') listaDespesa.appendChild(li);
+    if(i.tipo==='patrimonio') listaPatrimonio.appendChild(li);
   });
 
   const totalR=r.reduce((a,b)=>a+b,0);
@@ -458,8 +515,72 @@ function atualizarFinanceiro(){
   chartPatrimonio.update();
 }
 
+/* EDIÇÃO */
+function abrirEditar(id){
+  editandoId=id;
+  const it=financeiro.find(f=>f.id===id);
+  editValor.value=it.valor;
+  editMes.value=it.mes;
+  editDesc.value=it.descricao;
+  document.getElementById('modalEdit').classList.add('active');
+}
+
+function salvarEdicao(){
+  const idx=financeiro.findIndex(f=>f.id===editandoId);
+  financeiro[idx].valor=Number(editValor.value);
+  financeiro[idx].mes=editMes.value;
+  financeiro[idx].descricao=editDesc.value;
+  localStorage.setItem('financeiro',JSON.stringify(financeiro));
+  fecharModal('modalEdit');
+  showToast('Alterações salvas','success');
+  atualizarFinanceiro();
+}
+
+/* EXCLUSÃO */
+function pedirExcluir(id){
+  deletandoId=id;
+  document.getElementById('modalDelete').classList.add('active');
+}
+
+function confirmarExclusao(){
+  financeiro=financeiro.filter(f=>f.id!==deletandoId);
+  localStorage.setItem('financeiro',JSON.stringify(financeiro));
+  fecharModal('modalDelete');
+  showToast('Item excluído','success');
+  atualizarFinanceiro();
+}
+
+function fecharModal(id){
+  document.getElementById(id).classList.remove('active');
+}
+
+/* CLIENTES */
+function adicionarCliente(){
+  const nome=clienteNome.value;
+  const val=Number(clienteValor.value);
+
+  if(!nome||!val){
+    showToast('Nome e valor são obrigatórios','error');
+    return;
+  }
+
+  clientes.push({id:Date.now(),nome,val});
+  localStorage.setItem('clientes',JSON.stringify(clientes));
+  atualizarClientes();
+}
+
+function atualizarClientes(){
+  listaClientes.innerHTML='';
+  clientes.forEach(c=>{
+    const li=document.createElement('li');
+    li.textContent=`${c.nome} — ${formatar(c.val)}`;
+    listaClientes.appendChild(li);
+  });
+}
+
 mostrarAba('dashboard',document.querySelector('.menu a'));
 atualizarFinanceiro();
+atualizarClientes();
 </script>
 
 </body>
