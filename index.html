@@ -609,23 +609,28 @@ input[type=number] {
 
 
 <!-- MODAIS -->
-<div class="modal" id="modalEdit">
+<div class="modal" id="modalExport">
   <div class="modal-content">
-    <h3>Editar lançamento</h3>
-    <input id="editValor" type="number" placeholder="Valor">
-    <input id="editMes" placeholder="dd/mm/aaaa">
-    <input id="editDesc" placeholder="Descrição">
-    <button onclick="salvarEdicao()">Salvar</button>
-    <button onclick="fecharModal('modalEdit')">Cancelar</button>
-  </div>
-</div>
+    <h3>Exportar Relatório</h3>
+    <p>Escolha o que deseja incluir:</p>
 
-<div class="modal" id="modalDelete">
-  <div class="modal-content">
-    <h3>Confirmar exclusão</h3>
-    <p>Tem certeza que deseja excluir este item?</p>
-    <button onclick="confirmarExclusao()">Sim, excluir</button>
-    <button onclick="fecharModal('modalDelete')">Cancelar</button>
+    <label>
+      <input type="checkbox" id="expReceitas" checked>
+      Receitas
+    </label>
+
+    <label>
+      <input type="checkbox" id="expDespesas" checked>
+      Despesas
+    </label>
+
+    <label>
+      <input type="checkbox" id="expPatrimonio" checked>
+      Patrimônio
+    </label>
+
+    <button onclick="gerarRelatorioVisual()">Gerar Relatório</button>
+    <button onclick="fecharModal('modalExport')">Cancelar</button>
   </div>
 </div>
 
