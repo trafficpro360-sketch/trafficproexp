@@ -224,6 +224,37 @@ input[type=number]{-moz-appearance:textfield}
   justify-content:space-between;
   align-items:center;
 }
+
+/* MODAL DE EDIÇÃO */
+.modal{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  backdrop-filter:blur(6px);
+}
+.modal.active{display:flex}
+.modal-content{
+  background:rgba(15,23,42,.95);
+  border:1px solid var(--border);
+  border-radius:26px;
+  padding:24px;
+  width:360px;
+  box-shadow:0 10px 40px rgba(0,0,0,.6);
+}
+.modal-content h3{margin-bottom:14px}
+.modal-content input{
+  width:100%;padding:12px;border-radius:16px;
+  border:1px solid var(--border);
+  background:rgba(2,6,23,.8);color:#fff;margin-bottom:12px;
+}
+.modal-actions{display:flex;gap:10px}
+.modal-actions button{flex:1;padding:12px;border-radius:16px;border:none;cursor:pointer}
+.btn-save{background:linear-gradient(135deg,#2563eb,#38bdf8);color:#fff}
+.btn-cancel{background:rgba(239,68,68,.2);color:var(--red)}
 </style>
 </head>
 <body>
@@ -281,11 +312,25 @@ input[type=number]{-moz-appearance:textfield}
 </div>
 </main>
 
+<!-- MODAL DE EDIÇÃO -->
+<div class="modal" id="modalEdit">
+  <div class="modal-content">
+    <h3>Editar lançamento</h3>
+    <input type="number" id="editValor" placeholder="Novo valor (R$)">
+    <input type="text" id="editMes" placeholder="dd/mm/aaaa">
+    <div class="modal-actions">
+      <button class="btn-save" onclick="salvarEdicao()">Salvar</button>
+      <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
 let tipoSelecionado='receita'
 let financeiro=JSON.parse(localStorage.getItem('financeiro'))||[]
 let clientes=JSON.parse(localStorage.getItem('clientes'))||[]
+let editandoId=null
 
 function mostrarAba(id,el){
   document.querySelectorAll('main>div').forEach(d=>d.style.display='none')
@@ -321,14 +366,31 @@ function adicionarLancamento(){
   salvarFinanceiro(); atualizarFinanceiro(); limparFinanceiroForm();
 }
 
-function editarLancamento(id){
+function abrirModalEditar(id){
   const item=financeiro.find(f=>f.id===id)
   if(!item) return;
-  document.getElementById('valor').value=item.valor;
-  document.getElementById('mes').value=item.mes;
-  setTipo(item.tipo,document.querySelector(`.toggle .${item.tipo}`));
-  financeiro=financeiro.filter(f=>f.id!==id);
-  salvarFinanceiro(); atualizarFinanceiro();
+  editandoId=id;
+  document.getElementById('editValor').value=item.valor;
+  document.getElementById('editMes').value=item.mes;
+  document.getElementById('modalEdit').classList.add('active');
+}
+
+function fecharModal(){
+  document.getElementById('modalEdit').classList.remove('active');
+  editandoId=null;
+}
+
+function salvarEdicao(){
+  const novoValor=Number(document.getElementById('editValor').value)
+  const novoMes=document.getElementById('editMes').value;
+  if(!novoValor||!novoMes){alert('Preencha todos os campos');return}
+
+  const idx=financeiro.findIndex(f=>f.id===editandoId);
+  if(idx>-1){
+    financeiro[idx].valor=novoValor;
+    financeiro[idx].mes=novoMes;
+  }
+  salvarFinanceiro(); atualizarFinanceiro(); fecharModal();
 }
 
 function excluirLancamento(id){
@@ -349,7 +411,7 @@ function atualizarFinanceiro(){
 
     const li=`<li><span>${formatar(i.valor)} — ${i.mes}</span>
       <div class='btn-group'>
-        <button class='btn-edit' onclick='editarLancamento(${i.id})'>Editar</button>
+        <button class='btn-edit' onclick='abrirModalEditar(${i.id})'>Editar</button>
         <button class='btn-del' onclick='excluirLancamento(${i.id})'>Excluir</button>
       </div></li>`
 
@@ -387,17 +449,6 @@ function adicionarCliente(){
   salvarClientes(); atualizarClientes(); limparClienteForm();
 }
 
-function editarCliente(id){
-  const c=clientes.find(x=>x.id===id)
-  if(!c) return;
-  clienteNome.value=c.nome;
-  clienteTelefone.value=c.telefone;
-  clienteValor.value=c.valor;
-  clienteData.value=c.data;
-  clientes=clientes.filter(x=>x.id!==id);
-  salvarClientes(); atualizarClientes();
-}
-
 function excluirCliente(id){
   if(!confirm('Excluir este cliente?')) return;
   clientes=clientes.filter(x=>x.id!==id);
@@ -411,7 +462,6 @@ function atualizarClientes(){
   clientes.forEach(c=>{
     listaClientes.innerHTML+=`<li><span><strong>${c.nome}</strong> — ${formatar(c.valor)} ${c.data||''}</span>
       <div class='btn-group'>
-        <button class='btn-edit' onclick='editarCliente(${c.id})'>Editar</button>
         <button class='btn-del' onclick='excluirCliente(${c.id})'>Excluir</button>
       </div></li>`
   })
