@@ -269,39 +269,54 @@ input[type=number] {
 
 .modal.active{display:flex}
 
-/* ====== MODAL EXPORT MODERNO ====== */
+/* ====== MODAL EXPORT (versão moderna e alinhada) ====== */
 #modalExport .modal-content{
   background:linear-gradient(180deg,#0f172a,#020617);
   border:1px solid var(--border);
-  border-radius:26px;
-  padding:28px 30px;
-  width:380px;
+  border-radius:28px;
+  padding:28px 32px;
+  width:360px;
   box-shadow:0 12px 50px rgba(0,0,0,.6);
-  animation:slideUp .2s ease forwards;
+  text-align:left;
 }
 
-/* TÍTULO DO MODAL */
+/* Título mais profissional */
 #modalExport h3{
   font-size:20px;
-  margin-bottom:8px;
   color:var(--blue);
+  margin-bottom:6px;
 }
 
-/* TEXTO EXPLICATIVO */
+/* Texto explicativo */
 #modalExport p{
   color:var(--muted);
   margin-bottom:14px;
 }
 
-/* CHECKBOX MAIS BONITO */
+/* Checkboxes alinhados */
 #modalExport label{
   display:flex;
   align-items:center;
   gap:8px;
-  margin-bottom:8px;
-  cursor:pointer;
+  margin-bottom:10px;
   font-size:14px;
+  cursor:pointer;
 }
+
+#modalExport button{
+  margin-top:8px;
+}
+
+#modalExport button:first-of-type{
+  background:linear-gradient(135deg,#2563eb,#38bdf8);
+}
+
+#modalExport button:last-of-type{
+  background:rgba(239,68,68,.12);
+  color:var(--red);
+  border:1px solid rgba(239,68,68,.25);
+}
+
 
 /* BOTÃO PRINCIPAL */
 #modalExport button:first-of-type{
@@ -315,6 +330,25 @@ input[type=number] {
   background:rgba(239,68,68,.12);
   color:var(--red);
   border:1px solid rgba(239,68,68,.25);
+}
+
+/* ====== DEIXA O MODAL DE EXPORTAR ALINHADO E BONITO ====== */
+#modalExport .modal-content{
+  width: 360px;
+  text-align: left;
+}
+
+/* Organiza melhor os checkboxes */
+#modalExport label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px;
+}
+
+/* Dá espaço interno agradável */
+#modalExport p{
+  margin-bottom: 14px;
 }
 
 
@@ -540,7 +574,8 @@ input[type=number] {
 <main class="content">
 
 <div id="dashboard">
- <div class="top-bar">
+
+<div class="top-bar">
   <div class="header">Dashboard Financeiro</div>
 
   <div class="acoes-topo">
@@ -551,7 +586,8 @@ input[type=number] {
       <span id="notifBadge">0</span>
     </div>
   </div>
-</div>   <!-- 🔹 FECHAMENTO DO TOP-BAR CORRETO -->
+</div>
+
 
 <section class="cards">
     <div class="card blue"><span>Receita Total</span><h2 id="cardReceita">R$ 0</h2></div>
@@ -1002,30 +1038,5 @@ atualizarPainelNotificacoes();
 
 </script>
   
-<div class="modal" id="modalExport">
-  <div class="modal-content">
-    <h3>Exportar Relatório</h3>
-    <p>Selecione o que deseja incluir no relatório:</p>
-
-    <label>
-      <input type="checkbox" id="expReceitas" checked>
-      Incluir Receitas
-    </label><br>
-
-    <label>
-      <input type="checkbox" id="expDespesas" checked>
-      Incluir Despesas
-    </label><br>
-
-    <label>
-      <input type="checkbox" id="expPatrimonio" checked>
-      Incluir Patrimônio
-    </label><br><br>
-
-    <button onclick="gerarRelatorioVisual()">Gerar Relatório</button>
-    <button onclick="fecharModal('modalExport')">Cancelar</button>
-  </div>
-</div>
-
 </body>
 </html>
