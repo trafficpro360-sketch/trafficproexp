@@ -401,100 +401,58 @@ const chart=new Chart(document.getElementById('financeChart'),{
   options:{responsive:true,maintainAspectRatio:false}
 });
 const chartReceita=new Chart(document.getElementById('chartReceita'),{
-  type:'pie',
+  type:'bar',
   data:{labels:[],datasets:[{
+    label:'Receitas por descrição',
     data:[],
-    backgroundColor:[
-      '#22c55e','#16a34a','#4ade80','#86efac','#bbf7d0',
-      '#15803d','#4ade80','#22c55e','#86efac','#16a34a'
-    ],
-    borderColor:'#020617',
-    borderWidth:2,
-    hoverOffset:8
+    backgroundColor:'#22c55e',
+    borderRadius:8
   }]},
   options:{
     responsive:true,
-    plugins:{
-      legend:{
-        position:'right',
-        labels:{
-          color:'#e5e7eb',
-          font:{size:13,weight:'600',family:'system-ui'},
-          padding:14,
-          boxWidth:14,
-          boxHeight:14,
-          usePointStyle:true
-        }
-      },
-      tooltip:{
-        callbacks:{label:(ctx)=>`${ctx.label}: ${Number(ctx.raw).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`}
-      }
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#e5e7eb'}},
+      y:{ticks:{color:'#e5e7eb'}}
     }
   }
 });
 
 const chartDespesa=new Chart(document.getElementById('chartDespesa'),{
-  type:'pie',
+  type:'bar',
   data:{labels:[],datasets:[{
+    label:'Despesas por descrição',
     data:[],
-    backgroundColor:[
-      '#ef4444','#dc2626','#f87171','#fecaca','#fee2e2',
-      '#7f1d1d','#f87171','#ef4444','#fecaca','#dc2626'
-    ],
-    borderColor:'#020617',
-    borderWidth:2,
-    hoverOffset:8
+    backgroundColor:'#ef4444',
+    borderRadius:8
   }]},
   options:{
     responsive:true,
-    plugins:{
-      legend:{
-        position:'right',
-        labels:{
-          color:'#e5e7eb',
-          font:{size:13,weight:'600',family:'system-ui'},
-          padding:14,
-          boxWidth:14,
-          boxHeight:14,
-          usePointStyle:true
-        }
-      },
-      tooltip:{
-        callbacks:{label:(ctx)=>`${ctx.label}: ${Number(ctx.raw).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`}
-      }
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#e5e7eb'}},
+      y:{ticks:{color:'#e5e7eb'}}
     }
   }
 });
 
 const chartPatrimonio=new Chart(document.getElementById('chartPatrimonio'),{
-  type:'pie',
+  type:'bar',
   data:{labels:[],datasets:[{
+    label:'Patrimônio por descrição',
     data:[],
-    backgroundColor:[
-      '#facc15','#eab308','#fde68a','#fef3c7','#facc15',
-      '#854d0e','#fde68a','#facc15','#fef3c7','#eab308'
-    ],
-    borderColor:'#020617',
-    borderWidth:2,
-    hoverOffset:8
+    backgroundColor:'#facc15',
+    borderRadius:8
   }]},
   options:{
     responsive:true,
-    plugins:{
-      legend:{
-        position:'right',
-        labels:{
-          color:'#e5e7eb',
-          font:{size:13,weight:'600',family:'system-ui'},
-          padding:14,
-          boxWidth:14,
-          boxHeight:14,
-          usePointStyle:true
-        }
-      },
-      tooltip:{
-        callbacks:{label:(ctx)=>`${ctx.label}: ${Number(ctx.raw).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`}
-      }
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#e5e7eb'}},
+      y:{ticks:{color:'#e5e7eb'}}
     }
   }
 });
