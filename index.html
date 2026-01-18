@@ -33,11 +33,6 @@ body{
   display:flex;
 }
 
-/* ========================= */
-/* TODO SEU CSS ORIGINAL    */
-/* (mantido exatamente igual) */
-/* ========================= */
-
 /* SIDEBAR */
 .sidebar{
   width:280px;
@@ -90,6 +85,22 @@ body{
   padding:26px 28px;
   box-shadow:0 8px 30px rgba(0,0,0,.35);
 }
+.card span{
+  color:var(--muted);
+  font-size:14px;
+  letter-spacing:.4px;
+  line-height:1.5;
+  margin-bottom:6px;
+}
+.card h2{
+  margin-top:10px;
+  font-size:28px;
+  line-height:1.2;
+}
+.blue h2{color:var(--blue)}
+.red h2{color:var(--red)}
+.green h2{color:var(--green)}
+.yellow h2{color:var(--yellow)}
 
 /* CONTROLS */
 .controls{
@@ -107,6 +118,19 @@ body{
   color:#fff;
   font-size:14px;
 }
+.controls .valor-input{width:110px}
+.controls .data-input{width:120px}
+.controls .desc-input{flex:1;max-width:360px}
+.controls button{
+  padding:12px 16px;
+  border-radius:16px;
+  border:none;
+  background:linear-gradient(135deg,#2563eb,#38bdf8);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  white-space:nowrap;
+}
 
 /* TOGGLE */
 .toggle{
@@ -116,6 +140,17 @@ body{
   overflow:hidden;
   background:rgba(15,23,42,.7);
 }
+.toggle button{
+  flex:1;
+  padding:12px 16px;
+  background:none;
+  border:none;
+  color:var(--muted);
+  cursor:pointer;
+}
+.toggle .active.receita{background:rgba(34,197,94,.2);color:var(--green)}
+.toggle .active.despesa{background:rgba(239,68,68,.2);color:var(--red)}
+.toggle .active.patrimonio{background:rgba(250,204,21,.2);color:var(--yellow)}
 
 /* GRÁFICO PRINCIPAL */
 .chart{
@@ -127,24 +162,54 @@ body{
   margin-bottom:28px;
 }
 
+/* TRÊS GRÁFICOS COLUNA */
+.charts-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  margin-bottom:28px;
+}
+.charts-row .box{
+  padding:16px;
+  border-radius:22px;
+  border:1px solid var(--border);
+  background:rgba(15,23,42,.7);
+  min-height:320px;
+}
+.charts-row canvas{width:100% !important; height:260px !important;}
+
 /* LISTAS */
 .records{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:20px;
 }
+.records .box{
+  padding:16px;
+  border-radius:22px;
+  border:1px solid var(--border);
+  background:rgba(15,23,42,.7);
+}
+.records ul{
+  list-style:none;
+  max-height:260px;
+  overflow-y:auto;
+  padding-right:10px;
+}
 .records li{
   background:rgba(2,6,23,.6);
   padding:12px 14px;
   border-radius:14px;
   margin-bottom:10px;
+  font-size:15px;
+  line-height:1.55;
   display:flex;
   justify-content:space-between;
   align-items:center;
   gap:12px;
 }
 
-/* BOTÕES */
+/* BOTÕES EDITAR / EXCLUIR */
 .btn-group{display:flex;gap:8px}
 .btn-edit,.btn-del{
   border:none;
@@ -164,104 +229,23 @@ body{
   border:1px solid var(--red);
 }
 
-/* ============================= */
-/* 🔥 ÚNICA PARTE ALTERADA 🔥    */
-/* NOVOS MODAIS (VISUAL APENAS) */
-/* ============================= */
-
+/* MODAIS */
 .modal{
-  position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
+  position:fixed;top:0;left:0;width:100%;height:100%;
   background:rgba(0,0,0,.65);
-  display:none;
-  align-items:center;
-  justify-content:center;
+  display:none;align-items:center;justify-content:center;
   backdrop-filter:blur(8px);
-  animation:fadeIn .18s ease forwards;
 }
-
-@keyframes fadeIn{
-  from{opacity:0}
-  to{opacity:1}
-}
-
 .modal.active{display:flex}
-
 .modal-content{
   background:rgba(15,23,42,.97);
   border:1px solid var(--border);
   border-radius:28px;
-  padding:28px 30px;
-  width:420px;
-  box-shadow:0 12px 40px rgba(0,0,0,.5);
-  transform:translateY(10px);
-  animation:slideUp .18s ease forwards;
+  padding:26px 28px;
+  width:380px;
 }
 
-@keyframes slideUp{
-  from{transform:translateY(14px)}
-  to{transform:translateY(0)}
-}
-
-.modal-content h3{
-  font-size:20px;
-  margin-bottom:10px;
-  color:var(--text);
-}
-
-.modal-content p{
-  color:var(--muted);
-  margin-bottom:16px;
-}
-
-.modal-content input{
-  width:100%;
-  padding:12px 14px;
-  border-radius:16px;
-  background:rgba(2,6,23,.7);
-  border:1px solid var(--border);
-  color:#fff;
-  margin-bottom:10px;
-  font-size:14px;
-}
-
-.modal-actions{
-  display:flex;
-  gap:12px;
-  margin-top:8px;
-}
-
-.modal-actions button{
-  flex:1;
-  padding:12px 14px;
-  border-radius:16px;
-  border:none;
-  font-weight:600;
-  cursor:pointer;
-}
-
-.btn-save{
-  background:linear-gradient(135deg,#2563eb,#38bdf8);
-  color:white;
-}
-
-.btn-cancel{
-  background:rgba(239,68,68,.12);
-  color:var(--red);
-  border:1px solid rgba(239,68,68,.25);
-}
-
-.btn-confirm{
-  background:linear-gradient(135deg,#ef4444,#dc2626);
-  color:white;
-}
-
-/* ============================= */
-/* FIM DAS ALTERAÇÕES NOS MODAIS */
-/* ============================= */
-
-/* TOAST (seu original, mantido) */
+/* TOAST INTERNO (sem alert) */
 #toast{
   position:fixed;
   bottom:24px;
@@ -278,14 +262,26 @@ body{
 #toast.success{border-left:4px solid var(--green)}
 #toast.error{border-left:4px solid var(--red)}
 
+/* CLIENTES */
+#clientes{display:none}
+.clientes-container{
+  max-width:600px;
+  background:rgba(15,23,42,.7);
+  border:1px solid var(--border);
+  border-radius:26px;
+  padding:24px;
+}
+.clientes-container input,
+.clientes-container button{
+  width:100%;
+  padding:14px;
+  border-radius:18px;
+  margin-bottom:12px;
+}
 </style>
 </head>
 
 <body>
-
-<!-- =========================== -->
-<!-- SEU HTML INTEIRO FOI MANTIDO -->
-<!-- =========================== -->
 
 <aside class="sidebar">
   <div class="logo">Finance<span style="color:#fff">Pro</span></div>
@@ -351,44 +347,31 @@ body{
 
 </main>
 
-<!-- ========== MODAIS (APENAS VISUAL NOVO) ========== -->
-
+<!-- MODAL EDITAR -->
 <div class="modal" id="modalEdit">
   <div class="modal-content">
     <h3>Editar lançamento</h3>
-    <p>Ajuste os dados abaixo e salve as alterações.</p>
-
     <input id="editValor" type="number" placeholder="Valor">
     <input id="editMes" placeholder="dd/mm/aaaa">
     <input id="editDesc" placeholder="Descrição">
-
-    <div class="modal-actions">
-      <button class="btn-save" onclick="salvarEdicao()">Salvar</button>
-      <button class="btn-cancel" onclick="fecharModal('modalEdit')">Cancelar</button>
-    </div>
+    <button onclick="salvarEdicao()">Salvar</button>
+    <button onclick="fecharModal('modalEdit')">Cancelar</button>
   </div>
 </div>
 
+<!-- MODAL EXCLUIR -->
 <div class="modal" id="modalDelete">
   <div class="modal-content">
     <h3>Confirmar exclusão</h3>
-    <p>Tem certeza que deseja excluir este lançamento? Essa ação não pode ser desfeita.</p>
-
-    <div class="modal-actions">
-      <button class="btn-confirm" onclick="confirmarExclusao()">Sim, excluir</button>
-      <button class="btn-cancel" onclick="fecharModal('modalDelete')">Cancelar</button>
-    </div>
+    <p>Tem certeza que deseja excluir este item?</p>
+    <button onclick="confirmarExclusao()">Sim, excluir</button>
+    <button onclick="fecharModal('modalDelete')">Cancelar</button>
   </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-/* ============================== */
-/* TODO SEU JAVASCRIPT ORIGINAL   */
-/* NÃO ALTEREI NADA AQUI          */
-/* ============================== */
-
 const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 let tipoSelecionado='receita';
 let financeiro=JSON.parse(localStorage.getItem('financeiro'))||[];
@@ -396,11 +379,208 @@ let clientes=JSON.parse(localStorage.getItem('clientes'))||[];
 let editandoId=null;
 let deletandoId=null;
 
-/* (mantive todas as suas funções intactas) */
+function mostrarAba(id,el){
+  document.querySelectorAll('main>div').forEach(d=>d.style.display='none');
+  document.getElementById(id).style.display='block';
+  document.querySelectorAll('.menu li').forEach(li=>li.classList.remove('active'));
+  el.parentElement.classList.add('active');
+}
+
+function setTipo(tipo,el){
+  tipoSelecionado=tipo;
+  document.querySelectorAll('.toggle button').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function formatar(v){
+  return Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+}
+
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className=type+' active';
+  setTimeout(()=>t.classList.remove('active'),3000);
+}
+
+/* Gráfico principal */
+const chart=new Chart(document.getElementById('financeChart'),{
+  type:'line',
+  data:{labels:meses,datasets:[
+    {label:'Receita',data:Array(12).fill(0),borderColor:'#22c55e'},
+    {label:'Despesa',data:Array(12).fill(0),borderColor:'#ef4444'},
+    {label:'Patrimônio',data:Array(12).fill(0),borderColor:'#facc15'},
+    {label:'Saldo',data:Array(12).fill(0),borderColor:'#38bdf8'}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false}
+});
+
+/* Gráficos de colunas por descrição */
+const chartReceita=new Chart(document.getElementById('chartReceita'),{
+  type:'bar',
+  data:{labels:[],datasets:[{data:[],backgroundColor:'#22c55e',borderRadius:8}]},
+  options:{responsive:true,maintainAspectRatio:false}
+});
+
+const chartDespesa=new Chart(document.getElementById('chartDespesa'),{
+  type:'bar',
+  data:{labels:[],datasets:[{data:[],backgroundColor:'#ef4444',borderRadius:8}]},
+  options:{responsive:true,maintainAspectRatio:false}
+});
+
+const chartPatrimonio=new Chart(document.getElementById('chartPatrimonio'),{
+  type:'bar',
+  data:{labels:[],datasets:[{data:[],backgroundColor:'#facc15',borderRadius:8}]},
+  options:{responsive:true,maintainAspectRatio:false}
+});
+
+function adicionarLancamento(){
+  const valor=Number(document.getElementById('valor').value);
+  const mes=document.getElementById('mes').value;
+  const descricao=document.getElementById('descricao').value.trim();
+
+  if(!valor||!mes||!descricao){
+    showToast('Preencha valor, data e descrição','error');
+    return;
+  }
+
+  financeiro.push({id:Date.now(),valor,tipo:tipoSelecionado,mes,descricao});
+  localStorage.setItem('financeiro',JSON.stringify(financeiro));
+  showToast('Lançamento adicionado','success');
+  atualizarFinanceiro();
+}
+
+function atualizarFinanceiro(){
+  let r=Array(12).fill(0), d=Array(12).fill(0), p=Array(12).fill(0);
+  let mapR={}, mapD={}, mapP={};
+
+  listaReceita.innerHTML='';
+  listaDespesa.innerHTML='';
+  listaPatrimonio.innerHTML='';
+
+  financeiro.forEach(i=>{
+    const partes=i.mes.split('/');
+    const idx=new Date(partes[2],partes[1]-1).getMonth();
+
+    if(i.tipo==='receita') r[idx]+=i.valor;
+    if(i.tipo==='despesa') d[idx]+=i.valor;
+    if(i.tipo==='patrimonio') p[idx]+=i.valor;
+
+    if(i.tipo==='receita') mapR[i.descricao]=(mapR[i.descricao]||0)+i.valor;
+    if(i.tipo==='despesa') mapD[i.descricao]=(mapD[i.descricao]||0)+i.valor;
+    if(i.tipo==='patrimonio') mapP[i.descricao]=(mapP[i.descricao]||0)+i.valor;
+
+    const li=document.createElement('li');
+    li.innerHTML=`
+      <div>
+        ${formatar(i.valor)} — ${i.mes}
+        <div class="desc">${i.descricao}</div>
+      </div>
+      <div class="btn-group">
+        <button class="btn-edit" onclick="abrirEditar(${i.id})">Editar</button>
+        <button class="btn-del" onclick="pedirExcluir(${i.id})">Excluir</button>
+      </div>
+    `;
+
+    if(i.tipo==='receita') listaReceita.appendChild(li);
+    if(i.tipo==='despesa') listaDespesa.appendChild(li);
+    if(i.tipo==='patrimonio') listaPatrimonio.appendChild(li);
+  });
+
+  const totalR=r.reduce((a,b)=>a+b,0);
+  const totalD=d.reduce((a,b)=>a+b,0);
+  const totalP=p.reduce((a,b)=>a+b,0);
+
+  cardReceita.textContent=formatar(totalR);
+  cardDespesa.textContent=formatar(totalD);
+  cardPatrimonio.textContent=formatar(totalP);
+  cardSaldo.textContent=formatar(totalR-totalD+totalP);
+
+  chart.data.datasets[0].data=r;
+  chart.data.datasets[1].data=d;
+  chart.data.datasets[2].data=p;
+  chart.data.datasets[3].data=r.map((v,i)=>v-d[i]+p[i]);
+  chart.update();
+
+  chartReceita.data.labels=Object.keys(mapR);
+  chartReceita.data.datasets[0].data=Object.values(mapR);
+  chartReceita.update();
+
+  chartDespesa.data.labels=Object.keys(mapD);
+  chartDespesa.data.datasets[0].data=Object.values(mapD);
+  chartDespesa.update();
+
+  chartPatrimonio.data.labels=Object.keys(mapP);
+  chartPatrimonio.data.datasets[0].data=Object.values(mapP);
+  chartPatrimonio.update();
+}
+
+/* EDIÇÃO */
+function abrirEditar(id){
+  editandoId=id;
+  const it=financeiro.find(f=>f.id===id);
+  editValor.value=it.valor;
+  editMes.value=it.mes;
+  editDesc.value=it.descricao;
+  document.getElementById('modalEdit').classList.add('active');
+}
+
+function salvarEdicao(){
+  const idx=financeiro.findIndex(f=>f.id===editandoId);
+  financeiro[idx].valor=Number(editValor.value);
+  financeiro[idx].mes=editMes.value;
+  financeiro[idx].descricao=editDesc.value;
+  localStorage.setItem('financeiro',JSON.stringify(financeiro));
+  fecharModal('modalEdit');
+  showToast('Alterações salvas','success');
+  atualizarFinanceiro();
+}
+
+/* EXCLUSÃO */
+function pedirExcluir(id){
+  deletandoId=id;
+  document.getElementById('modalDelete').classList.add('active');
+}
+
+function confirmarExclusao(){
+  financeiro=financeiro.filter(f=>f.id!==deletandoId);
+  localStorage.setItem('financeiro',JSON.stringify(financeiro));
+  fecharModal('modalDelete');
+  showToast('Item excluído','success');
+  atualizarFinanceiro();
+}
 
 function fecharModal(id){
   document.getElementById(id).classList.remove('active');
 }
+
+/* CLIENTES */
+function adicionarCliente(){
+  const nome=clienteNome.value;
+  const val=Number(clienteValor.value);
+
+  if(!nome||!val){
+    showToast('Nome e valor são obrigatórios','error');
+    return;
+  }
+
+  clientes.push({id:Date.now(),nome,val});
+  localStorage.setItem('clientes',JSON.stringify(clientes));
+  atualizarClientes();
+}
+
+function atualizarClientes(){
+  listaClientes.innerHTML='';
+  clientes.forEach(c=>{
+    const li=document.createElement('li');
+    li.textContent=`${c.nome} — ${formatar(c.val)}`;
+    listaClientes.appendChild(li);
+  });
+}
+
+mostrarAba('dashboard',document.querySelector('.menu a'));
+atualizarFinanceiro();
+atualizarClientes();
 </script>
 
 </body>
