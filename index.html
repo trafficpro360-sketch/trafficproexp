@@ -154,8 +154,21 @@ input[type=number]{-moz-appearance:textfield}
 .records ul{
   list-style:none;
   max-height:260px;
-  overflow:auto;
+  overflow-y:auto;
+  padding-right:8px;
 }
+/* Scrollbar moderna e arredondada */
+.records ul::-webkit-scrollbar{width:8px}
+.records ul::-webkit-scrollbar-track{
+  background:rgba(15,23,42,.6);
+  border-radius:20px;
+}
+.records ul::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#2563eb,#38bdf8);
+  border-radius:20px;
+}
+.records ul::-webkit-scrollbar-thumb:hover{opacity:.9}
+
 .records li{
   background:rgba(2,6,23,.6);
   padding:10px 12px;
@@ -193,8 +206,16 @@ input[type=number]{-moz-appearance:textfield}
   font-weight:600;
   cursor:pointer;
 }
-#listaClientes li{
+#listaClientes{
   list-style:none;
+  max-height:260px;
+  overflow-y:auto;
+  padding-right:8px;
+}
+#listaClientes::-webkit-scrollbar{width:8px}
+#listaClientes::-webkit-scrollbar-track{background:rgba(15,23,42,.6);border-radius:20px}
+#listaClientes::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#2563eb,#38bdf8);border-radius:20px}
+#listaClientes li{
   background:rgba(2,6,23,.6);
   padding:10px 12px;
   border-radius:14px;
