@@ -82,18 +82,13 @@ input[type=number]{-moz-appearance:textfield}
 .green h2{color:var(--green)}
 .yellow h2{color:var(--yellow)}
 
-/* CONTROLS — layout em duas linhas claras */
+/* CONTROLS — TUDO NA MESMA LINHA (exigência do usuário) */
 .controls{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:14px;
-  margin-bottom:28px;
-}
-.controls .row{
   display:flex;
-  gap:12px;
   align-items:center;
-  flex-wrap:wrap;
+  gap:12px;
+  margin-bottom:28px;
+  flex-wrap:nowrap; /* impede quebra de linha */
 }
 .controls input{
   padding:14px 16px;
@@ -102,9 +97,9 @@ input[type=number]{-moz-appearance:textfield}
   background:rgba(15,23,42,.7);
   color:#fff;
 }
-.controls .valor-input{flex:1;max-width:180px}
-.controls .data-input{flex:1;max-width:160px}
-.controls .desc-input{flex:2;min-width:220px}
+.controls .valor-input{width:140px;min-width:140px}
+.controls .data-input{width:140px;min-width:140px}
+.controls .desc-input{flex:1;min-width:220px}
 .controls button{
   padding:14px 20px;
   border-radius:18px;
@@ -113,6 +108,7 @@ input[type=number]{-moz-appearance:textfield}
   color:#fff;
   font-weight:600;
   cursor:pointer;
+  white-space:nowrap; /* texto não quebra */
 }
 
 /* TOGGLE */
@@ -291,21 +287,16 @@ input[type=number]{-moz-appearance:textfield}
   </section>
 
   <section class="controls">
-  <!-- Linha 1: dados do lançamento -->
-  <div class="row">
-    <input class="valor-input" type="number" id="valor" placeholder="Valor (R$)">
-    <input class="data-input" type="text" id="mes" placeholder="dd/mm/aaaa">
-    <input class="desc-input" type="text" id="descricao" placeholder="Descrição do lançamento">
-  </div>
+  <input class="valor-input" type="number" id="valor" placeholder="Valor (R$)">
+  <input class="data-input" type="text" id="mes" placeholder="dd/mm/aaaa">
+  <input class="desc-input" type="text" id="descricao" placeholder="Descrição do lançamento">
 
-  <!-- Linha 2: BOTÃO PRIMEIRO, depois as opções (como você pediu) -->
-  <div class="row">
-    <button onclick="adicionarLancamento()">Adicionar lançamento</button>
-    <div class="toggle">
-      <button class="active receita" onclick="setTipo('receita',this)">Receita</button>
-      <button class="despesa" onclick="setTipo('despesa',this)">Despesa</button>
-      <button class="patrimonio" onclick="setTipo('patrimonio',this)">Patrimônio</button>
-    </div>
+  <button onclick="adicionarLancamento()">Adicionar lançamento</button>
+
+  <div class="toggle">
+    <button class="active receita" onclick="setTipo('receita',this)">Receita</button>
+    <button class="despesa" onclick="setTipo('despesa',this)">Despesa</button>
+    <button class="patrimonio" onclick="setTipo('patrimonio',this)">Patrimônio</button>
   </div>
 </section>
 
