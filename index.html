@@ -462,7 +462,6 @@ input[type=number] {
   align-items:center;
 }
 
-
 </style>
 </head>
 
@@ -481,18 +480,17 @@ input[type=number] {
 <main class="content">
 
 <div id="dashboard">
-  <div class="top-bar">
+ <div class="top-bar">
   <div class="header">Dashboard Financeiro</div>
 
-  <div class="notificacao-area" onclick="toggleNotificacoes()">
-    🔔
-    <span id="notifBadge">0</span>
-  </div>
-</div>
+  <div class="acoes-topo">
+    <div class="exportar-area" onclick="abrirModalExport()">📄</div>
 
-<div id="painelNotificacoes">
-  <h3>Notificações</h3>
-  <ul id="listaNotificacoes"></ul>
+    <div class="notificacao-area" onclick="toggleNotificacoes()">
+      🔔
+      <span id="notifBadge">0</span>
+    </div>
+  </div>
 </div>
 
   <section class="cards">
@@ -839,6 +837,91 @@ function toggleNotificacoes(){
   painel.style.display = 'none';
 });
 
+function abrirModalExport(){
+  document.getElementById('modalExport').classList.add('active');
+}
+  
+function gerarRelatorioVisual(){
+  const incluirReceitas = document.getElementById('expReceitas').checked;
+  const incluirDespesas = document.getElementById('expDespesas').checked;
+  const incluirPatrimonio = document.getElementById('expPatrimonio').checked;
+
+  let janela = window.open("", "_blank");
+  
+  let html = `
+  <html>
+  <head>
+    <title>Relatório Financeiro</title>
+    <style>
+      body{
+        font-family: system-ui, -apple-system, Arial;
+        background:#020617;
+        color:#e5e7eb;
+        padding:40px;
+      }
+      h1{color:#38bdf8;}
+      .secao{
+        background:rgba(15,23,42,.7);
+        border:1px solid #1e293b;
+        border-radius:20px;
+        padding:20px;
+        margin-bottom:20px;
+      }
+      .item{
+        padding:10px;
+        border-bottom:1px solid #1e293b;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Relatório Financeiro</h1>
+  `;
+
+  if(incluirReceitas){
+    html += `<div class="secao"><h2>Receitas</h2>`;
+    financeiro.filter(f=>f.tipo==='receita').forEach(i=>{
+      html += `
+        <div class="item">
+          <strong>${formatar(i.valor)}</strong> — ${i.mes}<br>
+          ${i.descricao}
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+
+  if(incluirDespesas){
+    html += `<div class="secao"><h2>Despesas</h2>`;
+    financeiro.filter(f=>f.tipo==='despesa').forEach(i=>{
+      html += `
+        <div class="item">
+          <strong>${formatar(i.valor)}</strong> — ${i.mes}<br>
+          ${i.descricao}
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+
+  if(incluirPatrimonio){
+    html += `<div class="secao"><h2>Patrimônio</h2>`;
+    financeiro.filter(f=>f.tipo==='patrimonio').forEach(i=>{
+      html += `
+        <div class="item">
+          <strong>${formatar(i.valor)}</strong> — ${i.mes}<br>
+          ${i.descricao}
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+
+  html += `</body></html>`;
+
+  janela.document.write(html);
+  fecharModal('modalExport');
+}
+
 
 // Inicialização do sistema
 mostrarAba('dashboard',document.querySelector('.menu a'));
@@ -847,6 +930,31 @@ atualizarClientes();
 atualizarPainelNotificacoes();
 
 </script>
+  
+<div class="modal" id="modalExport">
+  <div class="modal-content">
+    <h3>Exportar Relatório</h3>
+    <p>Selecione o que deseja incluir no relatório:</p>
+
+    <label>
+      <input type="checkbox" id="expReceitas" checked>
+      Incluir Receitas
+    </label><br>
+
+    <label>
+      <input type="checkbox" id="expDespesas" checked>
+      Incluir Despesas
+    </label><br>
+
+    <label>
+      <input type="checkbox" id="expPatrimonio" checked>
+      Incluir Patrimônio
+    </label><br><br>
+
+    <button onclick="gerarRelatorioVisual()">Gerar Relatório</button>
+    <button onclick="fecharModal('modalExport')">Cancelar</button>
+  </div>
+</div>
 
 </body>
 </html>
