@@ -291,20 +291,22 @@ input[type=number]{-moz-appearance:textfield}
   </section>
 
   <section class="controls">
-    <div class="row">
-      <input class="valor-input" type="number" id="valor" placeholder="Valor (R$)">
-      <input class="data-input" type="text" id="mes" placeholder="dd/mm/aaaa">
-      <input class="desc-input" type="text" id="descricao" placeholder="Descrição do lançamento">
-      <button onclick="adicionarLancamento()">Adicionar</button>
+  <div class="row">
+    <input class="valor-input" type="number" id="valor" placeholder="Valor (R$)">
+    <input class="data-input" type="text" id="mes" placeholder="dd/mm/aaaa">
+    <input class="desc-input" type="text" id="descricao" placeholder="Descrição do lançamento">
+  </div>
+  <div class="row">
+    <div class="toggle">
+      <button class="active receita" onclick="setTipo('receita',this)">Receita</button>
+      <button class="despesa" onclick="setTipo('despesa',this)">Despesa</button>
+      <button class="patrimonio" onclick="setTipo('patrimonio',this)">Patrimônio</button>
     </div>
-    <div class="row">
-      <div class="toggle">
-        <button class="active receita" onclick="setTipo('receita',this)">Receita</button>
-        <button class="despesa" onclick="setTipo('despesa',this)">Despesa</button>
-        <button class="patrimonio" onclick="setTipo('patrimonio',this)">Patrimônio</button>
-      </div>
-    </div>
-  </section>
+  </div>
+  <div class="row">
+    <button onclick="adicionarLancamento()">Adicionar lançamento</button>
+  </div>
+</section>
 
   <div class="chart"><canvas id="financeChart"></canvas></div>
 
