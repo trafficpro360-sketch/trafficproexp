@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plataforma Financeira</title>
 
-  <!-- Fonte Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* ===== RESET ===== */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Inter', sans-serif;
@@ -18,17 +16,13 @@
       min-height: 100vh;
       display: flex;
     }
-
-    /* ===== SIDEBAR ===== */
     .sidebar {
       width: 260px;
       background: rgba(2,6,23,0.9);
       border-right: 1px solid #1e293b;
       padding: 24px;
     }
-
     .logo { font-size: 22px; font-weight: 700; color: #38bdf8; margin-bottom: 40px; }
-
     .menu ul { list-style: none; margin-top: 40px; }
     .menu li { margin-bottom: 20px; }
     .menu a {
@@ -38,17 +32,15 @@
       text-decoration: none;
       color: #94a3b8;
       font-weight: 500;
-      transition: all 0.25s;
       cursor: pointer;
     }
-    .menu a:hover { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
-    .menu li.active a { background: rgba(56, 189, 248, 0.2); color: #38bdf8; font-weight: 600; }
-
-    /* ===== CONTEÚDO ===== */
+    .menu li.active a,
+    .menu a:hover {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+    }
     .content { flex: 1; padding: 40px; }
     .header { font-size: 28px; font-weight: 700; margin-bottom: 30px; }
-
-    /* ===== CARDS FINANCEIROS ===== */
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -63,37 +55,25 @@
     }
     .card span { font-size: 14px; color: #94a3b8; }
     .card h2 { margin-top: 10px; font-size: 26px; font-weight: 700; }
-    .blue h2 { color: #38bdf8; }
-    .red h2 { color: #ef4444; }
-    .green h2 { color: #22c55e; }
-    .yellow h2 { color: #facc15; }
-
-    /* ===== CONTROLES ===== */
     .controls {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 15px;
       margin-bottom: 30px;
     }
-    .controls input {
+    .controls input, .controls button {
       background: #020617;
       border: 1px solid #1e293b;
       color: #e5e7eb;
       padding: 14px;
       border-radius: 14px;
-      font-size: 14px;
     }
     .controls button {
       background: linear-gradient(135deg, #2563eb, #38bdf8);
       border: none;
-      color: #fff;
-      padding: 14px;
-      border-radius: 14px;
-      cursor: pointer;
       font-weight: 600;
-      transition: 0.25s;
+      cursor: pointer;
     }
-
     .toggle {
       display: flex;
       background: #020617;
@@ -103,361 +83,169 @@
     }
     .toggle button {
       flex: 1;
-      padding: 14px 0;
       border: none;
       background: transparent;
       color: #94a3b8;
-      font-weight: 600;
       cursor: pointer;
-      transition: all 0.25s;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
-    .toggle button.active.receita { background: rgba(34,197,94,0.15); color: #22c55e; }
-    .toggle button.active.despesa { background: rgba(239,68,68,0.15); color: #ef4444; }
-    .toggle button.active.patrimonio { background: rgba(250,204,21,0.15); color: #facc15; }
-
-    .chart {
-      height: 300px;
-      border-radius: 24px;
-      border: 1px solid #1e293b;
-      background: #020617;
-      padding: 20px;
-    }
-
-    /* ===== REGISTROS ===== */
-    .records h3 {
-      margin-bottom: 10px;
-      font-size: 18px;
-      font-weight: 600;
-      color: #38bdf8;
+    .toggle .active.receita { color: #22c55e; }
+    .toggle .active.despesa { color: #ef4444; }
+    .toggle .active.patrimonio { color: #facc15; }
+    .records {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 30px;
     }
     .records ul {
       list-style: none;
-      padding: 10px;
       background: #020617;
       border: 1px solid #1e293b;
       border-radius: 12px;
+      padding: 10px;
       max-height: 300px;
       overflow-y: auto;
     }
     .records li {
+      background: #0b0f1c;
+      padding: 6px 10px;
+      border-radius: 10px;
       display: flex;
       justify-content: space-between;
       margin-bottom: 6px;
-      padding: 6px 10px;
-      border-radius: 10px;
       font-size: 14px;
-      color: #e5e7eb;
-      background: #0b0f1c;
     }
-
-    /* ===== CLIENTES ===== */
     #clientes { display: none; }
-    .clientes-container {
-      background: #020617;
-      border: 1px solid #1e293b;
-      border-radius: 12px;
-      padding: 20px;
-    }
-    .clientes-container h3 { color: #38bdf8; margin-bottom: 15px; }
-    .clientes-container input, .clientes-container button {
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 12px;
-      border: 1px solid #1e293b;
-      background: #020617;
-      color: #e5e7eb;
-      font-size: 14px;
-    }
-    .clientes-container button {
-      border: none;
-      background: linear-gradient(135deg,#2563eb,#38bdf8);
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .clientes-container button:hover { filter: brightness(1.2); }
-    .clientes-list ul { max-height: 300px; overflow-y: auto; border: 1px solid #1e293b; border-radius: 12px; padding: 10px; }
-    .clientes-list li { display:flex; justify-content:space-between; align-items:center; padding:6px 10px; border-radius:10px; background:#0b0f1c; margin-bottom:6px; }
   </style>
 </head>
 <body>
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="logo">Finance<span style="color:#fff">Pro</span></div>
-    <nav class="menu">
-      <ul>
-        <li class="active"><a href="#" onclick="mostrarAba('dashboard', this)">Dashboard</a></li>
-        <li><a href="#" onclick="mostrarAba('clientes', this)">Clientes</a></li>
-      </ul>
-    </nav>
-  </aside>
+<aside class="sidebar">
+  <div class="logo">Finance<span style="color:#fff">Pro</span></div>
+  <nav class="menu">
+    <ul>
+      <li class="active"><a onclick="mostrarAba('dashboard', this)">Dashboard</a></li>
+      <li><a onclick="mostrarAba('clientes', this)">Clientes</a></li>
+    </ul>
+  </nav>
+</aside>
 
-  <!-- CONTEÚDO -->
-  <main class="content">
+<main class="content">
 
-    <!-- DASHBOARD -->
-    <div id="dashboard">
-      <div class="header">Dashboard</div>
+<div id="dashboard">
+  <div class="header">Dashboard</div>
 
-      <section class="cards">
-        <div class="card blue"><span>Receita Total</span><h2 id="cardReceita">R$ 0</h2></div>
-        <div class="card red"><span>Despesas</span><h2 id="cardDespesa">R$ 0</h2></div>
-        <div class="card yellow"><span>Patrimônio</span><h2 id="cardPatrimonio">R$ 0</h2></div>
-        <div class="card green"><span>Saldo</span><h2 id="cardSaldo">R$ 0</h2></div>
-      </section>
+  <section class="cards">
+    <div class="card"><span>Receita</span><h2 id="cardReceita">R$ 0</h2></div>
+    <div class="card"><span>Despesas</span><h2 id="cardDespesa">R$ 0</h2></div>
+    <div class="card"><span>Patrimônio</span><h2 id="cardPatrimonio">R$ 0</h2></div>
+    <div class="card"><span>Saldo</span><h2 id="cardSaldo">R$ 0</h2></div>
+  </section>
 
-      <section class="controls">
-        <input type="number" id="valor" placeholder="Valor (R$)">
-        <div class="toggle">
-          <button class="active receita" onclick="setTipo('receita', this)">Receita</button>
-          <button class="despesa" onclick="setTipo('despesa', this)">Despesa</button>
-          <button class="patrimonio" onclick="setTipo('patrimonio', this)">Patrimônio</button>
-        </div>
-        <input type="text" id="mes" placeholder="dd/mm/aaaa">
-        <button onclick="adicionar()">Adicionar</button>
-      </section>
-
-      <div class="chart">
-        <canvas id="financeChart"></canvas>
-      </div>
-
-      <section class="records" style="margin-top: 30px; display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-        <div>
-          <h3>Receitas</h3>
-          <ul id="listaReceita"></ul>
-        </div>
-        <div>
-          <h3>Despesas</h3>
-          <ul id="listaDespesa"></ul>
-        </div>
-        <div>
-          <h3>Patrimônio</h3>
-          <ul id="listaPatrimonio"></ul>
-        </div>
-      </section>
-
+  <section class="controls">
+    <input type="number" id="valor" placeholder="Valor">
+    <div class="toggle">
+      <button class="active receita" onclick="setTipo('receita',this)">Receita</button>
+      <button class="despesa" onclick="setTipo('despesa',this)">Despesa</button>
+      <button class="patrimonio" onclick="setTipo('patrimonio',this)">Patrimônio</button>
     </div>
+    <input type="text" id="mes" placeholder="dd/mm/aaaa">
+    <button onclick="adicionar()">Adicionar</button>
+  </section>
 
-    <!-- CLIENTES -->
-    <div id="clientes">
-      <div class="header">Clientes</div>
-      <div class="clientes-container">
-        <h3>Adicionar Cliente</h3>
-        <input type="text" id="clienteNome" placeholder="Nome do Cliente">
-        <input type="text" id="clienteTelefone" placeholder="Telefone">
-        <input type="number" id="clienteValor" placeholder="Valor do Contrato">
-        <input type="text" id="clienteData" placeholder="Data de Pagamento (dd/mm/aaaa)">
-        <button onclick="adicionarCliente()">Adicionar Cliente</button>
+  <section class="records">
+    <div><h3>Receitas</h3><ul id="listaReceita"></ul></div>
+    <div><h3>Despesas</h3><ul id="listaDespesa"></ul></div>
+    <div><h3>Patrimônio</h3><ul id="listaPatrimonio"></ul></div>
+  </section>
+</div>
 
-        <div class="clientes-list" style="margin-top:20px;">
-          <h3>Lista de Clientes</h3>
-          <ul id="listaClientes"></ul>
-        </div>
-      </div>
-    </div>
+<div id="clientes">
+  <div class="header">Clientes</div>
+  <input id="clienteNome" placeholder="Nome">
+  <input id="clienteTelefone" placeholder="Telefone">
+  <input id="clienteValor" type="number" placeholder="Valor do contrato">
+  <input id="clienteData" placeholder="Data (dd/mm/aaaa)">
+  <button onclick="adicionarCliente()">Adicionar Cliente</button>
+  <ul id="listaClientes"></ul>
+</div>
 
-  </main>
+</main>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    // ===== ABA =====
-    function mostrarAba(aba, el){
-      document.querySelectorAll('main > div').forEach(sec => sec.style.display='none');
-      document.getElementById(aba).style.display='block';
+<script>
+function mostrarAba(id, el){
+  document.querySelectorAll('main > div').forEach(d=>d.style.display='none');
+  document.getElementById(id).style.display='block';
+  document.querySelectorAll('.menu li').forEach(li=>li.classList.remove('active'));
+  el.parentElement.classList.add('active');
+}
 
-      document.querySelectorAll('.menu li').forEach(li=>li.classList.remove('active'));
-      el.parentElement.classList.add('active');
-    }
+let tipoSelecionado = 'receita';
+let dados = JSON.parse(localStorage.getItem('financeiro')) || [];
+let clientes = JSON.parse(localStorage.getItem('clientes')) || [];
 
-    // ===== DASHBOARD =====
-    let tipoSelecionado = 'receita';
-    let dados = JSON.parse(localStorage.getItem('financeiro')) || [];
-    const cardReceita = document.getElementById('cardReceita');
-    const cardDespesa = document.getElementById('cardDespesa');
-    const cardPatrimonio = document.getElementById('cardPatrimonio');
-    const cardSaldo = document.getElementById('cardSaldo');
-    const listaReceita = document.getElementById('listaReceita');
-    const listaDespesa = document.getElementById('listaDespesa');
-    const listaPatrimonio = document.getElementById('listaPatrimonio');
+function setTipo(tipo, el){
+  tipoSelecionado = tipo;
+  document.querySelectorAll('.toggle button').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
 
-    function setTipo(tipo, el){
-      tipoSelecionado = tipo;
-      document.querySelectorAll('.toggle button').forEach(b => b.classList.remove('active'));
-      el.classList.add('active');
-    }
+function adicionar(){
+  const valor = +valorInput.value;
+  const mes = mesInput.value;
+}
 
-    const labels = ['Jan','Fev','Mar','Abr','Mai','Jun'];
-    const chart = new Chart(document.getElementById('financeChart'), {
-      type:'line',
-      data:{ labels, datasets:[
-        {label:'Receita', data:[], borderColor:'#22c55e', tension:0.35},
-        {label:'Despesas', data:[], borderColor:'#ef4444', tension:0.35},
-        {label:'Patrimônio', data:[], borderColor:'#facc15', tension:0.35},
-        {label:'Saldo', data:[], borderColor:'#38bdf8', tension:0.35}
-      ]},
-      options:{responsive:true, maintainAspectRatio:false}
-    });
+function atualizar(){
+  let r=0,d=0,p=0;
+  listaReceita.innerHTML=listaDespesa.innerHTML=listaPatrimonio.innerHTML='';
+  dados.forEach(i=>{
+    const li=document.createElement('li');
+    li.innerHTML=`${i.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}<button onclick="remover(${i.id})">🗑️</button>`;
+    if(i.tipo==='receita'){r+=i.valor;listaReceita.appendChild(li);}
+    if(i.tipo==='despesa'){d+=i.valor;listaDespesa.appendChild(li);}
+    if(i.tipo==='patrimonio'){p+=i.valor;listaPatrimonio.appendChild(li);}
+  });
+  cardReceita.textContent=`R$ ${r}`;
+  cardDespesa.textContent=`R$ ${d}`;
+  cardPatrimonio.textContent=`R$ ${p}`;
+  cardSaldo.textContent=`R$ ${r-d+p}`;
+}
 
-    function validarData(data){ return /^(\d{2})\/(\d{2})\/(\d{4})$/.test(data); }
+function adicionarCliente(){
+  const id = Date.now();
+  const valor = +clienteValor.value;
+  clientes.push({id,nome:clienteNome.value,telefone:clienteTelefone.value,valor,data:clienteData.value});
+  dados.push({id:id+1,valor,tipo:'receita',mes:clienteData.value,clienteId:id});
+  localStorage.setItem('clientes',JSON.stringify(clientes));
+  localStorage.setItem('financeiro',JSON.stringify(dados));
+  atualizar(); atualizarClientes();
+}
 
-    function adicionar(){
-      const valor = Number(document.getElementById('valor').value);
-      const mes = document.getElementById('mes').value.trim();
-      if(!valor || !mes || !validarData(mes)) return alert('Informe valor e data válida (dd/mm/aaaa)');
-      const novoItem = { id: Date.now(), valor, tipo: tipoSelecionado, mes };
-      dados.push(novoItem);
-      localStorage.setItem('financeiro', JSON.stringify(dados));
-      atualizar();
-    }
+function atualizarClientes(){
+  listaClientes.innerHTML='';
+  clientes.forEach(c=>{
+    const li=document.createElement('li');
+    li.innerHTML=`${c.nome} - R$ ${c.valor}<button onclick="excluirCliente(${c.id})">🗑️</button>`;
+    listaClientes.appendChild(li);
+  });
+}
 
-    function atualizar(){
-      listaReceita.innerHTML = '';
-      listaDespesa.innerHTML = '';
-      listaPatrimonio.innerHTML = '';
+function excluirCliente(id){
+  clientes = clientes.filter(c=>c.id!==id);
+  dados = dados.filter(d=>d.clienteId!==id);
+  localStorage.setItem('clientes',JSON.stringify(clientes));
+  localStorage.setItem('financeiro',JSON.stringify(dados));
+  atualizar(); atualizarClientes();
+}
 
-      let receitas = Array(6).fill(0);
-      let despesas = Array(6).fill(0);
-      let patrimonio = Array(6).fill(0);
+function remover(id){
+  dados = dados.filter(d=>d.id!==id);
+  localStorage.setItem('financeiro',JSON.stringify(dados));
+  atualizar();
+}
 
-      dados.forEach(d=>{
-        const parts = d.mes.split('/');
-        const dataObj = new Date(parts[2], parts[1]-1, parts[0]);
-        const i = dataObj.getMonth();
-        if(i<6){
-          if(d.tipo==='receita') receitas[i]+=d.valor;
-          else if(d.tipo==='despesa') despesas[i]+=d.valor;
-          else if(d.tipo==='patrimonio') patrimonio[i]+=d.valor;
-        }
-
-        const li = document.createElement('li');
-        const valorFormatado = d.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-        li.innerHTML = `<span class="item-text">${valorFormatado} - ${d.mes}</span>
-          <span class="edit-buttons">
-            <button onclick="iniciarEdicao(${d.id})">✏️</button>
-            <button onclick="excluirItem(${d.id})">🗑️</button>
-          </span>`;
-
-        if(d.tipo==='receita') listaReceita.appendChild(li);
-        else if(d.tipo==='despesa') listaDespesa.appendChild(li);
-        else if(d.tipo==='patrimonio') listaPatrimonio.appendChild(li);
-      });
-
-      const saldo = receitas.map((r,i)=>r-despesas[i]+patrimonio[i]);
-      chart.data.datasets[0].data = receitas;
-      chart.data.datasets[1].data = despesas;
-      chart.data.datasets[2].data = patrimonio;
-      chart.data.datasets[3].data = saldo;
-      chart.update();
-
-      const totalReceita = receitas.reduce((a,b)=>a+b,0);
-      const totalDespesa = despesas.reduce((a,b)=>a+b,0);
-      const totalPatrimonio = patrimonio.reduce((a,b)=>a+b,0);
-      const totalSaldo = totalReceita-totalDespesa+totalPatrimonio;
-
-      cardReceita.innerText=`R$ ${totalReceita.toLocaleString('pt-BR')}`;
-      cardDespesa.innerText=`R$ ${totalDespesa.toLocaleString('pt-BR')}`;
-      cardPatrimonio.innerText=`R$ ${totalPatrimonio.toLocaleString('pt-BR')}`;
-      cardSaldo.innerText=`R$ ${totalSaldo.toLocaleString('pt-BR')}`;
-      cardSaldo.style.color = totalSaldo>0?'#22c55e':totalSaldo<0?'#ef4444':'#e5e7eb';
-    }
-
-    function iniciarEdicao(id){
-      const item = dados.find(d=>d.id===id);
-      if(!item) return;
-      const li = [...document.querySelectorAll('.records li')].find(li=>li.querySelector('button')?.onclick.toString().includes(`${id}`));
-      if(!li) return;
-      li.classList.add('editing');
-      li.innerHTML = `
-        <input type="number" value="${item.valor}" id="edit-${id}">
-        <div class="edit-buttons">
-          <button class="save">💾 Salvar</button>
-          <button class="cancel">❌ Cancelar</button>
-        </div>
-      `;
-      const input = li.querySelector(`#edit-${id}`);
-      input.focus();
-      li.querySelector('.save').onclick = ()=>{
-        const novoValor = Number(input.value);
-        if(novoValor){
-          item.valor = novoValor;
-          localStorage.setItem('financeiro', JSON.stringify(dados));
-          atualizar();
-        }
-      };
-      li.querySelector('.cancel').onclick = ()=>atualizar();
-    }
-
-    function excluirItem(id){
-      dados = dados.filter(d=>d.id!==id);
-      localStorage.setItem('financeiro', JSON.stringify(dados));
-      atualizar();
-    }
-
-    atualizar();
-
-    // ===== CLIENTES =====
-    let clientes = JSON.parse(localStorage.getItem('clientes')) || [];
-    const listaClientes = document.getElementById('listaClientes');
-
-    function adicionarCliente(){
-      const nome = document.getElementById('clienteNome').value.trim();
-      const telefone = document.getElementById('clienteTelefone').value.trim();
-      const valor = Number(document.getElementById('clienteValor').value);
-      const data = document.getElementById('clienteData').value.trim();
-      if(!nome || !telefone || !valor || !data) return alert('Preencha todos os campos');
-      const novoCliente = {id: Date.now(), nome, telefone, valor, data};
-      clientes.push(novoCliente);
-      localStorage.setItem('clientes', JSON.stringify(clientes));
-      document.getElementById('clienteNome').value='';
-      document.getElementById('clienteTelefone').value='';
-      document.getElementById('clienteValor').value='';
-      document.getElementById('clienteData').value='';
-      atualizarClientes();
-    }
-
-    function atualizarClientes(){
-      listaClientes.innerHTML='';
-      clientes.forEach(c=>{
-        const li = document.createElement('li');
-        const valorFormatado = c.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-        li.innerHTML=`<span>${c.nome} - ${c.telefone} - ${valorFormatado} - ${c.data}</span>
-          <span>
-            <button onclick="editarCliente(${c.id})">✏️</button>
-            <button onclick="excluirCliente(${c.id})">🗑️</button>
-          </span>`;
-        listaClientes.appendChild(li);
-      });
-    }
-
-    function excluirCliente(id){
-      clientes = clientes.filter(c=>c.id!==id);
-      localStorage.setItem('clientes', JSON.stringify(clientes));
-      atualizarClientes();
-    }
-
-    function editarCliente(id){
-      const c = clientes.find(cl=>cl.id===id);
-      if(!c) return;
-      const nomeNovo = prompt('Nome:', c.nome);
-      const telNovo = prompt('Telefone:', c.telefone);
-      const valorNovo = prompt('Valor do Contrato:', c.valor);
-      const dataNova = prompt('Data de Pagamento (dd/mm/aaaa):', c.data);
-      if(nomeNovo) c.nome = nomeNovo;
-      if(telNovo) c.telefone = telNovo;
-      if(valorNovo) c.valor = Number(valorNovo);
-      if(dataNova) c.data = dataNova;
-      localStorage.setItem('clientes', JSON.stringify(clientes));
-      atualizarClientes();
-    }
-
-    atualizarClientes();
-  </script>
+atualizar(); atualizarClientes();
+</script>
 </body>
 </html>
 
