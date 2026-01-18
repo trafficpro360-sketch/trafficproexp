@@ -655,25 +655,26 @@ input[type=number] {
     <h3>Exportar Relatório</h3>
     <p>Escolha o que deseja incluir:</p>
 
- <label class="export-option">
-  <input type="checkbox" id="expReceitas" checked>
-  <span>Receitas</span>
- </label>
+    <label class="export-option">
+      <input type="checkbox" id="expReceitas" checked>
+      <span>Receitas</span>
+    </label>
 
- <label class="export-option">
-  <input type="checkbox" id="expDespesas" checked>
-  <span>Despesas</span>
- </label>
+    <label class="export-option">
+      <input type="checkbox" id="expDespesas" checked>
+      <span>Despesas</span>
+    </label>
 
- <label class="export-option">
-  <input type="checkbox" id="expPatrimonio" checked>
-  <span>Patrimônio</span>
- </label>
+    <label class="export-option">
+      <input type="checkbox" id="expPatrimonio" checked>
+      <span>Patrimônio</span>
+    </label>
 
     <button onclick="gerarRelatorioVisual()">Gerar Relatório</button>
     <button onclick="fecharModal('modalExport')">Cancelar</button>
   </div>
 </div>
+
 
 <div id="toast"></div>
 
@@ -957,6 +958,7 @@ function gerarRelatorioVisual(){
   const incluirReceitas = document.getElementById('expReceitas').checked;
   const incluirDespesas = document.getElementById('expDespesas').checked;
   const incluirPatrimonio = document.getElementById('expPatrimonio').checked;
+
   const totalReceitas = financeiro
     .filter(f => f.tipo === 'receita')
     .reduce((s, i) => s + i.valor, 0);
@@ -971,9 +973,8 @@ function gerarRelatorioVisual(){
 
   const saldoFinal = totalReceitas - totalDespesas + totalPatrimonio;
 
+  const janela = window.open("", "_blank");
 
-  let janela = window.open("", "_blank");
-  
   let html = `
   <html>
   <head>
@@ -986,6 +987,7 @@ function gerarRelatorioVisual(){
         padding:40px;
       }
       h1{color:#38bdf8;}
+
       .secao{
         background:rgba(15,23,42,.7);
         border:1px solid #1e293b;
@@ -993,16 +995,38 @@ function gerarRelatorioVisual(){
         padding:20px;
         margin-bottom:20px;
       }
+
       .item{
-        padding:10px;
+        padding:10px 0;
         border-bottom:1px solid #1e293b;
+      }
+
+      .btn-pdf{
+        margin:20px 0;
+        padding:12px 20px;
+        border-radius:14px;
+        border:none;
+        background:#38bdf8;
+        color:#020617;
+        font-weight:700;
+        cursor:pointer;
+      }
+
+      @media print {
+        .btn-pdf {
+          display: none;
+        }
+        body {
+          padding: 20px;
+        }
       }
     </style>
   </head>
+
   <body>
     <h1>Relatório Financeiro</h1>
 
-
+    <button class="btn-pdf" onclick="window.print()">Baixar PDF</button>
   `;
 
   if(incluirReceitas){
@@ -1043,20 +1067,24 @@ function gerarRelatorioVisual(){
     });
     html += `</div>`;
   }
-  
-html += `
-  <div class="secao">
-    <h2>Conclusão — Saldo Final</h2>
-    <div class="item">
-      <strong>${formatar(saldoFinal)}</strong><br>
-      Valor total disponível após receitas, despesas e patrimônio
+
+  html += `
+    <div class="secao">
+      <h2>Conclusão — Saldo Final</h2>
+      <div class="item">
+        <strong>${formatar(saldoFinal)}</strong><br>
+        Valor total disponível após receitas, despesas e patrimônio
+      </div>
     </div>
-  </div>
-`;
-  
-  html += `</body></html>`;
+  `;
+
+  html += `
+  </body>
+  </html>
+  `;
 
   janela.document.write(html);
+  janela.document.close();
   fecharModal('modalExport');
 }
 
