@@ -90,28 +90,37 @@ input[type=number]{ -moz-appearance:textfield }
   background:#0b0f1c;padding:10px 14px;border-radius:12px;
   margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px
 }
-.records li span{flex:1}
 
 .actions button{
-  background:none;border:none;cursor:pointer;
-  color:#94a3b8;font-size:14px
+  background:none;border:none;color:#94a3b8;cursor:pointer
 }
 .actions button:hover{color:#38bdf8}
 
-.edit-box{
-  display:flex;gap:8px;width:100%
-}
+.edit-box{display:flex;gap:6px;width:100%}
 .edit-box input{
-  flex:1;padding:8px;border-radius:10px;
-  border:1px solid #1e293b;background:#020617;color:#fff
+  padding:8px;border-radius:10px;border:1px solid #1e293b;
+  background:#020617;color:#fff
 }
 .edit-box button{
-  padding:8px 12px;border-radius:10px;border:none;
+  padding:8px 10px;border-radius:10px;border:none;
   background:#2563eb;color:#fff;cursor:pointer
 }
 .edit-box .cancel{background:#334155}
 
 #clientes{display:none}
+.clientes-container{
+  background:#020617;border:1px solid #1e293b;
+  border-radius:18px;padding:24px
+}
+.clientes-container input{
+  width:100%;padding:14px;border-radius:14px;margin-bottom:12px;
+  background:#020617;border:1px solid #1e293b;color:#fff
+}
+.clientes-container button{
+  width:100%;padding:14px;border-radius:14px;border:none;
+  background:linear-gradient(135deg,#2563eb,#38bdf8);
+  color:#fff;font-weight:600;cursor:pointer
+}
 </style>
 </head>
 
@@ -159,7 +168,17 @@ input[type=number]{ -moz-appearance:textfield }
   </section>
 </div>
 
-<div id="clientes"></div>
+<div id="clientes">
+  <div class="header">Clientes</div>
+  <div class="clientes-container">
+    <input id="clienteNome" placeholder="Nome">
+    <input id="clienteTelefone" placeholder="Telefone">
+    <input type="number" id="clienteValor" placeholder="Valor do contrato">
+    <input id="clienteData" placeholder="dd/mm/aaaa">
+    <button onclick="adicionarCliente()">Adicionar Cliente</button>
+    <ul id="listaClientes" style="margin-top:20px"></ul>
+  </div>
+</div>
 
 </main>
 
@@ -235,7 +254,11 @@ function atualizar(){
   let r=[0,0,0,0,0,0],d=[0,0,0,0,0,0],p=[0,0,0,0,0,0]
 
   dados.forEach(i=>{
-    const m=new Date(i.mes.split('/')[2],i.mes.split('/')[1]-1).getMonth()
+    const partes=i.mes.split('/')
+    if(partes.length!==3)return
+    const m=parseInt(partes[1])-1
+    if(m<0||m>5)return
+
     if(i.tipo==='receita') r[m]+=i.valor
     if(i.tipo==='despesa') d[m]+=i.valor
     if(i.tipo==='patrimonio') p[m]+=i.valor
@@ -253,12 +276,18 @@ function atualizar(){
     if(i.tipo==='patrimonio') listaPatrimonio.appendChild(li)
   })
 
+  cardReceita.innerText=`R$ ${r.reduce((a,b)=>a+b,0).toLocaleString('pt-BR')}`
+  cardDespesa.innerText=`R$ ${d.reduce((a,b)=>a+b,0).toLocaleString('pt-BR')}`
+  cardPatrimonio.innerText=`R$ ${p.reduce((a,b)=>a+b,0).toLocaleString('pt-BR')}`
+  cardSaldo.innerText=`R$ ${(r.reduce((a,b)=>a+b,0)-d.reduce((a,b)=>a+b,0)+p.reduce((a,b)=>a+b,0)).toLocaleString('pt-BR')}`
+
   chart.data.datasets[0].data=r
   chart.data.datasets[1].data=d
   chart.data.datasets[2].data=p
   chart.data.datasets[3].data=r.map((v,i)=>v-d[i]+p[i])
   chart.update()
 }
+
 atualizar()
 </script>
 
