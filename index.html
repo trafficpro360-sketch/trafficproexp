@@ -118,19 +118,17 @@ body{
   color:#fff;
   font-size:14px;
 }
-.controls .valor-input{width:110px}
-.controls .data-input{width:120px}
-.controls .desc-input{flex:1;max-width:360px}
-.controls button{
-  padding:12px 16px;
-  border-radius:16px;
-  border:none;
-  background:linear-gradient(135deg,#2563eb,#38bdf8);
-  color:#fff;
-  font-weight:600;
-  cursor:pointer;
-  white-space:nowrap;
+/* REMOVE AS SETAS DOS CAMPOS type="number" */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 
 /* TOGGLE */
 .toggle{
@@ -343,7 +341,31 @@ body{
   border-radius:18px;
   margin-bottom:12px;
 }
+
+/* === REMOVER SETAS DA BARRA DE ROLAGEM (GARANTIDO) === */
+::-webkit-scrollbar-button:single-button {
+  display: none !important;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) rgba(15,23,42,.7);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15,23,42,.7);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
 </style>
+  
 </head>
 
 <body>
