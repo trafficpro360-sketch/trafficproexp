@@ -1,257 +1,46 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Plataforma Operacional</title>
-
-<style>
-:root {
-  --bg: #0f172a;
-  --card: #111827;
-  --primary: #38bdf8;
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --danger: #ef4444;
-}
-
-* {
-  box-sizing: border-box;
-  font-family: Inter, system-ui, Arial;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-}
-
-/* HEADER */
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  background: #020617;
-  border-bottom: 1px solid #1e293b;
-}
-
-header h1 {
-  font-size: 18px;
-  margin: 0;
-}
-
-/* NOTIFICAÇÕES */
-.notification-wrapper {
-  position: relative;
-}
-
-.bell {
-  cursor: pointer;
-  font-size: 20px;
-  position: relative;
-}
-
-.bell span {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  background: var(--danger);
-  color: white;
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 999px;
-}
-
-.notification-box {
-  position: absolute;
-  right: 0;
-  top: 34px;
-  width: 340px;
-  background: var(--card);
-  border-radius: 12px;
-  box-shadow: 0 20px 40px rgba(0,0,0,.4);
-  display: none;
-  flex-direction: column;
-  max-height: 360px;
-}
-
-.notification-box.active {
-  display: flex;
-}
-
-.notification-box header {
-  padding: 12px;
-  font-weight: 600;
-  border-bottom: 1px solid #1e293b;
-}
-
-.notification-list {
-  overflow-y: auto;
-}
-
-.notification {
-  padding: 12px;
-  border-bottom: 1px solid #1e293b;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.notification small {
-  color: var(--muted);
-}
-
-.notification button {
-  background: none;
-  border: none;
-  color: var(--danger);
-  cursor: pointer;
-}
-
-/* MAIN */
-main {
-  padding: 24px;
-}
-
-.card {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-.card h2 {
-  margin-top: 0;
-}
-
-/* BOTÃO */
-button.primary {
-  background: var(--primary);
-  border: none;
-  padding: 10px 16px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-}
-</style>
-</head>
-
-<body>
-
-<header>
-  <h1>Dashboard</h1>
-
-  <div class="notification-wrapper">
-    <div class="bell" onclick="toggleNotifications()">
-      🔔 <span id="notificationCount">0</span>
-    </div>
-
-    <div class="notification-box" id="notificationBox">
-      <header>Notificações</header>
-      <div class="notification-list" id="notificationList"></div>
-    </div>
-  </div>
-</header>
-
-<main>
-  <div class="card">
-    <h2>Ações de Teste</h2>
-    <button class="primary" onclick="mockAction('Cliente adicionado')">Adicionar Cliente</button>
-    <button class="primary" onclick="mockAction('Valor editado')">Editar Valor</button>
-    <button class="primary" onclick="mockAction('Registro removido')">Excluir Registro</button>
-  </div>
-</main>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const STORAGE_KEY = 'notifications';
+/* ===== NOTIFICAÇÕES ===== */
+const NKEY='notifications'
 
-/* UTIL */
-function getNotifications() {
-  return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+function getN(){return JSON.parse(localStorage.getItem(NKEY))||[]}
+function saveN(n){localStorage.setItem(NKEY,JSON.stringify(n))}
+function addN(msg){
+  const n=getN()
+  n.unshift({id:Date.now(),msg,date:new Date().toISOString()})
+  saveN(n);renderN()
+}
+function cleanN(){
+  const now=new Date()
+  saveN(getN().filter(n=>(now-new Date(n.date))/(1000*60*60*24)<=7))
+}
+function renderN(){
+  cleanN()
+  const box=document.getElementById('notifyBox')
+  const c=document.getElementById('notifyCount')
+  const n=getN()
+  c.innerText=n.length
+  box.innerHTML=n.length?n.map(i=>`
+    <div class="notify">
+      <div>${i.msg}<br><small>${new Date(i.date).toLocaleString()}</small></div>
+      <button onclick="delN(${i.id})">✕</button>
+    </div>`).join(''):'<div class="notify"><small>Sem notificações</small></div>'
+}
+function delN(id){saveN(getN().filter(n=>n.id!==id));renderN()}
+function toggleNotify(){document.getElementById('notifyBox').classList.toggle('active')}
+
+/* CHAMADAS EXISTENTES + NOTIFICAÇÃO */
+const oldAdd=adicionar
+adicionar=function(){
+  oldAdd()
+  addN(`Novo ${tipoSelecionado} adicionado`)
 }
 
-function saveNotifications(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+function adicionarCliente(){
+  addN('Novo cliente adicionado')
 }
 
-/* CRIAR NOTIFICAÇÃO */
-function addNotification(message) {
-  const notifications = getNotifications();
-
-  notifications.unshift({
-    id: Date.now(),
-    message,
-    date: new Date().toISOString()
-  });
-
-  saveNotifications(notifications);
-  renderNotifications();
-}
-
-/* REMOVER */
-function removeNotification(id) {
-  let notifications = getNotifications();
-  notifications = notifications.filter(n => n.id !== id);
-  saveNotifications(notifications);
-  renderNotifications();
-}
-
-/* LIMPAR > 7 DIAS */
-function cleanOldNotifications() {
-  const now = new Date();
-  let notifications = getNotifications();
-
-  notifications = notifications.filter(n => {
-    const diff = (now - new Date(n.date)) / (1000 * 60 * 60 * 24);
-    return diff <= 7;
-  });
-
-  saveNotifications(notifications);
-}
-
-/* RENDER */
-function renderNotifications() {
-  cleanOldNotifications();
-
-  const list = document.getElementById('notificationList');
-  const count = document.getElementById('notificationCount');
-  const notifications = getNotifications();
-
-  list.innerHTML = '';
-  count.innerText = notifications.length;
-
-  if (notifications.length === 0) {
-    list.innerHTML = `<div class="notification"><small>Nenhuma notificação</small></div>`;
-    return;
-  }
-
-  notifications.forEach(n => {
-    const div = document.createElement('div');
-    div.className = 'notification';
-    div.innerHTML = `
-      <div>
-        <div>${n.message}</div>
-        <small>${new Date(n.date).toLocaleString()}</small>
-      </div>
-      <button onclick="removeNotification(${n.id})">✕</button>
-    `;
-    list.appendChild(div);
-  });
-}
-
-/* TOGGLE */
-function toggleNotifications() {
-  document.getElementById('notificationBox').classList.toggle('active');
-}
-
-/* AÇÕES DE EXEMPLO */
-function mockAction(text) {
-  addNotification(text);
-}
-
-/* INIT */
-renderNotifications();
+renderN()
 </script>
 
 </body>
