@@ -297,14 +297,12 @@ input[type=number]{-moz-appearance:textfield}
     <input class="desc-input" type="text" id="descricao" placeholder="Descrição do lançamento">
   </div>
   <div class="row">
+    <button onclick="adicionarLancamento()">Adicionar lançamento</button>
     <div class="toggle">
       <button class="active receita" onclick="setTipo('receita',this)">Receita</button>
       <button class="despesa" onclick="setTipo('despesa',this)">Despesa</button>
       <button class="patrimonio" onclick="setTipo('patrimonio',this)">Patrimônio</button>
     </div>
-  </div>
-  <div class="row">
-    <button onclick="adicionarLancamento()">Adicionar lançamento</button>
   </div>
 </section>
 
