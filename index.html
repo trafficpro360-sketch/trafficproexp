@@ -17,6 +17,7 @@ body{
   display:flex
 }
 
+/* remove setas do input number */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button{
   -webkit-appearance:none;
@@ -49,61 +50,8 @@ input[type=number]{-moz-appearance:textfield}
 }
 
 /* CONTENT */
-.content{flex:1;padding:40px;position:relative}
-.header{
-  font-size:28px;
-  font-weight:700;
-  margin-bottom:32px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center
-}
-
-/* NOTIFICAÇÕES */
-.notify-wrapper{position:relative}
-.notify-btn{
-  font-size:20px;
-  cursor:pointer;
-  position:relative
-}
-.notify-btn span{
-  position:absolute;
-  top:-6px;
-  right:-6px;
-  background:#ef4444;
-  color:#fff;
-  font-size:10px;
-  padding:2px 6px;
-  border-radius:999px
-}
-.notify-box{
-  position:absolute;
-  right:0;
-  top:32px;
-  width:320px;
-  background:#020617;
-  border:1px solid #1e293b;
-  border-radius:16px;
-  display:none;
-  max-height:360px;
-  overflow:auto;
-  z-index:10
-}
-.notify-box.active{display:block}
-.notify{
-  padding:12px;
-  border-bottom:1px solid #1e293b;
-  display:flex;
-  justify-content:space-between;
-  gap:10px
-}
-.notify small{color:#94a3b8}
-.notify button{
-  background:none;
-  border:none;
-  color:#ef4444;
-  cursor:pointer
-}
+.content{flex:1;padding:40px}
+.header{font-size:28px;font-weight:700;margin-bottom:32px}
 
 /* CARDS */
 .cards{
@@ -247,12 +195,115 @@ input[type=number]{-moz-appearance:textfield}
 <main class="content">
 
 <div id="dashboard">
-  <div class="header">
-    Dashboard
-    <div class="notify-wrapper">
-      <div class="notify-btn" onclick="toggleNotify()">🔔<span id="notifyCount">0</span></div>
-      <div class="notify-box" id="notifyBox"></div>
-    </div>
-  </div>
+  <div class="header">Dashboard</div>
 
-  <!-- RESTANTE DO DASHBOARD PERMANECE IGUAL -->
+  <section class="cards">
+    <div class="card blue"><span>Receita</span><h2 id="cardReceita">R$ 0</h2></div>
+    <div class="card red"><span>Despesas</span><h2 id="cardDespesa">R$ 0</h2></div>
+    <div class="card yellow"><span>Patrimônio</span><h2 id="cardPatrimonio">R$ 0</h2></div>
+    <div class="card green"><span>Saldo</span><h2 id="cardSaldo">R$ 0</h2></div>
+  </section>
+
+  <section class="controls">
+    <input type="number" id="valor" placeholder="Valor (R$)">
+    <div class="toggle">
+      <button class="active receita" onclick="setTipo('receita',this)">Receita</button>
+      <button class="despesa" onclick="setTipo('despesa',this)">Despesa</button>
+      <button class="patrimonio" onclick="setTipo('patrimonio',this)">Patrimônio</button>
+    </div>
+    <input type="text" id="mes" placeholder="dd/mm/aaaa">
+    <button onclick="adicionar()">Adicionar</button>
+  </section>
+
+  <div class="chart"><canvas id="financeChart"></canvas></div>
+
+  <section class="records">
+    <div><h3>Receitas</h3><ul id="listaReceita"></ul></div>
+    <div><h3>Despesas</h3><ul id="listaDespesa"></ul></div>
+    <div><h3>Patrimônio</h3><ul id="listaPatrimonio"></ul></div>
+  </section>
+</div>
+
+<div id="clientes">
+  <div class="header">Clientes</div>
+  <div class="clientes-container">
+    <input id="clienteNome" placeholder="Nome">
+    <input id="clienteTelefone" placeholder="Telefone">
+    <input type="number" id="clienteValor" placeholder="Valor do contrato">
+    <input id="clienteData" placeholder="dd/mm/aaaa">
+    <button onclick="adicionarCliente()">Adicionar Cliente</button>
+    <ul id="listaClientes" style="margin-top:20px"></ul>
+  </div>
+</div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+function mostrarAba(id,el){
+  document.querySelectorAll('main>div').forEach(d=>d.style.display='none')
+  document.getElementById(id).style.display='block'
+  document.querySelectorAll('.menu li').forEach(li=>li.classList.remove('active'))
+  el.parentElement.classList.add('active')
+}
+
+let tipoSelecionado='receita'
+let dados=JSON.parse(localStorage.getItem('financeiro'))||[]
+
+function setTipo(tipo,el){
+  tipoSelecionado=tipo
+  document.querySelectorAll('.toggle button').forEach(b=>b.classList.remove('active'))
+  el.classList.add('active')
+}
+
+const ctx=document.getElementById('financeChart')
+const chart=new Chart(ctx,{
+  type:'line',
+  data:{
+    labels:['Jan','Fev','Mar','Abr','Mai','Jun'],
+    datasets:[
+      {label:'Receita',data:[0,0,0,0,0,0],borderColor:'#22c55e'},
+      {label:'Despesa',data:[0,0,0,0,0,0],borderColor:'#ef4444'},
+      {label:'Patrimônio',data:[0,0,0,0,0,0],borderColor:'#facc15'},
+      {label:'Saldo',data:[0,0,0,0,0,0],borderColor:'#38bdf8'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false}
+})
+
+function adicionar(){
+  const valor=Number(valor.value)
+  if(!valor||!mes.value) return
+  dados.push({id:Date.now(),valor,tipo:tipoSelecionado,mes:mes.value})
+  localStorage.setItem('financeiro',JSON.stringify(dados))
+  atualizar()
+}
+
+function atualizar(){
+  listaReceita.innerHTML=listaDespesa.innerHTML=listaPatrimonio.innerHTML=''
+  let r=[0,0,0,0,0,0],d=[0,0,0,0,0,0],p=[0,0,0,0,0,0]
+
+  dados.forEach(i=>{
+    const m=new Date(i.mes.split('/')[2],i.mes.split('/')[1]-1).getMonth()
+    if(i.tipo==='receita') r[m]+=i.valor
+    if(i.tipo==='despesa') d[m]+=i.valor
+    if(i.tipo==='patrimonio') p[m]+=i.valor
+
+    const li=document.createElement('li')
+    li.textContent=`${i.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} - ${i.mes}`
+    if(i.tipo==='receita') listaReceita.appendChild(li)
+    if(i.tipo==='despesa') listaDespesa.appendChild(li)
+    if(i.tipo==='patrimonio') listaPatrimonio.appendChild(li)
+  })
+
+  chart.data.datasets[0].data=r
+  chart.data.datasets[1].data=d
+  chart.data.datasets[2].data=p
+  chart.data.datasets[3].data=r.map((v,i)=>v-d[i]+p[i])
+  chart.update()
+}
+atualizar()
+</script>
+
+</body>
+</html>
