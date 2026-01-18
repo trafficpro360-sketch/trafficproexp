@@ -294,15 +294,6 @@ input[type=number] {
 }
 
 /* Checkboxes alinhados */
-#modalExport label{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:10px;
-  font-size:14px;
-  cursor:pointer;
-}
-
 #modalExport button{
   margin-top:8px;
 }
@@ -338,19 +329,26 @@ input[type=number] {
   text-align: left;
 }
 
-/* Organiza melhor os checkboxes */
-#modalExport label{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:8px;
-}
-
 /* Dá espaço interno agradável */
 #modalExport p{
   margin-bottom: 14px;
 }
+  
+/* Alinhamento perfeito checkbox + texto */
+.export-option{
+  display:grid;
+  grid-template-columns: 20px 1fr;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
+  font-size:14px;
+  color:var(--text);
+  cursor:pointer;
+}
 
+.export-option input{
+  margin:0;
+}
 
 @keyframes slideUp{
   from{transform:translateY(14px)}
@@ -555,6 +553,13 @@ input[type=number] {
   align-items:center;
 }
 
+/* FIX DEFINITIVO: alinhamento perfeito dos checkboxes do modal exportar */
+.export-option input[type="checkbox"]{
+  width:16px;
+  height:16px;
+  min-width:16px;
+  cursor:pointer;
+}
 
 </style>
 </head>
@@ -650,20 +655,20 @@ input[type=number] {
     <h3>Exportar Relatório</h3>
     <p>Escolha o que deseja incluir:</p>
 
-    <label>
-      <input type="checkbox" id="expReceitas" checked>
-      Receitas
-    </label>
+ <label class="export-option">
+  <input type="checkbox" id="expReceitas" checked>
+  <span>Receitas</span>
+ </label>
 
-    <label>
-      <input type="checkbox" id="expDespesas" checked>
-      Despesas
-    </label>
+ <label class="export-option">
+  <input type="checkbox" id="expDespesas" checked>
+  <span>Despesas</span>
+ </label>
 
-    <label>
-      <input type="checkbox" id="expPatrimonio" checked>
-      Patrimônio
-    </label>
+ <label class="export-option">
+  <input type="checkbox" id="expPatrimonio" checked>
+  <span>Patrimônio</span>
+ </label>
 
     <button onclick="gerarRelatorioVisual()">Gerar Relatório</button>
     <button onclick="fecharModal('modalExport')">Cancelar</button>
