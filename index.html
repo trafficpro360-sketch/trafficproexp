@@ -399,18 +399,20 @@ input[type=number] {
   gap:12px;
 }
 
-.exportar-area{
-  font-size:22px;
-  cursor:pointer;
-  padding:10px;
+.btn-exportar{
+  padding:10px 16px;
   border-radius:14px;
+  border:1px solid var(--blue);
+  background:rgba(56,189,248,.12);
+  color:var(--blue);
+  font-weight:600;
+  cursor:pointer;
   transition:.2s;
 }
 
-.exportar-area:hover{
-  background:rgba(56,189,248,.15);
+.btn-exportar:hover{
+  background:rgba(56,189,248,.22);
 }
-
 
 .notificacao-area{
   position:relative;
@@ -503,15 +505,15 @@ input[type=number] {
  <div class="top-bar">
   <div class="header">Dashboard Financeiro</div>
 
-  <div class="acoes-topo">
-    <div class="exportar-area" onclick="abrirModalExport()">📄</div>
+<div class="acoes-topo">
+  <button class="btn-exportar" onclick="abrirModalExport()">Exportar</button>
 
-    <div class="notificacao-area" onclick="toggleNotificacoes()">
-      🔔
-      <span id="notifBadge">0</span>
-    </div>
+  <div class="notificacao-area" onclick="toggleNotificacoes()">
+    🔔
+    <span id="notifBadge">0</span>
   </div>
 </div>
+
 
   <section class="cards">
     <div class="card blue"><span>Receita Total</span><h2 id="cardReceita">R$ 0</h2></div>
