@@ -505,17 +505,17 @@ input[type=number] {
  <div class="top-bar">
   <div class="header">Dashboard Financeiro</div>
 
-<div class="acoes-topo">
-  <button class="btn-exportar" onclick="abrirModalExport()">Exportar</button>
+  <div class="acoes-topo">
+    <button class="btn-exportar" onclick="abrirModalExport()">Exportar</button>
 
-  <div class="notificacao-area" onclick="toggleNotificacoes()">
-    🔔
-    <span id="notifBadge">0</span>
+    <div class="notificacao-area" onclick="toggleNotificacoes()">
+      🔔
+      <span id="notifBadge">0</span>
+    </div>
   </div>
-</div>
+</div>   <!-- 🔹 FECHAMENTO DO TOP-BAR CORRETO -->
 
-
-  <section class="cards">
+<section class="cards">
     <div class="card blue"><span>Receita Total</span><h2 id="cardReceita">R$ 0</h2></div>
     <div class="card red"><span>Despesas Totais</span><h2 id="cardDespesa">R$ 0</h2></div>
     <div class="card yellow"><span>Patrimônio</span><h2 id="cardPatrimonio">R$ 0</h2></div>
