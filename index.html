@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Finance Pro — Painel Financeiro</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<!-- REMOVIDO TUDO EXTERNO DO GOOGLE -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root{
@@ -21,7 +21,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{
-  font-family:'Inter',sans-serif;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;
   background:radial-gradient(1200px 600px at 10% -10%, #0f172a, #020617);
   color:var(--text);
   min-height:100vh;
@@ -225,7 +225,7 @@ input[type=number]{-moz-appearance:textfield}
   align-items:center;
 }
 
-/* MODAL DE EDIÇÃO */
+/* MODAIS INTERNOS (SEM ALERT/CONFIRM DO NAVEGADOR) */
 .modal{
   position:fixed;
   top:0;left:0;
@@ -245,7 +245,8 @@ input[type=number]{-moz-appearance:textfield}
   width:360px;
   box-shadow:0 10px 40px rgba(0,0,0,.6);
 }
-.modal-content h3{margin-bottom:14px}
+.modal-content h3{margin-bottom:10px}
+.modal-content p{margin-bottom:14px;color:var(--muted)}
 .modal-content input{
   width:100%;padding:12px;border-radius:16px;
   border:1px solid var(--border);
@@ -255,6 +256,7 @@ input[type=number]{-moz-appearance:textfield}
 .modal-actions button{flex:1;padding:12px;border-radius:16px;border:none;cursor:pointer}
 .btn-save{background:linear-gradient(135deg,#2563eb,#38bdf8);color:#fff}
 .btn-cancel{background:rgba(239,68,68,.2);color:var(--red)}
+.btn-confirm{background:rgba(239,68,68,.8);color:#fff}
 </style>
 </head>
 <body>
@@ -312,7 +314,7 @@ input[type=number]{-moz-appearance:textfield}
 </div>
 </main>
 
-<!-- MODAL DE EDIÇÃO -->
+<!-- MODAL EDITAR LANÇAMENTO -->
 <div class="modal" id="modalEdit">
   <div class="modal-content">
     <h3>Editar lançamento</h3>
@@ -320,7 +322,19 @@ input[type=number]{-moz-appearance:textfield}
     <input type="text" id="editMes" placeholder="dd/mm/aaaa">
     <div class="modal-actions">
       <button class="btn-save" onclick="salvarEdicao()">Salvar</button>
-      <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-cancel" onclick="fecharModal('modalEdit')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR EXCLUSÃO -->
+<div class="modal" id="modalDelete">
+  <div class="modal-content">
+    <h3>Confirmar exclusão</h3>
+    <p id="deleteMsg">Tem certeza que deseja excluir este item?</p>
+    <div class="modal-actions">
+      <button class="btn-confirm" onclick="confirmarExclusao()">Sim, excluir</button>
+      <button class="btn-cancel" onclick="fecharModal('modalDelete')">Cancelar</button>
     </div>
   </div>
 </div>
@@ -331,6 +345,7 @@ let tipoSelecionado='receita'
 let financeiro=JSON.parse(localStorage.getItem('financeiro'))||[]
 let clientes=JSON.parse(localStorage.getItem('clientes'))||[]
 let editandoId=null
+let deletandoId=null
 
 function mostrarAba(id,el){
   document.querySelectorAll('main>div').forEach(d=>d.style.display='none')
@@ -361,7 +376,7 @@ function formatar(v){return Number(v).toLocaleString('pt-BR',{style:'currency',c
 function adicionarLancamento(){
   const valor=Number(document.getElementById('valor').value)
   const mes=document.getElementById('mes').value
-  if(!valor||!mes){alert('Preencha valor e data');return}
+  if(!valor||!mes){abrirAviso('Preencha valor e data');return}
   financeiro.push({id:Date.now(),valor,tipo:tipoSelecionado,mes})
   salvarFinanceiro(); atualizarFinanceiro(); limparFinanceiroForm();
 }
@@ -372,31 +387,27 @@ function abrirModalEditar(id){
   editandoId=id;
   document.getElementById('editValor').value=item.valor;
   document.getElementById('editMes').value=item.mes;
-  document.getElementById('modalEdit').classList.add('active');
-}
-
-function fecharModal(){
-  document.getElementById('modalEdit').classList.remove('active');
-  editandoId=null;
+  abrirModal('modalEdit');
 }
 
 function salvarEdicao(){
   const novoValor=Number(document.getElementById('editValor').value)
   const novoMes=document.getElementById('editMes').value;
-  if(!novoValor||!novoMes){alert('Preencha todos os campos');return}
-
+  if(!novoValor||!novoMes){abrirAviso('Preencha todos os campos');return}
   const idx=financeiro.findIndex(f=>f.id===editandoId);
-  if(idx>-1){
-    financeiro[idx].valor=novoValor;
-    financeiro[idx].mes=novoMes;
-  }
-  salvarFinanceiro(); atualizarFinanceiro(); fecharModal();
+  if(idx>-1){financeiro[idx].valor=novoValor;financeiro[idx].mes=novoMes}
+  salvarFinanceiro(); atualizarFinanceiro(); fecharModal('modalEdit');
 }
 
-function excluirLancamento(id){
-  if(!confirm('Excluir este lançamento?')) return;
-  financeiro=financeiro.filter(f=>f.id!==id);
-  salvarFinanceiro(); atualizarFinanceiro();
+function pedirExcluirLancamento(id){
+  deletandoId=id;
+  document.getElementById('deleteMsg').textContent='Tem certeza que deseja excluir este lançamento?';
+  abrirModal('modalDelete');
+}
+
+function confirmarExclusao(){
+  financeiro=financeiro.filter(f=>f.id!==deletandoId);
+  salvarFinanceiro(); atualizarFinanceiro(); fecharModal('modalDelete');
 }
 
 function salvarFinanceiro(){localStorage.setItem('financeiro',JSON.stringify(financeiro))}
@@ -412,7 +423,7 @@ function atualizarFinanceiro(){
     const li=`<li><span>${formatar(i.valor)} — ${i.mes}</span>
       <div class='btn-group'>
         <button class='btn-edit' onclick='abrirModalEditar(${i.id})'>Editar</button>
-        <button class='btn-del' onclick='excluirLancamento(${i.id})'>Excluir</button>
+        <button class='btn-del' onclick='pedirExcluirLancamento(${i.id})'>Excluir</button>
       </div></li>`
 
     if(i.tipo==='receita'){r[idx]+=i.valor; listaReceita.innerHTML+=li}
@@ -443,16 +454,20 @@ function adicionarCliente(){
   const telefone=clienteTelefone.value.trim()
   const valor=Number(clienteValor.value)
   const data=clienteData.value
-  if(!nome||!valor){alert('Nome e valor são obrigatórios');return}
-
+  if(!nome||!valor){abrirAviso('Nome e valor são obrigatórios');return}
   clientes.push({id:Date.now(),nome,telefone,valor,data})
   salvarClientes(); atualizarClientes(); limparClienteForm();
 }
 
-function excluirCliente(id){
-  if(!confirm('Excluir este cliente?')) return;
-  clientes=clientes.filter(x=>x.id!==id);
-  salvarClientes(); atualizarClientes();
+function pedirExcluirCliente(id){
+  deletandoId=id;
+  document.getElementById('deleteMsg').textContent='Tem certeza que deseja excluir este cliente?';
+  abrirModal('modalDelete');
+}
+
+function confirmarExclusaoCliente(){
+  clientes=clientes.filter(x=>x.id!==deletandoId);
+  salvarClientes(); atualizarClientes(); fecharModal('modalDelete');
 }
 
 function salvarClientes(){localStorage.setItem('clientes',JSON.stringify(clientes))}
@@ -462,12 +477,16 @@ function atualizarClientes(){
   clientes.forEach(c=>{
     listaClientes.innerHTML+=`<li><span><strong>${c.nome}</strong> — ${formatar(c.valor)} ${c.data||''}</span>
       <div class='btn-group'>
-        <button class='btn-del' onclick='excluirCliente(${c.id})'>Excluir</button>
+        <button class='btn-del' onclick='pedirExcluirCliente(${c.id})'>Excluir</button>
       </div></li>`
   })
 }
 
 function limparClienteForm(){clienteNome.value=clienteTelefone.value=clienteValor.value=clienteData.value=''}
+
+function abrirModal(id){document.getElementById(id).classList.add('active')}
+function fecharModal(id){document.getElementById(id).classList.remove('active')}
+function abrirAviso(msg){document.getElementById('deleteMsg').textContent=msg; abrirModal('modalDelete')}
 
 mostrarAba('dashboard',document.querySelector('.menu a'))
 atualizarFinanceiro(); atualizarClientes();
