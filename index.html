@@ -157,25 +157,30 @@ input[type=number]{-moz-appearance:textfield}
   overflow-y:auto;
   padding-right:8px;
 }
-/* Scrollbar moderna e arredondada */
 .records ul::-webkit-scrollbar{width:8px}
-.records ul::-webkit-scrollbar-track{
-  background:rgba(15,23,42,.6);
-  border-radius:20px;
-}
-.records ul::-webkit-scrollbar-thumb{
-  background:linear-gradient(180deg,#2563eb,#38bdf8);
-  border-radius:20px;
-}
-.records ul::-webkit-scrollbar-thumb:hover{opacity:.9}
-
+.records ul::-webkit-scrollbar-track{background:rgba(15,23,42,.6);border-radius:20px}
+.records ul::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#2563eb,#38bdf8);border-radius:20px}
 .records li{
   background:rgba(2,6,23,.6);
   padding:10px 12px;
   border-radius:14px;
   margin-bottom:8px;
   font-size:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
+
+.btn-group{display:flex;gap:6px}
+.btn-edit,.btn-del{
+  border:none;
+  padding:6px 10px;
+  border-radius:12px;
+  font-size:12px;
+  cursor:pointer;
+}
+.btn-edit{background:rgba(56,189,248,.2);color:var(--blue)}
+.btn-del{background:rgba(239,68,68,.2);color:var(--red)}
 
 /* CLIENTES */
 #clientes{display:none}
@@ -206,12 +211,7 @@ input[type=number]{-moz-appearance:textfield}
   font-weight:600;
   cursor:pointer;
 }
-#listaClientes{
-  list-style:none;
-  max-height:260px;
-  overflow-y:auto;
-  padding-right:8px;
-}
+#listaClientes{list-style:none;max-height:260px;overflow-y:auto;padding-right:8px}
 #listaClientes::-webkit-scrollbar{width:8px}
 #listaClientes::-webkit-scrollbar-track{background:rgba(15,23,42,.6);border-radius:20px}
 #listaClientes::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#2563eb,#38bdf8);border-radius:20px}
@@ -220,6 +220,9 @@ input[type=number]{-moz-appearance:textfield}
   padding:10px 12px;
   border-radius:14px;
   margin-bottom:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 </style>
 </head>
@@ -315,11 +318,26 @@ function adicionarLancamento(){
   const mes=document.getElementById('mes').value
   if(!valor||!mes){alert('Preencha valor e data');return}
   financeiro.push({id:Date.now(),valor,tipo:tipoSelecionado,mes})
-  localStorage.setItem('financeiro',JSON.stringify(financeiro))
-  document.getElementById('valor').value=''
-  document.getElementById('mes').value=''
-  atualizarFinanceiro()
+  salvarFinanceiro(); atualizarFinanceiro(); limparFinanceiroForm();
 }
+
+function editarLancamento(id){
+  const item=financeiro.find(f=>f.id===id)
+  if(!item) return;
+  document.getElementById('valor').value=item.valor;
+  document.getElementById('mes').value=item.mes;
+  setTipo(item.tipo,document.querySelector(`.toggle .${item.tipo}`));
+  financeiro=financeiro.filter(f=>f.id!==id);
+  salvarFinanceiro(); atualizarFinanceiro();
+}
+
+function excluirLancamento(id){
+  if(!confirm('Excluir este lançamento?')) return;
+  financeiro=financeiro.filter(f=>f.id!==id);
+  salvarFinanceiro(); atualizarFinanceiro();
+}
+
+function salvarFinanceiro(){localStorage.setItem('financeiro',JSON.stringify(financeiro))}
 
 function atualizarFinanceiro(){
   let r=Array(12).fill(0),d=Array(12).fill(0),p=Array(12).fill(0)
@@ -329,18 +347,15 @@ function atualizarFinanceiro(){
     const partes=i.mes.split('/')
     const idx=new Date(partes[2],partes[1]-1).getMonth()
 
-    if(i.tipo==='receita'){
-      r[idx]+=i.valor
-      listaReceita.innerHTML+=`<li>${formatar(i.valor)} — ${i.mes}</li>`
-    }
-    if(i.tipo==='despesa'){
-      d[idx]+=i.valor
-      listaDespesa.innerHTML+=`<li>${formatar(i.valor)} — ${i.mes}</li>`
-    }
-    if(i.tipo==='patrimonio'){
-      p[idx]+=i.valor
-      listaPatrimonio.innerHTML+=`<li>${formatar(i.valor)} — ${i.mes}</li>`
-    }
+    const li=`<li><span>${formatar(i.valor)} — ${i.mes}</span>
+      <div class='btn-group'>
+        <button class='btn-edit' onclick='editarLancamento(${i.id})'>Editar</button>
+        <button class='btn-del' onclick='excluirLancamento(${i.id})'>Excluir</button>
+      </div></li>`
+
+    if(i.tipo==='receita'){r[idx]+=i.valor; listaReceita.innerHTML+=li}
+    if(i.tipo==='despesa'){d[idx]+=i.valor; listaDespesa.innerHTML+=li}
+    if(i.tipo==='patrimonio'){p[idx]+=i.valor; listaPatrimonio.innerHTML+=li}
   })
 
   const totalR=r.reduce((a,b)=>a+b,0)
@@ -359,6 +374,8 @@ function atualizarFinanceiro(){
   chart.update()
 }
 
+function limparFinanceiroForm(){document.getElementById('valor').value='';document.getElementById('mes').value=''}
+
 function adicionarCliente(){
   const nome=clienteNome.value.trim()
   const telefone=clienteTelefone.value.trim()
@@ -367,21 +384,43 @@ function adicionarCliente(){
   if(!nome||!valor){alert('Nome e valor são obrigatórios');return}
 
   clientes.push({id:Date.now(),nome,telefone,valor,data})
-  localStorage.setItem('clientes',JSON.stringify(clientes))
-  clienteNome.value=clienteTelefone.value=clienteValor.value=clienteData.value=''
-  atualizarClientes()
+  salvarClientes(); atualizarClientes(); limparClienteForm();
 }
+
+function editarCliente(id){
+  const c=clientes.find(x=>x.id===id)
+  if(!c) return;
+  clienteNome.value=c.nome;
+  clienteTelefone.value=c.telefone;
+  clienteValor.value=c.valor;
+  clienteData.value=c.data;
+  clientes=clientes.filter(x=>x.id!==id);
+  salvarClientes(); atualizarClientes();
+}
+
+function excluirCliente(id){
+  if(!confirm('Excluir este cliente?')) return;
+  clientes=clientes.filter(x=>x.id!==id);
+  salvarClientes(); atualizarClientes();
+}
+
+function salvarClientes(){localStorage.setItem('clientes',JSON.stringify(clientes))}
 
 function atualizarClientes(){
   listaClientes.innerHTML=''
   clientes.forEach(c=>{
-    listaClientes.innerHTML+=`<li><strong>${c.nome}</strong> — ${formatar(c.valor)} ${c.data||''}</li>`
+    listaClientes.innerHTML+=`<li><span><strong>${c.nome}</strong> — ${formatar(c.valor)} ${c.data||''}</span>
+      <div class='btn-group'>
+        <button class='btn-edit' onclick='editarCliente(${c.id})'>Editar</button>
+        <button class='btn-del' onclick='excluirCliente(${c.id})'>Excluir</button>
+      </div></li>`
   })
 }
 
+function limparClienteForm(){clienteNome.value=clienteTelefone.value=clienteValor.value=clienteData.value=''}
+
 mostrarAba('dashboard',document.querySelector('.menu a'))
-atualizarFinanceiro()
-atualizarClientes()
+atualizarFinanceiro(); atualizarClientes();
 </script>
 </body>
 </html>
