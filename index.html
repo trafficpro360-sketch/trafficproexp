@@ -957,6 +957,20 @@ function gerarRelatorioVisual(){
   const incluirReceitas = document.getElementById('expReceitas').checked;
   const incluirDespesas = document.getElementById('expDespesas').checked;
   const incluirPatrimonio = document.getElementById('expPatrimonio').checked;
+  const totalReceitas = financeiro
+    .filter(f => f.tipo === 'receita')
+    .reduce((s, i) => s + i.valor, 0);
+
+  const totalDespesas = financeiro
+    .filter(f => f.tipo === 'despesa')
+    .reduce((s, i) => s + i.valor, 0);
+
+  const totalPatrimonio = financeiro
+    .filter(f => f.tipo === 'patrimonio')
+    .reduce((s, i) => s + i.valor, 0);
+
+  const saldoFinal = totalReceitas - totalDespesas + totalPatrimonio;
+
 
   let janela = window.open("", "_blank");
   
@@ -987,6 +1001,15 @@ function gerarRelatorioVisual(){
   </head>
   <body>
     <h1>Relatório Financeiro</h1>
+
+    <div class="secao">
+      <h2>Saldo Final</h2>
+      <div class="item">
+        <strong>${formatar(saldoFinal)}</strong><br>
+        Valor total disponível após receitas, despesas e patrimônio
+      </div>
+    </div>
+
   `;
 
   if(incluirReceitas){
