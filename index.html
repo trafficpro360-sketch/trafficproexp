@@ -396,11 +396,11 @@ input[type=number] {
 .acoes-topo{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:16px;
 }
 
 .btn-exportar{
-  padding:10px 16px;
+  padding:10px 18px;
   border-radius:14px;
   border:1px solid var(--blue);
   background:rgba(56,189,248,.12);
@@ -408,7 +408,10 @@ input[type=number] {
   font-weight:600;
   cursor:pointer;
   transition:.2s;
+  font-size:14px;
+  height:42px;              /* iguala altura ao sininho */
 }
+
 
 .btn-exportar:hover{
   background:rgba(56,189,248,.22);
@@ -436,19 +439,20 @@ input[type=number] {
 /* painel lateral */
 #painelNotificacoes{
   position:fixed;
-  top:90px;
+  top:80px;          /* subiu um pouco */
   right:40px;
-  width:320px;
+  width:340px;       /* um pouco maior */
   background:rgba(15,23,42,.95);
   border:1px solid var(--border);
   border-radius:18px;
   padding:16px;
   display:none;
-  max-height:400px;
+  max-height:420px;
   overflow-y:auto;
   box-shadow:0 8px 30px rgba(0,0,0,.4);
   z-index:9999;
 }
+
 
 #painelNotificacoes h3{
   margin-bottom:10px;
