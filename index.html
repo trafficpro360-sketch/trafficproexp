@@ -343,21 +343,17 @@ body{
   border-radius:18px;
   margin-bottom:12px;
 }
-/* === REMOVER SETAS DA BARRA DE ROLAGEM (FUNCIONA) === */
 
-/* Chrome, Edge, Safari */
-::-webkit-scrollbar-button {
+/* === REMOVER SETAS DA BARRA DE ROLAGEM (GARANTIDO) === */
+::-webkit-scrollbar-button:single-button {
   display: none !important;
-  height: 0;
-  width: 0;
 }
-/* Firefox */
+
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--border) rgba(15,23,42,.7);
 }
 
-/* Mantém visual moderno sem setas */
 ::-webkit-scrollbar {
   width: 8px;
 }
