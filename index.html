@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Finance Pro</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Finance Pro — Painel Financeiro</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root{
@@ -18,9 +18,7 @@
   --text:#e5e7eb;
   --muted:#94a3b8;
 }
-
 *{box-sizing:border-box;margin:0;padding:0}
-
 body{
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;
   background:radial-gradient(1200px 600px at 10% -10%, #0f172a, #020617);
@@ -28,6 +26,9 @@ body{
   min-height:100vh;
   display:flex;
 }
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{ -webkit-appearance:none;margin:0 }
+input[type=number]{-moz-appearance:textfield}
 
 /* SIDEBAR */
 .sidebar{
@@ -39,7 +40,6 @@ body{
   border-radius:0 28px 28px 0;
 }
 .logo{font-size:24px;font-weight:700;color:var(--blue);margin-bottom:48px}
-
 .menu ul{list-style:none}
 .menu li{margin-bottom:12px}
 .menu a{
@@ -49,6 +49,7 @@ body{
   color:var(--muted);
   text-decoration:none;
   cursor:pointer;
+  transition:.2s ease;
 }
 .menu li.active a,
 .menu a:hover{
@@ -56,7 +57,7 @@ body{
   color:var(--blue);
 }
 
-/* CONTENT */
+/* LAYOUT */
 .content{flex:1;padding:36px 40px}
 .header{font-size:28px;font-weight:700;margin-bottom:24px}
 
@@ -74,40 +75,42 @@ body{
   padding:26px 28px;
   box-shadow:0 8px 30px rgba(0,0,0,.35);
 }
-.card span{color:var(--muted);font-size:13px}
+.card span{color:var(--muted);font-size:13px;letter-spacing:.3px}
 .card h2{margin-top:8px;font-size:26px}
 .blue h2{color:var(--blue)}
 .red h2{color:var(--red)}
 .green h2{color:var(--green)}
 .yellow h2{color:var(--yellow)}
 
-/* CONTROLS - tudo na mesma linha */
+/* CONTROLS — linha única SEM quebra e SEM necessidade de scroll */
 .controls{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:10px;
   margin-bottom:28px;
   flex-wrap:nowrap;
 }
 .controls input{
-  padding:14px 16px;
-  border-radius:18px;
+  padding:12px 14px;
+  border-radius:16px;
   border:1px solid var(--border);
   background:rgba(15,23,42,.7);
   color:#fff;
+  font-size:14px;
 }
-.controls .valor-input{width:120px}
-.controls .data-input{width:120px}
-.controls .desc-input{flex:1;min-width:220px}
+.controls .valor-input{width:110px;min-width:110px}
+.controls .data-input{width:120px;min-width:120px}
+.controls .desc-input{flex:1;min-width:160px;max-width:360px}
 .controls button{
-  padding:14px 18px;
-  border-radius:18px;
+  padding:12px 16px;
+  border-radius:16px;
   border:none;
   background:linear-gradient(135deg,#2563eb,#38bdf8);
   color:#fff;
   font-weight:600;
   cursor:pointer;
   white-space:nowrap;
+  font-size:14px;
 }
 
 /* TOGGLE */
@@ -130,7 +133,7 @@ body{
 .toggle .active.despesa{background:rgba(239,68,68,.2);color:var(--red)}
 .toggle .active.patrimonio{background:rgba(250,204,21,.2);color:var(--yellow)}
 
-/* GRÁFICOS */
+/* GRÁFICO PRINCIPAL */
 .chart{
   height:340px;
   padding:20px;
@@ -140,7 +143,7 @@ body{
   margin-bottom:28px;
 }
 
-/* PIZZAS */
+/* TRÊS GRÁFICOS PIZZA */
 .charts-row{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -154,6 +157,7 @@ body{
   background:rgba(15,23,42,.7);
   min-height:320px;
 }
+.charts-row canvas{width:100% !important; height:260px !important;}
 
 /* LISTAS */
 .records{
@@ -171,21 +175,51 @@ body{
   list-style:none;
   max-height:260px;
   overflow-y:auto;
+  padding-right:8px;
 }
 .records li{
   background:rgba(2,6,23,.6);
   padding:10px 12px;
   border-radius:14px;
   margin-bottom:8px;
+  font-size:14px;
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
+.records .info{display:flex;flex-direction:column;gap:2px}
+.records .desc{color:var(--muted);font-size:12px}
+
+.btn-group{display:flex;gap:8px}
+.btn-edit,.btn-del{
+  border:none;
+  padding:8px 12px;
+  border-radius:14px;
+  font-size:12px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  transition:.15s ease;
+}
+.btn-edit{
+  background:rgba(56,189,248,.12);
+  color:var(--blue);
+  border:1px solid rgba(56,189,248,.25);
+}
+.btn-edit:hover{background:rgba(56,189,248,.22)}
+.btn-del{
+  background:rgba(239,68,68,.12);
+  color:var(--red);
+  border:1px solid rgba(239,68,68,.25);
+}
+.btn-del:hover{background:rgba(239,68,68,.22)}
 
 /* CLIENTES */
 #clientes{display:none}
 .clientes-container{
   max-width:600px;
+  backdrop-filter:blur(16px);
   background:rgba(15,23,42,.7);
   border:1px solid var(--border);
   border-radius:26px;
@@ -198,48 +232,70 @@ body{
   border-radius:18px;
   margin-bottom:12px;
 }
+.clientes-container input{
+  background:rgba(2,6,23,.7);
+  border:1px solid var(--border);
+  color:#fff;
+}
 .clientes-container button{
   border:none;
   background:linear-gradient(135deg,#2563eb,#38bdf8);
   color:#fff;
   font-weight:600;
+  cursor:pointer;
+}
+#listaClientes{list-style:none;max-height:260px;overflow-y:auto;padding-right:8px}
+#listaClientes li{
+  background:rgba(2,6,23,.6);
+  padding:10px 12px;
+  border-radius:14px;
+  margin-bottom:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
 /* MODAIS */
 .modal{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:rgba(0,0,0,.7);
+  background:rgba(0,0,0,.65);
   display:none;align-items:center;justify-content:center;
-  backdrop-filter:blur(6px);
+  backdrop-filter:blur(8px);
+  animation:fadeIn .15s ease forwards;
 }
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .modal.active{display:flex}
 .modal-content{
-  background:rgba(15,23,42,.95);
+  background:rgba(15,23,42,.97);
   border:1px solid var(--border);
-  border-radius:26px;
-  padding:24px;width:360px;
+  border-radius:28px;
+  padding:26px 28px;
+  width:380px;
+  box-shadow:0 12px 40px rgba(0,0,0,.45);
+  transform:translateY(6px);
+  animation:slideUp .18s ease forwards;
 }
-.modal-actions{display:flex;gap:10px}
+@keyframes slideUp{from{transform:translateY(10px)}to{transform:translateY(0)}}
+.modal-content h3{margin-bottom:10px}
+.modal-content p{color:var(--muted);margin-bottom:14px}
+.modal-content input{
+  width:100%;padding:12px 14px;border-radius:16px;
+  background:rgba(2,6,23,.7);
+  border:1px solid var(--border);
+  color:#fff;
+  margin-bottom:10px;
+}
+.modal-actions{display:flex;gap:12px;margin-top:6px}
 .modal-actions button{
-  flex:1;padding:12px;border-radius:16px;border:none;cursor:pointer
+  flex:1;padding:12px 14px;border-radius:16px;border:none;cursor:pointer;font-weight:600;
 }
-.btn-save{
-  background:linear-gradient(135deg,#2563eb,#38bdf8);
-  color:#fff
-}
-.btn-cancel{
-  background:rgba(239,68,68,.2);
-  color:var(--red)
-}
-.btn-confirm{
-  background:linear-gradient(135deg,#ef4444,#dc2626);
-  color:#fff
-}
+.btn-save{background:linear-gradient(135deg,#2563eb,#38bdf8);color:#fff}
+.btn-cancel{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.25)}
+.btn-cancel:hover{background:rgba(239,68,68,.18)}
+.btn-confirm{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
 </style>
 </head>
-
 <body>
-
 <aside class="sidebar">
   <div class="logo">Finance<span style="color:#fff">Pro</span></div>
   <nav class="menu">
@@ -249,49 +305,38 @@ body{
     </ul>
   </nav>
 </aside>
-
 <main class="content">
-
 <div id="dashboard">
-
   <div class="header">Dashboard Financeiro</div>
-
   <section class="cards">
     <div class="card blue"><span>Receita Total</span><h2 id="cardReceita">R$ 0</h2></div>
     <div class="card red"><span>Despesas Totais</span><h2 id="cardDespesa">R$ 0</h2></div>
     <div class="card yellow"><span>Patrimônio</span><h2 id="cardPatrimonio">R$ 0</h2></div>
     <div class="card green"><span>Saldo</span><h2 id="cardSaldo">R$ 0</h2></div>
   </section>
-
   <section class="controls">
     <input class="valor-input" type="number" id="valor" placeholder="Valor (R$)">
     <input class="data-input" type="text" id="mes" placeholder="dd/mm/aaaa">
     <input class="desc-input" type="text" id="descricao" placeholder="Descrição do lançamento">
     <button onclick="adicionarLancamento()">Adicionar lançamento</button>
-
     <div class="toggle">
       <button class="active receita" onclick="setTipo('receita',this)">Receita</button>
       <button class="despesa" onclick="setTipo('despesa',this)">Despesa</button>
       <button class="patrimonio" onclick="setTipo('patrimonio',this)">Patrimônio</button>
     </div>
   </section>
-
   <div class="chart"><canvas id="financeChart"></canvas></div>
-
   <div class="charts-row">
-    <div class="box"><h3>Distribuição de Receitas</h3><canvas id="chartReceita"></canvas></div>
-    <div class="box"><h3>Distribuição de Despesas</h3><canvas id="chartDespesa"></canvas></div>
-    <div class="box"><h3>Distribuição de Patrimônio</h3><canvas id="chartPatrimonio"></canvas></div>
+    <div class="box"><h3>Receitas por descrição</h3><canvas id="chartReceita"></canvas></div>
+    <div class="box"><h3>Despesas por descrição</h3><canvas id="chartDespesa"></canvas></div>
+    <div class="box"><h3>Patrimônio por descrição</h3><canvas id="chartPatrimonio"></canvas></div>
   </div>
-
   <section class="records">
     <div class="box"><h3>Receitas</h3><ul id="listaReceita"></ul></div>
     <div class="box"><h3>Despesas</h3><ul id="listaDespesa"></ul></div>
     <div class="box"><h3>Patrimônio</h3><ul id="listaPatrimonio"></ul></div>
   </section>
-
 </div>
-
 <div id="clientes">
   <div class="header">Clientes</div>
   <div class="clientes-container">
@@ -303,10 +348,7 @@ body{
     <ul id="listaClientes"></ul>
   </div>
 </div>
-
 </main>
-
-<!-- MODAIS -->
 <div class="modal" id="modalEdit">
   <div class="modal-content">
     <h3>Editar lançamento</h3>
@@ -319,7 +361,6 @@ body{
     </div>
   </div>
 </div>
-
 <div class="modal" id="modalDelete">
   <div class="modal-content">
     <h3>Confirmar exclusão</h3>
@@ -330,7 +371,6 @@ body{
     </div>
   </div>
 </div>
-
 <script>
 const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 let tipoSelecionado='receita';
@@ -338,25 +378,18 @@ let financeiro=JSON.parse(localStorage.getItem('financeiro'))||[];
 let clientes=JSON.parse(localStorage.getItem('clientes'))||[];
 let editandoId=null;
 let deletandoId=null;
-
 function mostrarAba(id,el){
   document.querySelectorAll('main>div').forEach(d=>d.style.display='none');
   document.getElementById(id).style.display='block';
   document.querySelectorAll('.menu li').forEach(li=>li.classList.remove('active'));
   el.parentElement.classList.add('active');
 }
-
 function setTipo(tipo,el){
   tipoSelecionado=tipo;
   document.querySelectorAll('.toggle button').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
 }
-
-function formatar(v){
-  return Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-}
-
-/* GRÁFICOS */
+function formatar(v){return Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
 const chart=new Chart(document.getElementById('financeChart'),{
   type:'line',
   data:{labels:meses,datasets:[
@@ -367,107 +400,69 @@ const chart=new Chart(document.getElementById('financeChart'),{
   ]},
   options:{responsive:true,maintainAspectRatio:false}
 });
-
-const chartReceita=new Chart(document.getElementById('chartReceita'),{
-  type:'pie',
-  data:{labels:meses,datasets:[{data:Array(12).fill(0)}]},
-  options:{responsive:true}
-});
-const chartDespesa=new Chart(document.getElementById('chartDespesa'),{
-  type:'pie',
-  data:{labels:meses,datasets:[{data:Array(12).fill(0)}]},
-  options:{responsive:true}
-});
-const chartPatrimonio=new Chart(document.getElementById('chartPatrimonio'),{
-  type:'pie',
-  data:{labels:meses,datasets:[{data:Array(12).fill(0)}]},
-  options:{responsive:true}
-});
-
+const chartReceita=new Chart(document.getElementById('chartReceita'),{type:'pie',data:{labels:[],datasets:[{data:[]}]} ,options:{responsive:true}});
+const chartDespesa=new Chart(document.getElementById('chartDespesa'),{type:'pie',data:{labels:[],datasets:[{data:[]}]} ,options:{responsive:true}});
+const chartPatrimonio=new Chart(document.getElementById('chartPatrimonio'),{type:'pie',data:{labels:[],datasets:[{data:[]}]} ,options:{responsive:true}});
 function adicionarLancamento(){
   const valor=Number(document.getElementById('valor').value);
   const mes=document.getElementById('mes').value;
   const descricao=document.getElementById('descricao').value.trim();
-  if(!valor||!mes||!descricao){
-    alert('Preencha valor, data e descrição');
-    return;
-  }
+  if(!valor||!mes||!descricao){alert('Preencha valor, data e descrição');return;}
   financeiro.push({id:Date.now(),valor,tipo:tipoSelecionado,mes,descricao});
   localStorage.setItem('financeiro',JSON.stringify(financeiro));
   atualizarFinanceiro();
 }
-
 function atualizarFinanceiro(){
   let r=Array(12).fill(0), d=Array(12).fill(0), p=Array(12).fill(0);
-  listaReceita.innerHTML='';
-  listaDespesa.innerHTML='';
-  listaPatrimonio.innerHTML='';
-
+  let mapR={}, mapD={}, mapP={};
+  listaReceita.innerHTML=''; listaDespesa.innerHTML=''; listaPatrimonio.innerHTML='';
   financeiro.forEach(i=>{
     const partes=i.mes.split('/');
     const idx=new Date(partes[2],partes[1]-1).getMonth();
-
-    if(i.tipo==='receita'){
-      r[idx]+=i.valor;
-      listaReceita.innerHTML+=`<li>${formatar(i.valor)} — ${i.mes}</li>`;
-    }
-    if(i.tipo==='despesa'){
-      d[idx]+=i.valor;
-      listaDespesa.innerHTML+=`<li>${formatar(i.valor)} — ${i.mes}</li>`;
-    }
-    if(i.tipo==='patrimonio'){
-      p[idx]+=i.valor;
-      listaPatrimonio.innerHTML+=`<li>${formatar(i.valor)} — ${i.mes}</li>`;
-    }
+    if(i.tipo==='receita') r[idx]+=i.valor;
+    if(i.tipo==='despesa') d[idx]+=i.valor;
+    if(i.tipo==='patrimonio') p[idx]+=i.valor;
+    if(i.tipo==='receita') mapR[i.descricao]=(mapR[i.descricao]||0)+i.valor;
+    if(i.tipo==='despesa') mapD[i.descricao]=(mapD[i.descricao]||0)+i.valor;
+    if(i.tipo==='patrimonio') mapP[i.descricao]=(mapP[i.descricao]||0)+i.valor;
+    const bloco=`<div class='info'><span>${formatar(i.valor)} — ${i.mes}</span><span class='desc'>${i.descricao}</span></div>`;
+    const li=`<li>${bloco}<div class='btn-group'><button class='btn-edit' onclick='abrirModalEditar(${i.id})'>Editar</button><button class='btn-del' onclick='pedirExcluirLancamento(${i.id})'>Excluir</button></div></li>`;
+    if(i.tipo==='receita') listaReceita.innerHTML+=li;
+    if(i.tipo==='despesa') listaDespesa.innerHTML+=li;
+    if(i.tipo==='patrimonio') listaPatrimonio.innerHTML+=li;
   });
-
   const totalR=r.reduce((a,b)=>a+b,0);
   const totalD=d.reduce((a,b)=>a+b,0);
   const totalP=p.reduce((a,b)=>a+b,0);
-
   cardReceita.textContent=formatar(totalR);
   cardDespesa.textContent=formatar(totalD);
   cardPatrimonio.textContent=formatar(totalP);
   cardSaldo.textContent=formatar(totalR-totalD+totalP);
-
   chart.data.datasets[0].data=r;
   chart.data.datasets[1].data=d;
   chart.data.datasets[2].data=p;
   chart.data.datasets[3].data=r.map((v,i)=>v-d[i]+p[i]);
   chart.update();
-
-  chartReceita.data.datasets[0].data=r; chartReceita.update();
-  chartDespesa.data.datasets[0].data=d; chartDespesa.update();
-  chartPatrimonio.data.datasets[0].data=p; chartPatrimonio.update();
+  chartReceita.data.labels=Object.keys(mapR);
+  chartReceita.data.datasets[0].data=Object.values(mapR);
+  chartReceita.update();
+  chartDespesa.data.labels=Object.keys(mapD);
+  chartDespesa.data.datasets[0].data=Object.values(mapD);
+  chartDespesa.update();
+  chartPatrimonio.data.labels=Object.keys(mapP);
+  chartPatrimonio.data.datasets[0].data=Object.values(mapP);
+  chartPatrimonio.update();
 }
-
-function adicionarCliente(){
-  const nome=clienteNome.value.trim();
-  const tel=clienteTelefone.value.trim();
-  const val=Number(clienteValor.value);
-  const data=clienteData.value;
-
-  if(!nome||!val){
-    alert('Nome e valor são obrigatórios');
-    return;
-  }
-
-  clientes.push({id:Date.now(),nome,tel,val,data});
-  localStorage.setItem('clientes',JSON.stringify(clientes));
-  atualizarClientes();
-}
-
-function atualizarClientes(){
-  listaClientes.innerHTML='';
-  clientes.forEach(c=>{
-    listaClientes.innerHTML+=`<li><strong>${c.nome}</strong> — ${formatar(c.val)} ${c.data||''}</li>`;
-  });
-}
-
+function abrirModalEditar(id){const item=financeiro.find(f=>f.id===id); if(!item) return; editandoId=id; editValor.value=item.valor; editMes.value=item.mes; editDesc.value=item.descricao; abrirModal('modalEdit');}
+function salvarEdicao(){const v=Number(editValor.value); const m=editMes.value; const d=editDesc.value.trim(); if(!v||!m||!d){alert('Preencha todos os campos');return;} const idx=financeiro.findIndex(f=>f.id===editandoId); if(idx>-1){financeiro[idx]={...financeiro[idx],valor:v,mes:m,descricao:d};} localStorage.setItem('financeiro',JSON.stringify(financeiro)); atualizarFinanceiro(); fecharModal('modalEdit');}
+function pedirExcluirLancamento(id){deletandoId=id; abrirModal('modalDelete');}
+function confirmarExclusao(){financeiro=financeiro.filter(f=>f.id!==deletandoId); localStorage.setItem('financeiro',JSON.stringify(financeiro)); atualizarFinanceiro(); fecharModal('modalDelete');}
+function abrirModal(id){document.getElementById(id).classList.add('active');}
+function fecharModal(id){document.getElementById(id).classList.remove('active');}
+function adicionarCliente(){const nome=clienteNome.value.trim(); const tel=clienteTelefone.value.trim(); const val=Number(clienteValor.value); const data=clienteData.value; if(!nome||!val){alert('Nome e valor são obrigatórios');return;} clientes.push({id:Date.now(),nome,tel,val,data}); localStorage.setItem('clientes',JSON.stringify(clientes)); atualizarClientes();}
+function atualizarClientes(){listaClientes.innerHTML=''; clientes.forEach(c=>{listaClientes.innerHTML+=`<li><span><strong>${c.nome}</strong> — ${formatar(c.val||c.valor)} ${c.data||''}</span></li>`;});}
 mostrarAba('dashboard',document.querySelector('.menu a'));
-atualizarFinanceiro();
-atualizarClientes();
+atualizarFinanceiro(); atualizarClientes();
 </script>
-
 </body>
 </html>
