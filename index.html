@@ -434,19 +434,34 @@ input[type=number] {
   color:var(--text);
 }
 
-#painelNotificacoes ul{
-  list-style:none;
-  padding:0;
-  margin:0;
-}
-
 #painelNotificacoes li{
   background:rgba(2,6,23,.6);
   padding:10px;
   border-radius:12px;
   margin-bottom:8px;
   font-size:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
+
+.btn-notif-del{
+  background:rgba(239,68,68,.2);
+  color:var(--red);
+  border:1px solid var(--red);
+  border-radius:10px;
+  padding:4px 8px;
+  font-size:12px;
+  cursor:pointer;
+  margin-left:10px;
+}
+
+#painelNotificacoes li{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
 
 </style>
 </head>
@@ -559,7 +574,7 @@ let financeiro=JSON.parse(localStorage.getItem('financeiro'))||[];
 let clientes=JSON.parse(localStorage.getItem('clientes'))||[];
 let editandoId=null;
 let deletandoId=null;
-let notificacoes = JSON.parse(localStorage.getItem('notificacoes') || "[]");
+let notificacoes = JSON.parse(localStorage.getItem('notificacoes')) || [];
 
  function registrarNotificacao(texto){
   const novaNotificacao = {
@@ -592,11 +607,24 @@ function atualizarPainelNotificacoes(){
     const li = document.createElement('li');
     const data = new Date(n.data).toLocaleString('pt-BR');
 
-    li.innerHTML = `<strong>${data}</strong><br>${n.texto}`;
+    li.innerHTML = `
+      <div>
+        <strong>${data}</strong><br>
+        ${n.texto}
+      </div>
+      <button class="btn-notif-del" onclick="excluirNotificacao(${n.id})">✖</button>
+    `;
+
     lista.appendChild(li);
   });
 
   badge.textContent = notificacoes.length;
+}
+
+function excluirNotificacao(id){
+  notificacoes = notificacoes.filter(n => n.id !== id);
+  localStorage.setItem('notificacoes', JSON.stringify(notificacoes));
+  atualizarPainelNotificacoes();
 }
 
 function mostrarAba(id,el){
@@ -805,6 +833,12 @@ function toggleNotificacoes(){
   const painel = document.getElementById('painelNotificacoes');
   painel.style.display = painel.style.display === 'block' ? 'none' : 'block';
 }
+
+ window.addEventListener('scroll', function(){
+  const painel = document.getElementById('painelNotificacoes');
+  painel.style.display = 'none';
+});
+
 
 // Inicialização do sistema
 mostrarAba('dashboard',document.querySelector('.menu a'));
