@@ -1002,13 +1002,6 @@ function gerarRelatorioVisual(){
   <body>
     <h1>Relatório Financeiro</h1>
 
-    <div class="secao">
-      <h2>Saldo Final</h2>
-      <div class="item">
-        <strong>${formatar(saldoFinal)}</strong><br>
-        Valor total disponível após receitas, despesas e patrimônio
-      </div>
-    </div>
 
   `;
 
@@ -1050,7 +1043,17 @@ function gerarRelatorioVisual(){
     });
     html += `</div>`;
   }
-
+  
+html += `
+  <div class="secao">
+    <h2>Conclusão — Saldo Final</h2>
+    <div class="item">
+      <strong>${formatar(saldoFinal)}</strong><br>
+      Valor total disponível após receitas, despesas e patrimônio
+    </div>
+  </div>
+`;
+  
   html += `</body></html>`;
 
   janela.document.write(html);
