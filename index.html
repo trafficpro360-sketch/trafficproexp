@@ -82,41 +82,36 @@ input[type=number]{-moz-appearance:textfield}
 .green h2{color:var(--green)}
 .yellow h2{color:var(--yellow)}
 
-/* CONTROLS — linha única com scroll elegante (não quebra layout) */
+/* CONTROLS — linha única SEM quebra e SEM necessidade de scroll */
 .controls{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:10px;
   margin-bottom:28px;
   flex-wrap:nowrap;           /* nunca quebra para outra linha */
-  overflow-x:auto;            /* permite rolar horizontalmente se faltar espaço */
-  padding-bottom:6px;         /* espaço para a barra de scroll */
 }
-/* Scroll horizontal bonito */
-.controls::-webkit-scrollbar{height:6px}
-.controls::-webkit-scrollbar-track{background:rgba(15,23,42,.6);border-radius:20px}
-.controls::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#2563eb,#38bdf8);border-radius:20px}
-
 .controls input{
-  padding:14px 16px;
-  border-radius:18px;
+  padding:12px 14px;
+  border-radius:16px;
   border:1px solid var(--border);
   background:rgba(15,23,42,.7);
   color:#fff;
+  font-size:14px;
 }
-/* larguras mais equilibradas para caber melhor */
-.controls .valor-input{width:120px;min-width:120px}
+/* Tamanhos compactos para caber tudo na mesma linha */
+.controls .valor-input{width:110px;min-width:110px}
 .controls .data-input{width:120px;min-width:120px}
-.controls .desc-input{flex:1;min-width:180px}
+.controls .desc-input{flex:1;min-width:160px;max-width:360px}
 .controls button{
-  padding:14px 18px;
-  border-radius:18px;
+  padding:12px 16px;
+  border-radius:16px;
   border:none;
   background:linear-gradient(135deg,#2563eb,#38bdf8);
   color:#fff;
   font-weight:600;
   cursor:pointer;
   white-space:nowrap; /* texto não quebra */
+  font-size:14px;
 }
 
 /* TOGGLE */
