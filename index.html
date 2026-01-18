@@ -22,30 +22,11 @@
 
 *{box-sizing:border-box;margin:0;padding:0}
 
-/* ===== SCROLLBAR MODERNA ===== */
-::-webkit-scrollbar{width:10px;height:10px}
-::-webkit-scrollbar-track{
-  background:rgba(15,23,42,.4);
-  border-radius:20px;
-}
-::-webkit-scrollbar-thumb{
-  background:linear-gradient(180deg,#2563eb,#38bdf8);
-  border-radius:20px;
-  border:2px solid rgba(15,23,42,.8);
-}
-::-webkit-scrollbar-thumb:hover{
-  background:linear-gradient(180deg,#1d4ed8,#38bdf8);
-}
-/* Firefox */
-*{scrollbar-width:thin;scrollbar-color:#38bdf8 rgba(15,23,42,.4)}
-
 body{
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, Helvetica, sans-serif;
   font-size: 15px;
   line-height: 1.65;
   letter-spacing: 0.01em;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
   background:radial-gradient(1200px 600px at 10% -10%, #0f172a, #020617);
   color:var(--text);
   min-height:100vh;
@@ -54,12 +35,12 @@ body{
 
 /* SIDEBAR */
 .sidebar{
-  width:260px;
+  width:280px;
   backdrop-filter:blur(20px);
   background:rgba(2,6,23,.85);
   border-right:1px solid var(--border);
-  padding:26px 24px;
-  border-radius:0 24px 24px 0;
+  padding:28px;
+  border-radius:0 28px 28px 0;
 }
 .logo{font-size:24px;font-weight:700;color:var(--blue);margin-bottom:48px}
 .menu ul{list-style:none}
@@ -74,7 +55,6 @@ body{
   transition:.2s ease;
   font-size:15px;
   line-height:1.4;
-  white-space:nowrap;
 }
 .menu li.active a,
 .menu a:hover{
@@ -82,16 +62,8 @@ body{
   color:var(--blue);
 }
 
-/* CONTEÚDO CENTRALIZADO (estilo dashboard profissional) */
-.content{
-  flex:1;
-  padding:32px 40px;
-  max-width: 1180px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-/* HEADER */
+/* LAYOUT */
+.content{flex:1;padding:36px 40px}
 .header{
   font-size:32px;
   font-weight:700;
@@ -103,9 +75,7 @@ body{
 .cards{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:18px;
-  margin-bottom:26px;
-  max-width:1120px;
+  gap:20px;margin-bottom:28px;
 }
 .card{
   backdrop-filter:blur(16px);
@@ -132,7 +102,7 @@ body{
 .green h2{color:var(--green)}
 .yellow h2{color:var(--yellow)}
 
-/* CONTROLES */
+/* CONTROLS */
 .controls{
   display:flex;
   align-items:center;
@@ -184,41 +154,35 @@ body{
 
 /* GRÁFICO PRINCIPAL */
 .chart{
-  height:320px;
-  padding:18px 20px;
+  height:340px;
+  padding:20px;
   border-radius:26px;
   border:1px solid var(--border);
   background:rgba(15,23,42,.7);
-  margin-bottom:26px;
-  max-width:1120px;
+  margin-bottom:28px;
 }
 
 /* TRÊS GRÁFICOS COLUNA */
 .charts-row{
   display:grid;
-  grid-template-columns:repeat(3, minmax(0, 1fr));
-  gap:18px;
-  margin-bottom:26px;
-  max-width:1120px;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  margin-bottom:28px;
 }
 .charts-row .box{
-  padding:14px 16px;
+  padding:16px;
   border-radius:22px;
   border:1px solid var(--border);
   background:rgba(15,23,42,.7);
-  min-height:300px;
+  min-height:320px;
 }
-.charts-row canvas{
-  width:100% !important;
-  height:260px !important;
-}
+.charts-row canvas{width:100% !important; height:260px !important;}
 
 /* LISTAS */
 .records{
   display:grid;
-  grid-template-columns:repeat(3, minmax(0, 1fr));
-  gap:18px;
-  max-width:1120px;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
 }
 .records .box{
   padding:16px;
@@ -239,13 +203,31 @@ body{
   margin-bottom:10px;
   font-size:15px;
   line-height:1.55;
-  white-space:normal;
-  overflow-wrap:break-word;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
 }
 .records .desc{
   color:var(--muted);
   font-size:13px;
   line-height:1.6;
+}
+
+/* MODAIS */
+.modal{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,.65);
+  display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);
+}
+.modal.active{display:flex}
+.modal-content{
+  background:rgba(15,23,42,.97);
+  border:1px solid var(--border);
+  border-radius:28px;
+  padding:26px 28px;
+  width:380px;
 }
 
 /* CLIENTES */
@@ -338,6 +320,8 @@ const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','
 let tipoSelecionado='receita';
 let financeiro=JSON.parse(localStorage.getItem('financeiro'))||[];
 let clientes=JSON.parse(localStorage.getItem('clientes'))||[];
+let editandoId=null;
+let deletandoId=null;
 
 function mostrarAba(id,el){
   document.querySelectorAll('main>div').forEach(d=>d.style.display='none');
@@ -356,7 +340,7 @@ function formatar(v){
   return Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 }
 
-/* GRÁFICO PRINCIPAL */
+/* Gráfico principal */
 const chart=new Chart(document.getElementById('financeChart'),{
   type:'line',
   data:{labels:meses,datasets:[
@@ -368,20 +352,34 @@ const chart=new Chart(document.getElementById('financeChart'),{
   options:{responsive:true,maintainAspectRatio:false}
 });
 
-/* GRÁFICOS DE COLUNAS */
+/* Gráficos de colunas por descrição */
 const chartReceita=new Chart(document.getElementById('chartReceita'),{
   type:'bar',
-  data:{labels:[],datasets:[{data:[],backgroundColor:'#22c55e',borderRadius:8}]},
+  data:{labels:[],datasets:[{
+    data:[],
+    backgroundColor:'#22c55e',
+    borderRadius:8
+  }]},
   options:{responsive:true,maintainAspectRatio:false}
 });
+
 const chartDespesa=new Chart(document.getElementById('chartDespesa'),{
   type:'bar',
-  data:{labels:[],datasets:[{data:[],backgroundColor:'#ef4444',borderRadius:8}]},
+  data:{labels:[],datasets:[{
+    data:[],
+    backgroundColor:'#ef4444',
+    borderRadius:8
+  }]},
   options:{responsive:true,maintainAspectRatio:false}
 });
+
 const chartPatrimonio=new Chart(document.getElementById('chartPatrimonio'),{
   type:'bar',
-  data:{labels:[],datasets:[{data:[],backgroundColor:'#facc15',borderRadius:8}]},
+  data:{labels:[],datasets:[{
+    data:[],
+    backgroundColor:'#facc15',
+    borderRadius:8
+  }]},
   options:{responsive:true,maintainAspectRatio:false}
 });
 
@@ -421,8 +419,10 @@ function atualizarFinanceiro(){
     if(i.tipo==='patrimonio') mapP[i.descricao]=(mapP[i.descricao]||0)+i.valor;
 
     const li=`<li>
-      ${formatar(i.valor)} — ${i.mes}
-      <div class="desc">${i.descricao}</div>
+      <div>
+        ${formatar(i.valor)} — ${i.mes}
+        <div class="desc">${i.descricao}</div>
+      </div>
     </li>`;
 
     if(i.tipo==='receita') listaReceita.innerHTML+=li;
