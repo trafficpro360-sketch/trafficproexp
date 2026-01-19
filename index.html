@@ -470,23 +470,6 @@ input[type=number] {
 #toast.success{border-left:4px solid var(--green)}
 #toast.error{border-left:4px solid var(--red)}
 
-/* CLIENTES */
-#clientes{display:none}
-.clientes-container{
-  max-width:600px;
-  background:rgba(15,23,42,.7);
-  border:1px solid var(--border);
-  border-radius:26px;
-  padding:24px;
-}
-.clientes-container input,
-.clientes-container button{
-  width:100%;
-  padding:14px;
-  border-radius:18px;
-  margin-bottom:12px;
-}
-
 /* === REMOVER SETAS DA BARRA DE ROLAGEM (GARANTIDO) === */
 ::-webkit-scrollbar-button:single-button {
   display: none !important;
@@ -625,7 +608,6 @@ input[type=number] {
   <div class="logo">Finance<span style="color:#fff">Pro</span></div>
   <nav class="menu">
     <ul>
-      <li class="active"><a onclick="mostrarAba('dashboard',this)">Dashboard</a></li>
       <li><a onclick="mostrarAba('clientes',this)">Clientes</a></li>
     </ul>
   </nav>
@@ -682,18 +664,6 @@ input[type=number] {
     <div class="box"><h3>Despesas</h3><ul id="listaDespesa"></ul></div>
     <div class="box"><h3>Patrimônio</h3><ul id="listaPatrimonio"></ul></div>
   </section>
-</div>
-
-<div id="clientes">
-  <div class="header">Clientes</div>
-  <div class="clientes-container">
-    <input id="clienteNome" placeholder="Nome completo">
-    <input id="clienteTelefone" placeholder="Telefone">
-    <input type="number" id="clienteValor" placeholder="Valor do contrato">
-    <input id="clienteData" placeholder="dd/mm/aaaa">
-    <button onclick="adicionarCliente()">Adicionar Cliente</button>
-    <ul id="listaClientes"></ul>
-  </div>
 </div>
 
 </main>
@@ -770,7 +740,6 @@ if(localStorage.getItem("logado") !== "true"){
 const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 let tipoSelecionado='receita';
 let financeiro=JSON.parse(localStorage.getItem('financeiro'))||[];
-let clientes=JSON.parse(localStorage.getItem('clientes'))||[];
 let editandoId=null;
 let deletandoId=null;
 let notificacoes = JSON.parse(localStorage.getItem('notificacoes')) || [];
@@ -1036,30 +1005,6 @@ function fecharModal(id){
   document.getElementById(id).classList.remove('active');
 }
 
-/* CLIENTES */
-function adicionarCliente(){
-  const nome=clienteNome.value;
-  const val=Number(clienteValor.value);
-
-  if(!nome||!val){
-    showToast('Nome e valor são obrigatórios','error');
-    return;
-  }
-
-  clientes.push({id:Date.now(),nome,val});
-  localStorage.setItem('clientes',JSON.stringify(clientes));
-  atualizarClientes();
-}
-
-function atualizarClientes(){
-  listaClientes.innerHTML='';
-  clientes.forEach(c=>{
-    const li=document.createElement('li');
-    li.textContent=`${c.nome} — ${formatar(c.val)}`;
-    listaClientes.appendChild(li);
-  });
-}
-
 function toggleNotificacoes(){
   const painel = document.getElementById('painelNotificacoes');
   painel.style.display = painel.style.display === 'block' ? 'none' : 'block';
@@ -1227,8 +1172,8 @@ function gerarRelatorioVisual(){
 // Inicialização do sistema
 mostrarAba('dashboard',document.querySelector('.menu a'));
 atualizarFinanceiro();
-atualizarClientes();
 atualizarPainelNotificacoes();
+
 
 </script>
   
