@@ -680,6 +680,10 @@ input[type=number] {
 
 <script>
 
+if (!localStorage.getItem("logado")) {
+  window.location.href = "login.html";
+}
+
 if(localStorage.getItem("logado") !== "true"){
   window.location.href = "login.html";
 }
