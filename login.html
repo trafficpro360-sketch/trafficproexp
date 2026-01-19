@@ -29,8 +29,8 @@ body{
   overflow:hidden;
 }
 
-/* ======= FAIXAS DE MARKETING ======= */
-/* ===== FAIXA FIXA ===== */
+/* ======= FAIXAS DE MARKETING (LOOP PERFEITO) ======= */
+
 .marquee {
   position: fixed;
   top: 0;
@@ -42,6 +42,9 @@ body{
   z-index: 1;
   display: flex;
   align-items: center;
+  backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(56,189,248,.15);
+  border-bottom: 1px solid rgba(56,189,248,.15);
 }
 
 .marquee.bottom {
@@ -49,17 +52,24 @@ body{
   bottom: 0;
 }
 
-/* ===== TEXTO ANIMADO ===== */
+/* container que carrega dois textos idênticos */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: scrollText 15s linear infinite;
+}
+
+/* texto duplicado */
 .marquee-content {
   display: flex;
   gap: 40px;
   white-space: nowrap;
   font-weight: 700;
   color: var(--blue);
-  animation: scrollText 18s linear infinite;
+  padding-right: 40px;
 }
 
-/* ANIMAÇÃO REALMENTE CONTÍNUA */
+/* animação contínua REAL */
 @keyframes scrollText {
   from {
     transform: translateX(0);
@@ -69,8 +79,8 @@ body{
   }
 }
 
-
-.marquee-content.reverse {
+/* faixa inferior andando ao contrário */
+.marquee.bottom .marquee-track {
   animation-direction: reverse;
 }
 
@@ -261,18 +271,39 @@ button:hover{
 
 <!-- FAIXA SUPERIOR -->
 <div class="marquee">
-  <div class="marquee-content">
-    <span>
-      EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
-      EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
-    </span>
+  <div class="marquee-track">
 
-    <span>
+    <div class="marquee-content">
       EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
       EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
-    </span>
+    </div>
+
+    <div class="marquee-content">
+      EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+      EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+    </div>
+
   </div>
 </div>
+  
+<!-- FAIXA INFERIOR -->
+<div class="marquee bottom">
+  <div class="marquee-track">
+
+    <div class="marquee-content">
+      EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+      EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+    </div>
+
+    <div class="marquee-content">
+      EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+      EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+    </div>
+
+  </div>
+</div>
+
+
 
 
 <!-- LOGIN -->
