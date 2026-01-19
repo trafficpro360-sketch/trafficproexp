@@ -674,6 +674,31 @@ input[type=number] {
     <button onclick="fecharModal('modalExport')">Cancelar</button>
   </div>
 </div>
+  
+<!-- ===== MODAL EDITAR (PAINEL PRINCIPAL) ===== -->
+<div class="modal" id="modalEdit">
+  <div class="modal-content">
+    <h3>Editar lançamento</h3>
+
+    <input id="editValor" type="number" placeholder="Valor (R$)">
+    <input id="editMes" type="text" placeholder="dd/mm/aaaa">
+    <input id="editDesc" type="text" placeholder="Descrição">
+
+    <button onclick="salvarEdicao()">Salvar alterações</button>
+    <button onclick="fecharModal('modalEdit')">Cancelar</button>
+  </div>
+</div>
+
+<!-- ===== MODAL CONFIRMAR EXCLUSÃO ===== -->
+<div class="modal" id="modalDelete">
+  <div class="modal-content">
+    <h3>Confirmar exclusão</h3>
+    <p>Tem certeza que deseja excluir este lançamento?</p>
+
+    <button onclick="confirmarExclusao()">Sim, excluir</button>
+    <button onclick="fecharModal('modalDelete')">Cancelar</button>
+  </div>
+</div>
 
 
 <div id="toast"></div>
@@ -908,13 +933,16 @@ function atualizarFinanceiro(){
 
 /* EDIÇÃO */
 function abrirEditar(id){
-  editandoId=id;
-  const it=financeiro.find(f=>f.id===id);
-  editValor.value=it.valor;
-  editMes.value=it.mes;
-  editDesc.value=it.descricao;
+  editandoId = id;
+  const it = financeiro.find(f => f.id === id);
+
+  document.getElementById('editValor').value = it.valor;
+  document.getElementById('editMes').value = it.mes;
+  document.getElementById('editDesc').value = it.descricao;
+
   document.getElementById('modalEdit').classList.add('active');
 }
+
 
 function salvarEdicao(){
   const idx=financeiro.findIndex(f=>f.id===editandoId);
@@ -1124,6 +1152,7 @@ function gerarRelatorioVisual(){
   `;
 
   html += `
+
   </body>
   </html>
   `;
