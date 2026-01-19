@@ -936,12 +936,18 @@ function abrirEditar(id){
   editandoId = id;
   const it = financeiro.find(f => f.id === id);
 
+  if(!it){
+    showToast("Erro ao localizar item para edição", "error");
+    return;
+  }
+
   document.getElementById('editValor').value = it.valor;
   document.getElementById('editMes').value = it.mes;
   document.getElementById('editDesc').value = it.descricao;
 
   document.getElementById('modalEdit').classList.add('active');
 }
+
 
 
 function salvarEdicao(){
