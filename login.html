@@ -238,6 +238,9 @@ button:hover{
 <div class="selo">🚀 Traffic Pro — lançamento em breve</div>
 
 <script>
+
+let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
 function mostrarCadastro(){
   loginBox.style.display="none";
   cadastroBox.style.display="block";
@@ -252,13 +255,18 @@ function login(){
   const u = loginUsuario.value;
   const s = loginSenha.value;
 
-  if(u === "admin" && s === "1234"){
+  const usuarioEncontrado = usuarios.find(user =>
+    user.email === u && user.senha === s
+  );
+
+  if(usuarioEncontrado){
     localStorage.setItem("logado","true");
     window.location.href="index.html";
   } else {
     error.style.display="block";
   }
 }
+
 
 function cadastrar(){
   if(!lgpd.checked){
@@ -271,9 +279,21 @@ function cadastrar(){
     return;
   }
 
+  // Criar novo usuário
+  const novoUsuario = {
+    nome: nome.value,
+    email: email.value,
+    telefone: telefone.value,
+    senha: senhaCad.value
+  };
+
+  usuarios.push(novoUsuario);
+  localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
   alert("Cadastro realizado com sucesso!");
   mostrarLogin();
 }
+
 </script>
 
 </body>
