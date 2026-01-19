@@ -51,13 +51,22 @@ body{
 
 /* ===== TEXTO ANIMADO ===== */
 .marquee-content {
-  display: inline-flex;
+  display: flex;
   gap: 40px;
   white-space: nowrap;
   font-weight: 700;
   color: var(--blue);
-  padding-left: 0;   /* 👈 agora começa direto */
   animation: scrollText 18s linear infinite;
+}
+
+/* ANIMAÇÃO REALMENTE CONTÍNUA */
+@keyframes scrollText {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 
@@ -221,27 +230,47 @@ button:hover{
 #toast.active{transform:translateY(0)}
 #toast.success{border-left:4px solid var(--blue)}
 #toast.error{border-left:4px solid var(--red)}
- 
+  
+ /* TÍTULO FIXO ACIMA DA FAIXA */
+.top-label {
+  position: fixed;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--blue);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 1px;
+  z-index: 9999;
+  background: rgba(2,6,23,.7);
+  padding: 6px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(56,189,248,.25);
+  backdrop-filter: blur(6px);
+}
+
 </style>
 </head>
 
 <body>
 
+  <div class="top-label">
+  TRAFFIC PRO — LANÇAMENTO
+</div>
+
+
 <!-- FAIXA SUPERIOR -->
 <div class="marquee">
   <div class="marquee-content">
-    EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
-    EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
-    EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
-  </div>
-</div>
+    <span>
+      EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+      EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+    </span>
 
-<!-- FAIXA INFERIOR -->
-<div class="marquee bottom">
-  <div class="marquee-content reverse">
-    EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
-    EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
-    EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+    <span>
+      EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+      EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+    </span>
   </div>
 </div>
 
