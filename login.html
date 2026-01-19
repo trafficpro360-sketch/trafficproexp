@@ -12,6 +12,7 @@
   --blue:#38bdf8;
   --text:#e5e7eb;
   --muted:#94a3b8;
+  --red:#ef4444;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -24,21 +25,34 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
+  animation:bgMove 20s ease infinite;
 }
 
-/* CONTAINER PRINCIPAL */
-.login-box{
-  background:rgba(15,23,42,.8);
+@keyframes bgMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+/* CONTAINER */
+.auth-box{
+  background:rgba(15,23,42,.85);
   border:1px solid var(--border);
   border-radius:26px;
   padding:40px;
-  width:360px;
+  width:380px;
   box-shadow:0 10px 40px rgba(0,0,0,.5);
   text-align:center;
+  animation:fadeUp .6s ease forwards;
+}
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(30px)}
+  to{opacity:1; transform:translateY(0)}
 }
 
 /* LOGO */
-.login-logo{
+.auth-logo{
   font-size:28px;
   font-weight:700;
   color:var(--blue);
@@ -46,9 +60,7 @@ body{
 }
 
 /* TÍTULO */
-h2{
-  margin-bottom:10px;
-}
+h2{margin-bottom:8px}
 
 /* SUBTEXTO */
 p{
@@ -67,6 +79,29 @@ input{
   color:#fff;
   margin-bottom:12px;
   font-size:14px;
+  transition:.2s;
+}
+
+input:focus{
+  outline:none;
+  border-color:var(--blue);
+  box-shadow:0 0 0 2px rgba(56,189,248,.25);
+}
+
+/* CHECKBOX */
+.lgpd{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  font-size:13px;
+  color:var(--muted);
+  text-align:left;
+  margin-top:10px;
+}
+
+.lgpd input{
+  width:auto;
+  margin-top:3px;
 }
 
 /* BOTÃO */
@@ -79,12 +114,31 @@ button{
   color:#fff;
   font-weight:700;
   cursor:pointer;
-  margin-top:10px;
+  margin-top:14px;
+  transition:.3s;
 }
 
-/* MENSAGEM DE ERRO */
+button:hover{
+  filter:brightness(1.15);
+  box-shadow:0 0 20px rgba(56,189,248,.35);
+}
+
+/* LINKS */
+.switch{
+  margin-top:16px;
+  font-size:13px;
+  color:var(--muted);
+  cursor:pointer;
+}
+
+.switch span{
+  color:var(--blue);
+  font-weight:600;
+}
+
+/* ERRO */
 #error{
-  color:#ef4444;
+  color:var(--red);
   font-size:13px;
   margin-top:10px;
   display:none;
@@ -94,32 +148,86 @@ button{
 
 <body>
 
-<div class="login-box">
-  <div class="login-logo">Finance<span style="color:#fff">Pro</span></div>
+<div class="auth-box" id="loginBox">
+  <div class="auth-logo">Finance<span style="color:#fff">Pro</span></div>
 
   <h2>Bem-vindo</h2>
   <p>Faça login para acessar seu painel financeiro</p>
 
-  <input id="usuario" placeholder="Usuário">
-  <input id="senha" type="password" placeholder="Senha">
+  <input id="loginUsuario" placeholder="Usuário">
+  <input id="loginSenha" type="password" placeholder="Senha">
 
   <button onclick="login()">Entrar</button>
+
+  <div class="switch" onclick="mostrarCadastro()">
+    Não tem conta? <span>Criar cadastro</span>
+  </div>
 
   <div id="error">Usuário ou senha inválidos</div>
 </div>
 
-<script>
-function login(){
-  const u = document.getElementById('usuario').value;
-  const s = document.getElementById('senha').value;
+<div class="auth-box" id="cadastroBox" style="display:none">
+  <div class="auth-logo">Finance<span style="color:#fff">Pro</span></div>
 
-  // CREDENCIAIS PADRÃO (podemos mudar depois)
+  <h2>Criar conta</h2>
+  <p>Preencha os dados para se cadastrar</p>
+
+  <input id="nome" placeholder="Nome completo">
+  <input id="telefone" placeholder="Telefone">
+  <input id="email" type="email" placeholder="E-mail">
+  <input id="senhaCad" type="password" placeholder="Senha">
+  <input id="senhaConf" type="password" placeholder="Confirmar senha">
+
+  <div class="lgpd">
+    <input type="checkbox" id="lgpd">
+    <label for="lgpd">
+      Concordo com o tratamento dos meus dados conforme a LGPD.
+    </label>
+  </div>
+
+  <button onclick="cadastrar()">Cadastrar</button>
+
+  <div class="switch" onclick="mostrarLogin()">
+    Já tem conta? <span>Fazer login</span>
+  </div>
+</div>
+
+<script>
+function mostrarCadastro(){
+  loginBox.style.display="none";
+  cadastroBox.style.display="block";
+}
+
+function mostrarLogin(){
+  cadastroBox.style.display="none";
+  loginBox.style.display="block";
+}
+
+function login(){
+  const u = loginUsuario.value;
+  const s = loginSenha.value;
+
   if(u === "admin" && s === "1234"){
     localStorage.setItem("logado","true");
-    window.location.href = "index.html"; // seu painel principal
+    window.location.href="index.html";
   } else {
-    document.getElementById("error").style.display = "block";
+    error.style.display="block";
   }
+}
+
+function cadastrar(){
+  if(!lgpd.checked){
+    alert("Você precisa concordar com a LGPD.");
+    return;
+  }
+
+  if(senhaCad.value !== senhaConf.value){
+    alert("As senhas não coincidem.");
+    return;
+  }
+
+  alert("Cadastro realizado com sucesso!");
+  mostrarLogin();
 }
 </script>
 
