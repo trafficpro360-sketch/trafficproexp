@@ -96,7 +96,7 @@ body{
   width:380px;
   box-shadow:0 10px 40px rgba(0,0,0,.5);
   text-align:center;
-  animation:fadeUp .6s ease forwards;
+  animation:fadeUp .8s ease forwards;
   z-index:2;
 }
 
@@ -286,6 +286,18 @@ function mostrarLogin(){
   loginBox.style.display="block";
 }
 
+  function registrarNotificacao(texto){
+  let notificacoes = JSON.parse(localStorage.getItem("notificacoes")) || [];
+
+  notificacoes.push({
+    id: Date.now(),
+    texto: texto,
+    data: new Date().toISOString()
+  });
+
+  localStorage.setItem("notificacoes", JSON.stringify(notificacoes));
+}
+
 function login(){
   const u = loginUsuario.value;
   const s = loginSenha.value;
@@ -303,6 +315,7 @@ function login(){
 }
 
 
+<script>
 function cadastrar(){
   if(!lgpd.checked){
     alert("Você precisa concordar com a LGPD.");
@@ -314,18 +327,12 @@ function cadastrar(){
     return;
   }
 
-  // Criar novo usuário
-  const novoUsuario = {
-    nome: nome.value,
-    email: email.value,
-    telefone: telefone.value,
-    senha: senhaCad.value
-  };
+  // REGISTRA NOTIFICAÇÃO INTERNA
+  registrarNotificacao("🎉 Novo cadastro realizado com sucesso!");
 
-  usuarios.push(novoUsuario);
-  localStorage.setItem("usuarios", JSON.stringify(usuarios));
+  // (aqui futuramente você pode salvar o usuário no banco)
+  alert("Cadastro realizado com sucesso! Faça login.");
 
-  alert("Cadastro realizado com sucesso!");
   mostrarLogin();
 }
 
