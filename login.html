@@ -286,7 +286,7 @@ function mostrarLogin(){
   loginBox.style.display="block";
 }
 
-  function registrarNotificacao(texto){
+function registrarNotificacao(texto){
   let notificacoes = JSON.parse(localStorage.getItem("notificacoes")) || [];
 
   notificacoes.push({
@@ -314,8 +314,6 @@ function login(){
   }
 }
 
-
-<script>
 function cadastrar(){
   if(!lgpd.checked){
     alert("Você precisa concordar com a LGPD.");
@@ -327,16 +325,25 @@ function cadastrar(){
     return;
   }
 
-  // REGISTRA NOTIFICAÇÃO INTERNA
+  const novoUsuario = {
+    id: Date.now(),
+    nome: nome.value,
+    telefone: telefone.value,
+    email: email.value,
+    senha: senhaCad.value
+  };
+
+  usuarios.push(novoUsuario);
+  localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
   registrarNotificacao("🎉 Novo cadastro realizado com sucesso!");
 
-  // (aqui futuramente você pode salvar o usuário no banco)
   alert("Cadastro realizado com sucesso! Faça login.");
 
   mostrarLogin();
 }
-
 </script>
+
 
 </body>
 </html>
