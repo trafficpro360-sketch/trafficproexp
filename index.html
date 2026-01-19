@@ -809,6 +809,28 @@ function adicionarLancamento(){
   registrarNotificacao(`Novo lançamento de ${formatar(valor)} foi adicionado.`);
   atualizarFinanceiro();
 }
+  
+function animarNumero(elemento, valorFinal, duracao = 800){
+  const inicio = 0;
+  const passos = 60;
+  const intervalo = duracao / passos;
+  let contador = 0;
+
+  const timer = setInterval(() => {
+    contador++;
+
+    const valorAtual = inicio + (valorFinal * (contador / passos));
+
+    elemento.textContent = Number(valorAtual.toFixed(2))
+      .toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+    if(contador >= passos){
+      clearInterval(timer);
+      elemento.textContent = Number(valorFinal)
+        .toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    }
+  }, intervalo);
+}
 
 function atualizarFinanceiro(){
   let r=Array(12).fill(0), d=Array(12).fill(0), p=Array(12).fill(0);
@@ -851,10 +873,11 @@ function atualizarFinanceiro(){
   const totalD=d.reduce((a,b)=>a+b,0);
   const totalP=p.reduce((a,b)=>a+b,0);
 
-  cardReceita.textContent=formatar(totalR);
-  cardDespesa.textContent=formatar(totalD);
-  cardPatrimonio.textContent=formatar(totalP);
-  cardSaldo.textContent=formatar(totalR-totalD+totalP);
+  animarNumero(cardReceita, totalR);
+  animarNumero(cardDespesa, totalD);
+  animarNumero(cardPatrimonio, totalP);
+  animarNumero(cardSaldo, totalR - totalD + totalP);
+
 
   chart.data.datasets[0].data=r;
   chart.data.datasets[1].data=d;
