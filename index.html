@@ -1024,9 +1024,12 @@ function gerarRelatorioVisual(){
   </head>
 
   <body>
-    <h1>Relatório Financeiro</h1>
+<div class="report-header">
+  <h1>Relatório Financeiro</h1>
 
-    <button class="btn-pdf" onclick="window.print()">Baixar PDF</button>
+  <button class="btn-pdf" onclick="window.print()">Baixar PDF</button>
+</div>
+
   `;
 
   if(incluirReceitas){
