@@ -15,6 +15,7 @@
   --red:#ef4444;
 }
 
+ /* RESET */
 *{box-sizing:border-box;margin:0;padding:0}
 
 body{
@@ -27,7 +28,31 @@ body{
   justify-content:center;
   animation:bgMove 20s ease infinite;
 }
-
+  
+/* ======= FAIXAS DE MARKETING ANIMADAS ======= */
+.marquee{
+  position:fixed;
+  top:0;
+  width:200%;
+  height:60px;
+  background:rgba(56,189,248,.06);
+  color:var(--blue);
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:40px;
+  white-space:nowrap;
+  animation:marquee 8s linear infinite;
+  transform:rotate(-2deg);
+}
+  
+.marquee.bottom{
+  top:auto;
+  bottom:0;
+  transform:rotate(2deg);
+  animation-direction:reverse;
+}
+  
 @keyframes bgMove{
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
@@ -229,6 +254,33 @@ function cadastrar(){
   alert("Cadastro realizado com sucesso!");
   mostrarLogin();
 }
+
+/* SELO LANÇAMENTO */
+.selo{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  color:var(--blue);
+  font-size:13px;
+  opacity:.8;
+  z-index:1;
+}
+</style>
+</head>
+
+<body>
+
+<!-- FAIXAS DE MARKETING EM MOVIMENTO -->
+<div class="marquee">
+  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING
+  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING
+</div>
+
+<div class="marquee bottom">
+  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING
+  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING
+</div>
+  
 </script>
 
 </body>
