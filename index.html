@@ -230,50 +230,69 @@ input[type=number] {
 
 /* ========== BOTÕES EDITAR / EXCLUIR (VERSÃO QUE FUNCIONA) ========== */
 
+/* ===== BOTÕES EDITAR / EXCLUIR — ESTILO DA SUA IMAGEM ===== */
+
 .btn-group{
   display:flex;
-  gap:8px;
+  gap:10px;
 }
 
-/* BASE DOS BOTÕES */
+/* BASE DOS DOIS BOTÕES */
 .records li .btn-edit,
 .records li .btn-del{
-  padding:8px 12px;
+  padding:8px 14px;
   border-radius:14px;
   font-size:12px;
   cursor:pointer;
   backdrop-filter: blur(8px);
-  transition:.2s ease;
-  border:1px solid transparent;
+  transition:.25s ease;
+  border: 1px solid transparent;
 }
 
-/* EDITAR — AZUL REAL DO DASHBOARD */
+/* ===== EDITAR — AZUL EM VIDRO (IGUAL SUA IMAGEM) ===== */
 .records li .btn-edit{
-  background: rgba(56,189,248,.22) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(56,189,248,.18),
+    rgba(37,99,235,.12)
+  );
   color: var(--blue);
-  border-color: rgba(56,189,248,.7) !important;
-  box-shadow: 0 0 10px rgba(56,189,248,.25);
+  border: 1px solid rgba(56,189,248,.55);
+  box-shadow: 0 0 12px rgba(56,189,248,.22);
 }
 
 /* HOVER EDITAR */
 .records li .btn-edit:hover{
-  background: rgba(56,189,248,.32) !important;
-  box-shadow: 0 0 14px rgba(56,189,248,.4);
+  background: linear-gradient(
+    135deg,
+    rgba(56,189,248,.28),
+    rgba(37,99,235,.18)
+  );
+  box-shadow: 0 0 16px rgba(56,189,248,.35);
 }
 
-/* EXCLUIR — VERMELHO REAL DO DASHBOARD */
+/* ===== EXCLUIR — VERMELHO EM VIDRO (MESMO BRILHO) ===== */
 .records li .btn-del{
-  background: rgba(239,68,68,.22) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(239,68,68,.18),
+    rgba(185,28,28,.12)
+  );
   color: var(--red);
-  border-color: rgba(239,68,68,.7) !important;
-  box-shadow: 0 0 10px rgba(239,68,68,.25);
+  border: 1px solid rgba(239,68,68,.55);
+  box-shadow: 0 0 12px rgba(239,68,68,.22);
 }
 
 /* HOVER EXCLUIR */
 .records li .btn-del:hover{
-  background: rgba(239,68,68,.32) !important;
-  box-shadow: 0 0 14px rgba(239,68,68,.4);
+  background: linear-gradient(
+    135deg,
+    rgba(239,68,68,.28),
+    rgba(185,28,28,.18)
+  );
+  box-shadow: 0 0 16px rgba(239,68,68,.35);
 }
+
 
 
 /* MODAIS */
