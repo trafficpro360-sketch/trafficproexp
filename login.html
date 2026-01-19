@@ -30,29 +30,56 @@ body{
 }
 
 /* ======= FAIXAS DE MARKETING ======= */
-.marquee{
-  position:fixed;
-  top:0;
-  width:250%;
-  height:60px;
-  background:rgba(56,189,248,.06);
-  color:var(--blue);
-  font-weight:700;
-  display:flex;
-  align-items:center;
-  gap:40px;
-  white-space:nowrap;
-  animation:marquee 10s linear infinite;
-  transform:rotate(-2deg);
-  z-index:0;
+/* ===== FAIXA FIXA ===== */
+.marquee {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: rgba(56,189,248,.06);
+  overflow: hidden;
+  z-index: 1;
+  display: flex;
+  align-items: center;
 }
 
-.marquee.bottom{
-  top:auto;
-  bottom:0;
-  transform:rotate(2deg);
-  animation-direction:reverse;
+.marquee.bottom {
+  top: auto;
+  bottom: 0;
 }
+
+/* ===== TEXTO ANIMADO ===== */
+.marquee-content {
+  display: inline-flex;
+  gap: 40px;
+  white-space: nowrap;
+  font-weight: 700;
+  color: var(--blue);
+  padding-left: 100%;
+  animation: scrollText 18s linear infinite;
+}
+
+.marquee-content.reverse {
+  animation-direction: reverse;
+}
+
+/* ===== ANIMAÇÃO ===== */
+@keyframes scrollText {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.marquee {
+  backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(56,189,248,.15);
+  border-bottom: 1px solid rgba(56,189,248,.15);
+}
+
 
 @keyframes marquee{
   from{transform:translateX(0) rotate(-2deg)}
@@ -180,16 +207,24 @@ button:hover{
 
 <body>
 
-<!-- FAIXAS -->
+<!-- FAIXA SUPERIOR -->
 <div class="marquee">
-  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING
-  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING
+  <div class="marquee-content">
+    EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+    EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+    EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+  </div>
 </div>
 
+<!-- FAIXA INFERIOR -->
 <div class="marquee bottom">
-  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •   EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
-  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+  <div class="marquee-content reverse">
+    EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+    EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+    EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+  </div>
 </div>
+
 
 <!-- LOGIN -->
 <div class="auth-box" id="loginBox">
