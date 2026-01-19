@@ -318,6 +318,16 @@ function registrarNotificacao(texto, tipo = "sistema"){
 
   localStorage.setItem("notificacoes", JSON.stringify(notificacoes));
 }
+  function showToast(msg, type="success"){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = type + " active";
+
+  setTimeout(()=>{
+    t.classList.remove("active");
+  }, 3000);
+}
+
 
 
 function login(){
@@ -337,26 +347,16 @@ function login(){
 }
 
 function cadastrar(){
+
   if(!lgpd.checked){
-    alert("Você precisa concordar com a LGPD.");
+    showToast("Você precisa concordar com a LGPD.", "error");
     return;
   }
 
   if(senhaCad.value !== senhaConf.value){
-    alert("As senhas não coincidem.");
+    showToast("As senhas não coincidem.", "error");
     return;
   }
-
-  function showToast(msg, type="success"){
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = type + " active";
-
-  setTimeout(()=>{
-    t.classList.remove("active");
-  }, 3000);
-}
-
 
   const novoUsuario = {
     id: Date.now(),
@@ -370,13 +370,16 @@ function cadastrar(){
   localStorage.setItem("usuarios", JSON.stringify(usuarios));
 
   registrarNotificacao(
-  `🎉 Novo cadastro realizado: ${email.value}`,
-  "cadastro"
-);
+    `🎉 Novo cadastro realizado: ${email.value}`,
+    "cadastro"
+  );
 
- showToast("🎉 Cadastro realizado com sucesso!", "success");
- mostrarLogin();
+  // 🔥 NOTIFICAÇÃO INTERNA DO SITE (sem alert!)
+  showToast("🎉 Cadastro realizado com sucesso!", "success");
+
+  mostrarLogin();
 }
+
 </script>
   
 <div id="toast"></div>
