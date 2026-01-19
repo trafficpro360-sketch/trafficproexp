@@ -679,6 +679,10 @@ input[type=number] {
 <div id="toast"></div>
 
 <script>
+
+if(localStorage.getItem("logado") !== "true"){
+  window.location.href = "login.html";
+}
 const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 let tipoSelecionado='receita';
 let financeiro=JSON.parse(localStorage.getItem('financeiro'))||[];
