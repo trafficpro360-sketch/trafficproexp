@@ -229,23 +229,48 @@ input[type=number] {
 }
 
 /* BOTÕES EDITAR / EXCLUIR */
-.btn-group{display:flex;gap:8px}
+/* BOTÕES EDITAR / EXCLUIR — ESTILO PADRÃO DO PAINEL */
+.btn-group{
+  display:flex;
+  gap:8px;
+}
+
 .btn-edit,.btn-del{
-  border:none;
   padding:8px 12px;
   border-radius:14px;
   font-size:12px;
   cursor:pointer;
+  backdrop-filter: blur(8px);
+  transition: .2s ease;
 }
+
+/* BOTÃO EDITAR — FUNDO AZUL ESTILO DASHBOARD */
 .btn-edit{
-  background:rgba(56,189,248,.15);
-  color:var(--blue);
-  border:1px solid var(--blue);
+  background: rgba(56,189,248,.18);
+  color: var(--blue);
+  border: 1px solid rgba(56,189,248,.6);
+  box-shadow: 0 0 8px rgba(56,189,248,.25);
 }
+
+/* HOVER (efeito ao passar o mouse) */
+.btn-edit:hover{
+  background: rgba(56,189,248,.28);
+  box-shadow: 0 0 12px rgba(56,189,248,.4);
+}
+
+/* BOTÃO EXCLUIR — FUNDO VERMELHO ESTILO DASHBOARD */
 .btn-del{
-  background:rgba(239,68,68,.15);
-  color:var(--red);
-  border:1px solid var(--red);
+  background: rgba(239,68,68,.18);
+  color: var(--red);
+  border: 1px solid rgba(239,68,68,.6);
+  box-shadow: 0 0 8px rgba(239,68,68,.25);
+}
+
+.btn-del:hover{
+  background: rgba(239,68,68,.28);
+  box-shadow: 0 0 12px rgba(239,68,68,.4);
+}
+border:1px solid var(--red);
 }
 
 /* MODAIS */
