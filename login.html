@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login — Traffic Pro</title>
+<title>Login — Finance Pro</title>
 
 <style>
 :root{
@@ -12,9 +12,9 @@
   --blue:#38bdf8;
   --text:#e5e7eb;
   --muted:#94a3b8;
+  --red:#ef4444;
 }
 
-/* RESET */
 *{box-sizing:border-box;margin:0;padding:0}
 
 body{
@@ -25,65 +25,48 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  overflow:hidden;
+  animation:bgMove 20s ease infinite;
 }
 
-/* ======= FAIXAS DE MARKETING ANIMADAS ======= */
-.marquee{
-  position:fixed;
-  top:0;
-  width:200%;
-  height:60px;
-  background:rgba(56,189,248,.06);
-  color:var(--blue);
-  font-weight:700;
-  display:flex;
-  align-items:center;
-  gap:40px;
-  white-space:nowrap;
-  animation:marquee 8s linear infinite;
-  transform:rotate(-2deg);
+@keyframes bgMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
 
-.marquee.bottom{
-  top:auto;
-  bottom:0;
-  transform:rotate(2deg);
-  animation-direction:reverse;
-}
-
-@keyframes marquee{
-  from{transform:translateX(0) rotate(-2deg)}
-  to{transform:translateX(-50%) rotate(-2deg)}
-}
-
-/* CONTAINER PRINCIPAL */
-.login-box{
-  position:relative;
+/* CONTAINER */
+.auth-box{
   background:rgba(15,23,42,.85);
   border:1px solid var(--border);
   border-radius:26px;
   padding:40px;
   width:380px;
-  box-shadow:0 10px 40px rgba(0,0,0,.6);
+  box-shadow:0 10px 40px rgba(0,0,0,.5);
   text-align:center;
-  backdrop-filter:blur(10px);
-  z-index:2;
+  animation:fadeUp .6s ease forwards;
+}
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(30px)}
+  to{opacity:1; transform:translateY(0)}
 }
 
 /* LOGO */
-.login-logo{
-  font-size:30px;
-  font-weight:800;
+.auth-logo{
+  font-size:28px;
+  font-weight:700;
   color:var(--blue);
-  margin-bottom:8px;
+  margin-bottom:20px;
 }
 
-/* SUBTÍTULO */
-.tagline{
+/* TÍTULO */
+h2{margin-bottom:8px}
+
+/* SUBTEXTO */
+p{
   color:var(--muted);
-  font-size:13px;
   margin-bottom:20px;
+  font-size:14px;
 }
 
 /* INPUTS */
@@ -96,9 +79,32 @@ input{
   color:#fff;
   margin-bottom:12px;
   font-size:14px;
+  transition:.2s;
 }
 
-/* BOTÃO PRINCIPAL */
+input:focus{
+  outline:none;
+  border-color:var(--blue);
+  box-shadow:0 0 0 2px rgba(56,189,248,.25);
+}
+
+/* CHECKBOX */
+.lgpd{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  font-size:13px;
+  color:var(--muted);
+  text-align:left;
+  margin-top:10px;
+}
+
+.lgpd input{
+  width:auto;
+  margin-top:3px;
+}
+
+/* BOTÃO */
 button{
   width:100%;
   padding:14px;
@@ -108,147 +114,119 @@ button{
   color:#fff;
   font-weight:700;
   cursor:pointer;
-  margin-top:10px;
+  margin-top:14px;
+  transition:.3s;
 }
 
-/* BOTÃO SECUNDÁRIO */
-.btn-link{
-  background:none;
-  color:var(--blue);
-  border:none;
-  margin-top:10px;
+button:hover{
+  filter:brightness(1.15);
+  box-shadow:0 0 20px rgba(56,189,248,.35);
+}
+
+/* LINKS */
+.switch{
+  margin-top:16px;
+  font-size:13px;
+  color:var(--muted);
   cursor:pointer;
-  font-size:14px;
+}
+
+.switch span{
+  color:var(--blue);
+  font-weight:600;
 }
 
 /* ERRO */
 #error{
-  color:#ef4444;
+  color:var(--red);
   font-size:13px;
   margin-top:10px;
   display:none;
-}
-
-/* FORMULÁRIOS */
-#cadastroBox{display:none}
-
-/* LGPD */
-.lgpd{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-size:13px;
-  margin:12px 0;
-  text-align:left;
-}
-
-/* SELO LANÇAMENTO */
-.selo{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  color:var(--blue);
-  font-size:13px;
-  opacity:.8;
-  z-index:1;
 }
 </style>
 </head>
 
 <body>
 
-<!-- FAIXAS DE MARKETING EM MOVIMENTO -->
-<div class="marquee">
-  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING
-  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING
-</div>
-
-<div class="marquee bottom">
-  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING
-  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING
-</div>
-
-<!-- LOGIN -->
-<div class="login-box" id="loginBox">
-
- <div class="login-logo">Finance<span style="color:#fff">Pro</span></div>
+<div class="auth-box" id="loginBox">
+  <div class="auth-logo">Finance<span style="color:#fff">Pro</span></div>
 
   <h2>Bem-vindo</h2>
-  <p style="color:var(--muted);font-size:14px;margin-bottom:18px;">
-    Faça seu login
-  </p>
+  <p>Faça login para acessar seu painel financeiro</p>
 
-  <input id="usuario" placeholder="E-mail">
-  <input id="senha" type="password" placeholder="Senha">
+  <input id="loginUsuario" placeholder="Usuário">
+  <input id="loginSenha" type="password" placeholder="Senha">
 
   <button onclick="login()">Entrar</button>
 
-  <button class="btn-link" onclick="mostrarCadastro()">Criar conta gratuita</button>
-  <button class="btn-link">Esqueci minha senha</button>
+  <div class="switch" onclick="mostrarCadastro()">
+    Não tem conta? <span>Criar cadastro</span>
+  </div>
 
   <div id="error">Usuário ou senha inválidos</div>
 </div>
 
-<!-- CADASTRO -->
-<div class="login-box" id="cadastroBox">
+<div class="auth-box" id="cadastroBox" style="display:none">
+  <div class="auth-logo">Finance<span style="color:#fff">Pro</span></div>
 
-  <div class="login-logo">Traffic<span style="color:#fff">Pro</span></div>
-  <div class="tagline">Cadastro gratuito</div>
+  <h2>Criar conta</h2>
+  <p>Preencha os dados para se cadastrar</p>
 
-  <input id="cadNome" placeholder="Nome completo">
-  <input id="cadTelefone" placeholder="Telefone">
-  <input id="cadEmail" placeholder="E-mail">
-  <input id="cadSenha" type="password" placeholder="Senha">
-  <input id="cadSenha2" type="password" placeholder="Confirmar senha">
+  <input id="nome" placeholder="Nome completo">
+  <input id="telefone" placeholder="Telefone">
+  <input id="email" type="email" placeholder="E-mail">
+  <input id="senhaCad" type="password" placeholder="Senha">
+  <input id="senhaConf" type="password" placeholder="Confirmar senha">
 
   <div class="lgpd">
     <input type="checkbox" id="lgpd">
     <label for="lgpd">
-      Concordo com o uso dos meus dados conforme a LGPD.
+      Concordo com o tratamento dos meus dados conforme a LGPD.
     </label>
   </div>
 
-  <button onclick="cadastrar()">Criar conta</button>
-  <button class="btn-link" onclick="mostrarLogin()">Voltar ao login</button>
-</div>
+  <button onclick="cadastrar()">Cadastrar</button>
 
-<div class="selo">🚀 Traffic Pro — lançamento em breve</div>
+  <div class="switch" onclick="mostrarLogin()">
+    Já tem conta? <span>Fazer login</span>
+  </div>
+</div>
 
 <script>
 function mostrarCadastro(){
-  document.getElementById("loginBox").style.display="none";
-  document.getElementById("cadastroBox").style.display="block";
+  loginBox.style.display="none";
+  cadastroBox.style.display="block";
 }
 
 function mostrarLogin(){
-  document.getElementById("cadastroBox").style.display="none";
-  document.getElementById("loginBox").style.display="block";
+  cadastroBox.style.display="none";
+  loginBox.style.display="block";
 }
 
 function login(){
-  const u = usuario.value;
-  const s = senha.value;
+  const u = loginUsuario.value;
+  const s = loginSenha.value;
 
   if(u === "admin" && s === "1234"){
     localStorage.setItem("logado","true");
-    window.location.href = "index.html";
+    window.location.href="index.html";
   } else {
-    document.getElementById("error").style.display="block";
+    error.style.display="block";
   }
 }
 
 function cadastrar(){
   if(!lgpd.checked){
-    alert("Você precisa aceitar a LGPD para continuar.");
+    alert("Você precisa concordar com a LGPD.");
     return;
   }
 
-  if(cadSenha.value !== cadSenha2.value){
+  if(senhaCad.value !== senhaConf.value){
     alert("As senhas não coincidem.");
     return;
   }
 
-  alert("Cadastro realizado com sucesso! Faça login.");
+  alert("Cadastro realizado com sucesso!");
   mostrarLogin();
 }
 </script>
