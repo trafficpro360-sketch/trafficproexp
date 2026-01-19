@@ -228,85 +228,51 @@ input[type=number] {
   gap:12px;
 }
 
-/* BOTÕES EDITAR / EXCLUIR */
-/* BOTÕES EDITAR / EXCLUIR — ESTILO PADRÃO DO PAINEL */
+/* ========== BOTÕES EDITAR / EXCLUIR (VERSÃO QUE FUNCIONA) ========== */
+
 .btn-group{
   display:flex;
   gap:8px;
 }
 
-.btn-edit,.btn-del{
+/* BASE DOS BOTÕES */
+.records li .btn-edit,
+.records li .btn-del{
   padding:8px 12px;
   border-radius:14px;
   font-size:12px;
   cursor:pointer;
   backdrop-filter: blur(8px);
-  transition: .2s ease;
+  transition:.2s ease;
+  border:1px solid transparent;
 }
 
-/* BOTÃO EDITAR — FUNDO AZUL ESTILO DASHBOARD */
-.btn-edit{
-  background: rgba(56,189,248,.18);
+/* EDITAR — AZUL REAL DO DASHBOARD */
+.records li .btn-edit{
+  background: rgba(56,189,248,.22) !important;
   color: var(--blue);
-  border: 1px solid rgba(56,189,248,.6);
-  box-shadow: 0 0 8px rgba(56,189,248,.25);
-}
-
-/* HOVER (efeito ao passar o mouse) */
-.btn-edit:hover{
-  background: rgba(56,189,248,.28);
-  box-shadow: 0 0 12px rgba(56,189,248,.4);
-}
-
-/* BOTÃO EXCLUIR — FUNDO VERMELHO ESTILO DASHBOARD */
-.btn-del{
-  background: rgba(239,68,68,.18);
-  color: var(--red);
-  border: 1px solid rgba(239,68,68,.6);
-  box-shadow: 0 0 8px rgba(239,68,68,.25);
-}
-
-/* BOTÕES EDITAR / EXCLUIR — ESTILO PADRÃO DO PAINEL */
-.btn-group{
-  display:flex;
-  gap:8px;
-}
-
-.btn-edit,.btn-del{
-  padding:8px 12px;
-  border-radius:14px;
-  font-size:12px;
-  cursor:pointer;
-  backdrop-filter: blur(8px);
-  transition: .2s ease;
-}
-
-/* BOTÃO EDITAR — FUNDO AZUL ESTILO DASHBOARD */
-.btn-edit{
-  background: rgba(56,189,248,.18);
-  color: var(--blue);
-  border: 1px solid rgba(56,189,248,.6);
-  box-shadow: 0 0 8px rgba(56,189,248,.25);
+  border-color: rgba(56,189,248,.7) !important;
+  box-shadow: 0 0 10px rgba(56,189,248,.25);
 }
 
 /* HOVER EDITAR */
-.btn-edit:hover{
-  background: rgba(56,189,248,.28);
-  box-shadow: 0 0 12px rgba(56,189,248,.4);
+.records li .btn-edit:hover{
+  background: rgba(56,189,248,.32) !important;
+  box-shadow: 0 0 14px rgba(56,189,248,.4);
 }
 
-/* BOTÃO EXCLUIR — FUNDO VERMELHO ESTILO DASHBOARD */
-.btn-del{
-  background: rgba(239,68,68,.18);
+/* EXCLUIR — VERMELHO REAL DO DASHBOARD */
+.records li .btn-del{
+  background: rgba(239,68,68,.22) !important;
   color: var(--red);
-  border: 1px solid rgba(239,68,68,.6);
-  box-shadow: 0 0 8px rgba(239,68,68,.25);
+  border-color: rgba(239,68,68,.7) !important;
+  box-shadow: 0 0 10px rgba(239,68,68,.25);
 }
 
 /* HOVER EXCLUIR */
-.btn-del:hover{
-  background: rgba(239,68,68,.28);
-  box-shadow: 0 0 12px rgba(239,68,68,.4);
+.records li .btn-del:hover{
+  background: rgba(239,68,68,.32) !important;
+  box-shadow: 0 0 14px rgba(239,68,68,.4);
 }
 
 
@@ -622,6 +588,7 @@ input[type=number] {
   min-width:16px;
   cursor:pointer;
 }
+  
 
 </style>
 </head>
