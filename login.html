@@ -202,6 +202,25 @@ button:hover{
   opacity:.8;
   z-index:1;
 }
+
+  /* ===== TOAST DE NOTIFICAÇÃO INTERNA ===== */
+#toast{
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  background:rgba(15,23,42,.95);
+  border:1px solid var(--border);
+  color:white;
+  padding:14px 18px;
+  border-radius:18px;
+  transform:translateY(120%);
+  transition:.25s;
+  z-index:9999;
+}
+#toast.active{transform:translateY(0)}
+#toast.success{border-left:4px solid var(--blue)}
+#toast.error{border-left:4px solid var(--red)}
+ 
 </style>
 </head>
 
@@ -313,7 +332,7 @@ function login(){
     localStorage.setItem("logado","true");
     window.location.href="index.html";
   } else {
-    error.style.display="block";
+   showToast("Usuário ou senha inválidos", "error");
   }
 }
 
@@ -327,6 +346,17 @@ function cadastrar(){
     alert("As senhas não coincidem.");
     return;
   }
+
+  function showToast(msg, type="success"){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = type + " active";
+
+  setTimeout(()=>{
+    t.classList.remove("active");
+  }, 3000);
+}
+
 
   const novoUsuario = {
     id: Date.now(),
@@ -344,12 +374,12 @@ function cadastrar(){
   "cadastro"
 );
 
-  alert("Cadastro realizado com sucesso! Faça login.");
-
-  mostrarLogin();
+ showToast("🎉 Cadastro realizado com sucesso!", "success");
+ mostrarLogin();
 }
 </script>
-
+  
+<div id="toast"></div>
 
 </body>
 </html>
