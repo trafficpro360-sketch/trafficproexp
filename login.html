@@ -286,17 +286,20 @@ function mostrarLogin(){
   loginBox.style.display="block";
 }
 
-function registrarNotificacao(texto){
+function registrarNotificacao(texto, tipo = "sistema"){
   let notificacoes = JSON.parse(localStorage.getItem("notificacoes")) || [];
 
   notificacoes.push({
     id: Date.now(),
     texto: texto,
-    data: new Date().toISOString()
+    tipo: tipo, // cadastro | login | sistema | financeiro
+    data: new Date().toISOString(),
+    lida: false
   });
 
   localStorage.setItem("notificacoes", JSON.stringify(notificacoes));
 }
+
 
 function login(){
   const u = loginUsuario.value;
@@ -336,7 +339,10 @@ function cadastrar(){
   usuarios.push(novoUsuario);
   localStorage.setItem("usuarios", JSON.stringify(usuarios));
 
-  registrarNotificacao("🎉 Novo cadastro realizado com sucesso!");
+  registrarNotificacao(
+  `🎉 Novo cadastro realizado: ${email.value}`,
+  "cadastro"
+);
 
   alert("Cadastro realizado com sucesso! Faça login.");
 
