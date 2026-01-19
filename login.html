@@ -15,7 +15,7 @@
   --red:#ef4444;
 }
 
- /* RESET */
+/* RESET */
 *{box-sizing:border-box;margin:0;padding:0}
 
 body{
@@ -26,10 +26,10 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  animation:bgMove 20s ease infinite;
+  overflow:hidden;
 }
-  
-/* ======= FAIXAS DE MARKETING ANIMADAS ======= */
+
+/* ======= FAIXAS DE MARKETING ======= */
 .marquee{
   position:fixed;
   top:0;
@@ -44,23 +44,24 @@ body{
   white-space:nowrap;
   animation:marquee 8s linear infinite;
   transform:rotate(-2deg);
+  z-index:0;
 }
-  
+
 .marquee.bottom{
   top:auto;
   bottom:0;
   transform:rotate(2deg);
   animation-direction:reverse;
 }
-  
-@keyframes bgMove{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+
+@keyframes marquee{
+  from{transform:translateX(0) rotate(-2deg)}
+  to{transform:translateX(-50%) rotate(-2deg)}
 }
 
 /* CONTAINER */
 .auth-box{
+  position:relative;
   background:rgba(15,23,42,.85);
   border:1px solid var(--border);
   border-radius:26px;
@@ -69,6 +70,7 @@ body{
   box-shadow:0 10px 40px rgba(0,0,0,.5);
   text-align:center;
   animation:fadeUp .6s ease forwards;
+  z-index:2;
 }
 
 @keyframes fadeUp{
@@ -84,10 +86,8 @@ body{
   margin-bottom:20px;
 }
 
-/* TÍTULO */
+/* TEXTOS */
 h2{margin-bottom:8px}
-
-/* SUBTEXTO */
 p{
   color:var(--muted);
   margin-bottom:20px;
@@ -113,7 +113,7 @@ input:focus{
   box-shadow:0 0 0 2px rgba(56,189,248,.25);
 }
 
-/* CHECKBOX */
+/* LGPD */
 .lgpd{
   display:flex;
   align-items:flex-start;
@@ -124,10 +124,7 @@ input:focus{
   margin-top:10px;
 }
 
-.lgpd input{
-  width:auto;
-  margin-top:3px;
-}
+.lgpd input{width:auto;margin-top:3px}
 
 /* BOTÃO */
 button{
@@ -155,7 +152,6 @@ button:hover{
   color:var(--muted);
   cursor:pointer;
 }
-
 .switch span{
   color:var(--blue);
   font-weight:600;
@@ -168,10 +164,8 @@ button:hover{
   margin-top:10px;
   display:none;
 }
-</style>
-</head>
 
-  /* SELO LANÇAMENTO */
+/* SELO */
 .selo{
   position:fixed;
   bottom:20px;
@@ -186,19 +180,18 @@ button:hover{
 
 <body>
 
-<!-- FAIXAS DE MARKETING EM MOVIMENTO -->
+<!-- FAIXAS -->
 <div class="marquee">
-  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING
-  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING
+  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
 </div>
 
 <div class="marquee bottom">
-  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING
-  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING • EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SITEMA OPERACIONAL DE MARKETING
+  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
+  EM BREVE — LANÇAMENTO DA TRAFFIC PRO • SISTEMA OPERACIONAL DE MARKETING •
 </div>
 
-  <body>
-
+<!-- LOGIN -->
 <div class="auth-box" id="loginBox">
   <div class="auth-logo">Finance<span style="color:#fff">Pro</span></div>
 
@@ -217,6 +210,7 @@ button:hover{
   <div id="error">Usuário ou senha inválidos</div>
 </div>
 
+<!-- CADASTRO -->
 <div class="auth-box" id="cadastroBox" style="display:none">
   <div class="auth-logo">Finance<span style="color:#fff">Pro</span></div>
 
@@ -231,9 +225,7 @@ button:hover{
 
   <div class="lgpd">
     <input type="checkbox" id="lgpd">
-    <label for="lgpd">
-      Concordo com o tratamento dos meus dados conforme a LGPD.
-    </label>
+    <label for="lgpd">Concordo com o tratamento dos meus dados conforme a LGPD.</label>
   </div>
 
   <button onclick="cadastrar()">Cadastrar</button>
@@ -242,6 +234,8 @@ button:hover{
     Já tem conta? <span>Fazer login</span>
   </div>
 </div>
+
+<div class="selo">🚀 Traffic Pro — lançamento em breve</div>
 
 <script>
 function mostrarCadastro(){
@@ -280,7 +274,6 @@ function cadastrar(){
   alert("Cadastro realizado com sucesso!");
   mostrarLogin();
 }
-  
 </script>
 
 </body>
