@@ -526,8 +526,27 @@ body{
   <input type="text" id="filtroFim" placeholder="dd/mm/aaaa">
 
   <button class="btn" onclick="atualizarGrafico()">Filtrar</button>
+  <button class="btn" onclick="filtroHoje()">Hoje</button>
+  <button class="btn" onclick="filtro30()">Últimos 30 dias</button>
+  <button class="btn" onclick="filtro90()">Últimos 90 dias</button>
+  <button class="btn" onclick="filtroAno()">Este ano</button>
+
 </div>
 
+  <div class="controls" style="margin-top:0;">
+  <input 
+    type="text" 
+    id="buscaCliente" 
+    placeholder="🔍 Buscar cliente..." 
+    onkeyup="filtrarClientes()"
+  >
+</div>
+
+  
+<div class="card">
+  <h3>💰 Receita Total Mensal</h3>
+  <p id="receitaTotal">Calculando...</p>
+</div>
 
 <div class="card chart">
   <canvas id="clientesChart"></canvas>
@@ -552,6 +571,13 @@ body{
     <input id="cNome" placeholder="Nome do cliente">
     <input id="cValor" type="number" placeholder="Valor mensal (R$)">
     <input id="cInicio" type="text" placeholder="dd/mm/aaaa">
+
+<select id="cStatus">
+  <option value="Ativo">Ativo</option>
+  <option value="Inativo">Inativo</option>
+  <option value="Em teste">Em teste</option>
+</select>
+
     <button onclick="salvarCliente()">Salvar</button>
     <button onclick="fecharModal()">Cancelar</button>
   </div>
@@ -603,6 +629,7 @@ const filtroFim = document.getElementById("filtroFim");
 const cNome = document.getElementById("cNome");
 const cValor = document.getElementById("cValor");
 const cInicio = document.getElementById("cInicio");
+const cStatus = document.getElementById("cStatus");
 
 const tData = document.getElementById("tData");
 const tHora = document.getElementById("tHora");
@@ -724,20 +751,87 @@ function fecharModal(){
 
 function salvarCliente(){
   clientes.push({
-    id:Date.now(),
-    nome:cNome.value,
-    valor:Number(cValor.value),
-    inicio:cInicio.value
+    id: Date.now(),
+    nome: cNome.value,
+    valor: Number(cValor.value),
+    inicio: cInicio.value,
+    status: cStatus.value
   });
 
-  localStorage.setItem("clientes",JSON.stringify(clientes));
-
+  localStorage.setItem("clientes", JSON.stringify(clientes));
   registrarNotificacao(`Novo cliente cadastrado: ${cNome.value}`);
+
+  cNome.value = "";
+  cValor.value = "";
+  cInicio.value = "";
 
   fecharModal();
   atualizarGrafico();
+  calcularReceitaTotal();
   renderClientes();
 }
+
+  function calcularReceitaTotal(){
+  let total = clientes.reduce((soma, c) => soma + Number(c.valor), 0);
+
+  document.getElementById("receitaTotal").textContent =
+    total.toLocaleString("pt-BR", {style:"currency", currency:"BRL"});
+}
+
+  function formatarBR(d){
+  return d.toLocaleDateString("pt-BR");
+}
+
+function filtroHoje(){
+  const hoje = new Date();
+  filtroInicio.value = formatarBR(hoje);
+  filtroFim.value = formatarBR(hoje);
+  atualizarGrafico();
+}
+
+function filtro30(){
+  const hoje = new Date();
+  const antes = new Date();
+  antes.setDate(hoje.getDate() - 30);
+
+  filtroInicio.value = formatarBR(antes);
+  filtroFim.value = formatarBR(hoje);
+  atualizarGrafico();
+}
+
+function filtro90(){
+  const hoje = new Date();
+  const antes = new Date();
+  antes.setDate(hoje.getDate() - 90);
+
+  filtroInicio.value = formatarBR(antes);
+  filtroFim.value = formatarBR(hoje);
+  atualizarGrafico();
+}
+
+function filtroAno(){
+  const hoje = new Date();
+  filtroInicio.value = "01/01/" + hoje.getFullYear();
+  filtroFim.value = formatarBR(hoje);
+  atualizarGrafico();
+}
+
+  function filtrarClientes(){
+  const termo = document.getElementById("buscaCliente").value.toLowerCase();
+
+  const itens = listaClientes.getElementsByTagName("li");
+
+  for(let i = 0; i < itens.length; i++){
+    const texto = itens[i].innerText.toLowerCase();
+
+    if(texto.includes(termo)){
+      itens[i].style.display = "block";
+    } else {
+      itens[i].style.display = "none";
+    }
+  }
+}
+
 
 function togglePainel(){
   painelClientes.style.display =
@@ -750,27 +844,87 @@ function renderClientes(){
 
   clientes.forEach(c=>{
     const li=document.createElement("li");
-    li.innerHTML=`
-      <strong>${c.nome}</strong><br>
-      R$ ${Number(c.valor).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}/mês<br>
-      Início: ${formatarDataBR(c.inicio)}<br>
-      <button class="btn" onclick="removerCliente(${c.id})">Excluir</button>
-    `;
+   li.innerHTML=`
+  <div style="display:flex; flex-direction:column; gap:6px;">
+    <strong style="font-size:15px;">${c.nome}</strong>
+
+    <span style="color:#38bdf8;">
+      ${Number(c.valor).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} / mês
+    </span>
+
+    <span>
+  Status: 
+  <strong style="color:${
+    c.status === "Ativo" ? "#22c55e" :
+    c.status === "Em teste" ? "#facc15" :
+    "#ef4444"
+  }">
+    ${c.status || "Ativo"}
+  </strong>
+</span>
+
+<div style="display:flex; gap:6px; margin-top:6px;">
+  <button class="btn" 
+    style="background:#22c55e; font-size:12px; padding:8px;"
+    onclick="mudarStatus(${c.id}, 'Ativo')">
+    Ativo
+  </button>
+
+  <button class="btn" 
+    style="background:#facc15; color:#020617; font-size:12px; padding:8px;"
+    onclick="mudarStatus(${c.id}, 'Em teste')">
+    Em teste
+  </button>
+
+  <button class="btn" 
+    style="background:#ef4444; font-size:12px; padding:8px;"
+    onclick="mudarStatus(${c.id}, 'Inativo')">
+    Inativo
+  </button>
+</div>
+
+
+
+    <button class="btn" onclick="removerCliente(${c.id})" 
+      style="margin-top:6px; width:100%;">
+      Excluir
+    </button>
+  </div>
+`;
+
     listaClientes.appendChild(li);
   });
 }
 
 function removerCliente(id){
-  const cliente = clientes.find(c => c.id === id);
+ const cliente = clientes.find(c => c.id === id);
 
-  clientes = clientes.filter(c=>c.id!==id);
-  localStorage.setItem("clientes",JSON.stringify(clientes));
-
+if(cliente){
   registrarNotificacao(`Cliente removido: ${cliente.nome}`);
+}
+
 
   atualizarGrafico();
+  calcularReceitaTotal();
   renderClientes();
 }
+
+  function mudarStatus(id, novoStatus){
+  clientes = clientes.map(c => {
+    if(c.id === id){
+      return {...c, status: novoStatus};
+    }
+    return c;
+  });
+
+  localStorage.setItem("clientes", JSON.stringify(clientes));
+  renderClientes();
+
+  registrarNotificacao(
+    `Status do cliente alterado para: ${novoStatus}`
+  );
+}
+
 
 function atualizarGrafico(){
   let inicioFiltro = filtroInicio.value 
@@ -851,9 +1005,6 @@ function renderTarefas(){
   });
 }
 
-
-renderClientes();
-renderTarefas();
 function excluirTarefa(i){
   tarefas.splice(i,1);
   localStorage.setItem("tarefas",JSON.stringify(tarefas));
@@ -876,6 +1027,9 @@ function editarTarefa(i){
   }
 }
 
+renderClientes();
+renderTarefas();
+calcularReceitaTotal();
 atualizarGrafico();
 atualizarPainelNotificacoes();
 
