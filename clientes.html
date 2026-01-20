@@ -785,6 +785,12 @@ function editarTarefa(i){
 atualizarGrafico();
 atualizarPainelNotificacoes();
 
+window.addEventListener('scroll', function(){
+  document.getElementById('painelNotificacoes').style.display = 'none';
+  document.getElementById('painelClientes').style.display = 'none';
+});
+
+
 </script>
   
 </body>
