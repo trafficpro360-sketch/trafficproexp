@@ -532,16 +532,6 @@ body{
   <button class="btn" onclick="filtroAno()">Este ano</button>
 
 </div>
-
-  <div class="controls" style="margin-top:0;">
-  <input 
-    type="text" 
-    id="buscaCliente" 
-    placeholder="🔍 Buscar cliente..." 
-    onkeyup="filtrarClientes()"
-  >
-</div>
-
   
 <div class="card">
   <h3>💰 Receita Total Mensal</h3>
@@ -586,8 +576,26 @@ body{
 <!-- PAINEL LISTA -->
 <div id="painelClientes">
   <h3>Clientes</h3>
+
+  <input 
+    type="text" 
+    id="buscaCliente" 
+    placeholder="🔍 Buscar cliente..." 
+    onkeyup="filtrarClientes()"
+    style="
+      width:100%;
+      padding:10px;
+      margin-bottom:12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(2,6,23,.7);
+      color:white;
+    "
+  >
+
   <ul id="listaClientes"></ul>
 </div>
+
   
 <div id="painelNotificacoes">
   <h3>Notificações</h3>
