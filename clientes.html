@@ -327,9 +327,6 @@ body{
 
 
 .chart{
-  height:360px;      /* um pouco mais alto */
-  margin-bottom: 32px;
-}
 
 
 /* TAREFAS */
@@ -541,7 +538,7 @@ body{
     margin-bottom:16px;
   ">
 
-    <h3>📈 Clientes — Evolução Mensal</h3>
+    <h3>Clientes - Analise de lucrosa</h3>
 
     <div style="display:flex; gap:10px;">
       <button class="btn" onclick="filtroHoje()" style="padding:8px 12px;">Hoje</button>
@@ -552,8 +549,13 @@ body{
 
   </div>
 
-  <canvas id="clientesChart"></canvas>
+  <!-- ÁREA SEGURA DO GRÁFICO -->
+  <div style="flex:1; min-height:320px;">
+    <canvas id="clientesChart"></canvas>
+  </div>
+
 </div>
+
 
 
 <div class="card tarefas">
