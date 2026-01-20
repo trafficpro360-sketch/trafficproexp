@@ -222,6 +222,9 @@ body{
   overflow-y:auto;
   box-shadow:0 8px 30px rgba(0,0,0,.4);
   z-index:9999;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56,189,248,.4) rgba(2,6,23,.8);
 }
 
 #painelNotificacoes h3{
@@ -416,6 +419,9 @@ body{
   box-shadow:0 8px 30px rgba(0,0,0,.4);
   backdrop-filter: blur(10px);
   z-index:9999;
+  
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56,189,248,.4) rgba(2,6,23,.8);  
 }
 
 #painelClientes h3{
@@ -429,6 +435,27 @@ body{
   margin-bottom:10px;
   font-size:14px;
   border:1px solid var(--border);
+}
+
+/* ===== PADRÃO DE SCROLLBAR IGUAL AO INDEX ===== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(2,6,23,.8);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(56,189,248,.3);
+  border-radius: 20px;
+  border: 2px solid rgba(2,6,23,.8);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56,189,248,.5);
 }
 
 </style>
