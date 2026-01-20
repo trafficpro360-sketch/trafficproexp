@@ -688,34 +688,6 @@ const tData = document.getElementById("tData");
 const tHora = document.getElementById("tHora");
 const tDesc = document.getElementById("tDesc");
 
-
-
-const textoDentroGrafico = {
-  id: "textoDentroGrafico",
-  afterDraw(chart){
-    const { ctx, chartArea, scales } = chart;
-    const { left } = chartArea;
-
-    // pega a posição exata do número 160 no eixo Y
-    const y160 = scales.y.getPixelForValue(160) - 22;
-
-    ctx.save();
-    ctx.fillStyle = "rgba(229, 231, 235, 0.35)";
-    ctx.font = "bold 18px system-ui";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "top";
-
-    ctx.fillText(
-      "Análise de rendimento dos clientes",
-      left + 10,
-      y160
-    );
-
-    ctx.restore();
-  }
-};
-
-
 const chart = new Chart(document.getElementById("clientesChart"),{
   type:"line",
   data:{labels:[],datasets:[]},
@@ -738,7 +710,7 @@ const chart = new Chart(document.getElementById("clientesChart"),{
       y:{ ticks:{ color:"#94a3b8" }}
     }
   },
-  plugins:[textoDentroGrafico]
+  plugins:[]
 });
 
 
@@ -924,24 +896,40 @@ function renderClientes(){
 </span>
 
 <div style="display:flex; gap:6px; margin-top:6px;">
+
   <button class="btn" 
-    style="background:#22c55e; font-size:12px; padding:8px;"
+    style="
+      background:${c.status === 'Ativo' ? '#22c55e' : 'linear-gradient(135deg,#2563eb,#38bdf8)'};
+      font-size:12px; 
+      padding:8px;
+    "
     onclick="mudarStatus(${c.id}, 'Ativo')">
     Ativo
   </button>
 
   <button class="btn" 
-    style="background:#facc15; color:#020617; font-size:12px; padding:8px;"
+    style="
+      background:${c.status === 'Em teste' ? '#facc15' : 'linear-gradient(135deg,#2563eb,#38bdf8)'};
+      color:${c.status === 'Em teste' ? '#020617' : 'white'};
+      font-size:12px; 
+      padding:8px;
+    "
     onclick="mudarStatus(${c.id}, 'Em teste')">
     Em teste
   </button>
 
   <button class="btn" 
-    style="background:#ef4444; font-size:12px; padding:8px;"
+    style="
+      background:${c.status === 'Inativo' ? '#ef4444' : 'linear-gradient(135deg,#2563eb,#38bdf8)'};
+      font-size:12px; 
+      padding:8px;
+    "
     onclick="mudarStatus(${c.id}, 'Inativo')">
     Inativo
   </button>
+
 </div>
+
 
 
 
