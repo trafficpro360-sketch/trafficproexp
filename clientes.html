@@ -500,8 +500,8 @@ body{
 </div>
 
 <div class="controls">
-  <input type="date" id="filtroInicio">
-  <input type="date" id="filtroFim">
+  <input type="text" id="filtroInicio" placeholder="dd/mm/aaaa">
+  <input type="text" id="filtroFim" placeholder="dd/mm/aaaa">
   <button class="btn" onclick="atualizarGrafico()">Filtrar</button>
 </div>
 
@@ -512,7 +512,7 @@ body{
 <div class="card tarefas">
   <h3>Tarefas</h3>
 
-  <input type="date" id="tData">
+  <input type="text" id="tData" placeholder="dd/mm/aaaa">
   <input type="time" id="tHora">
   <input type="text" id="tDesc" placeholder="Descrição da tarefa">
   <button class="btn" onclick="adicionarTarefa()">Adicionar</button>
@@ -527,7 +527,7 @@ body{
     <h3>Novo Cliente</h3>
     <input id="cNome" placeholder="Nome do cliente">
     <input id="cValor" type="number" placeholder="Valor mensal (R$)">
-    <input id="cInicio" type="date">
+    <input id="cInicio" type="text" placeholder="dd/mm/aaaa">
     <button onclick="salvarCliente()">Salvar</button>
     <button onclick="fecharModal()">Cancelar</button>
   </div>
@@ -553,6 +553,15 @@ function formatarDataBR(dataISO){
   if(!dataISO) return "";
   const d = new Date(dataISO + "T00:00:00");
   return d.toLocaleDateString("pt-BR");
+}
+  function converterBRparaDate(dataBR){
+  if(!dataBR) return null;
+
+  const partes = dataBR.split("/");
+  if(partes.length !== 3) return null;
+
+  const [dia, mes, ano] = partes;
+  return new Date(ano, mes - 1, dia);
 }
 
 const modalCliente = document.getElementById("modalCliente");
@@ -674,7 +683,7 @@ function renderClientes(){
     const li=document.createElement("li");
     li.innerHTML=`
       <strong>${c.nome}</strong><br>
-      R$ ${c.valor}/mês<br>
+      R$ ${Number(c.valor).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}/mês<br>
       Início: ${formatarDataBR(c.inicio)}<br>
       <button class="btn" onclick="removerCliente(${c.id})">Excluir</button>
     `;
@@ -702,7 +711,8 @@ function atualizarGrafico(){
   let datasets = [];
 
   clientes.forEach((c,i)=>{
-    let data = new Date(c.inicio);
+    let data = converterBRparaDate(c.inicio);
+    if(!data) return;
     let total = 0;
     let dados = [];
     let meses = [];
