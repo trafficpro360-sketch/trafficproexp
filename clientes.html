@@ -36,6 +36,26 @@ body{
   margin-bottom:24px;
 }
 
+  /* SIDEBAR IGUAL AO INDEX */
+.sidebar{
+  width:280px;
+  backdrop-filter:blur(20px);
+  background:rgba(2,6,23,.85);
+  border-right:1px solid var(--border);
+  padding:28px;
+  border-radius:0 28px 28px 0;
+  position:fixed;
+  left:0;
+  top:0;
+  height:100vh;
+}
+
+.content{
+  margin-left:300px;
+  padding:36px 40px;
+}
+
+
 .header{
   font-size:32px;
   font-weight:700;
@@ -180,14 +200,21 @@ body{
 
 <body>
 
+<aside class="sidebar">
+  <div class="logo">Finance<span style="color:#fff">Pro</span></div>
+  <nav class="menu">
+    <ul>
+      <li><a href="index.html">Dashboard</a></li>
+      <li class="active"><a href="clientes.html">Clientes</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main class="content">
 <div class="top-bar">
   <div class="header">Clientes</div>
 
   <div class="acoes">
-    <button class="btn" onclick="window.location.href='index.html'">
-      ⬅️ Voltar ao Dashboard
-    </button>
-
     <button class="btn" onclick="abrirModalCliente()">➕</button>
     <button class="btn" onclick="togglePainel()">📋</button>
   </div>
@@ -213,6 +240,7 @@ body{
 
   <ul id="listaTarefas"></ul>
 </div>
+</main>
 
 <!-- MODAL CLIENTE -->
 <div class="modal" id="modalCliente">
