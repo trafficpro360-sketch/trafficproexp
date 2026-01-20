@@ -594,7 +594,7 @@ input[type=number] {
   <nav class="menu">
     <ul>
       <li class="active"><a onclick="mostrarAba('dashboard',this)">Dashboard</a></li>
-      <li><a onclick="mostrarAba('clientes',this)">Clientes</a></li>
+      <li><a href="clientes.html">Clientes</a></li>
     </ul>
   </nav>
 </aside>
@@ -651,19 +651,7 @@ input[type=number] {
     <div class="box"><h3>Patrimônio</h3><ul id="listaPatrimonio"></ul></div>
   </section>
 </div>
-
-<div id="clientes">
-  <div class="header">Clientes</div>
-  <div class="clientes-container">
-    <input id="clienteNome" placeholder="Nome completo">
-    <input id="clienteTelefone" placeholder="Telefone">
-    <input type="number" id="clienteValor" placeholder="Valor do contrato">
-    <input id="clienteData" placeholder="dd/mm/aaaa">
-    <button onclick="adicionarCliente()">Adicionar Cliente</button>
-    <ul id="listaClientes"></ul>
-  </div>
-</div>
-
+  
 </main>
 
 <div id="painelNotificacoes">
@@ -1018,7 +1006,6 @@ function adicionarCliente(){
 
   clientes.push({id:Date.now(),nome,val});
   localStorage.setItem('clientes',JSON.stringify(clientes));
-  atualizarClientes();
 }
 
 function atualizarClientes(){
