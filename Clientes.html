@@ -236,6 +236,12 @@ body{
 let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
 let tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
 
+const modalCliente = document.getElementById("modalCliente");
+const painelClientes = document.getElementById("painelClientes");
+const listaClientes = document.getElementById("listaClientes");
+const listaTarefas = document.getElementById("listaTarefas");
+
+
 const chart = new Chart(document.getElementById("clientesChart"),{
   type:"line",
   data:{labels:[],datasets:[]},
