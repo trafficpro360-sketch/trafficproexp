@@ -46,6 +46,7 @@ body{
   gap:12px;
 }
 
+/* BOTÕES */
 .btn{
   padding:10px 16px;
   border-radius:14px;
@@ -56,7 +57,7 @@ body{
   font-weight:600;
 }
 
-/* FILTRO */
+/* FILTRO DE DATAS */
 .controls{
   display:flex;
   gap:12px;
@@ -108,7 +109,7 @@ body{
   font-size:14px;
 }
 
-/* MODAIS */
+/* MODAL */
 .modal{
   position:fixed;
   inset:0;
@@ -123,11 +124,7 @@ body{
 
 .modal-content{
   width:360px;
-  background:linear-gradient(
-    180deg,
-    rgba(56,189,248,.05),
-    rgba(15,23,42,.95)
-  );
+  background:linear-gradient(180deg, rgba(56,189,248,.05), rgba(15,23,42,.95));
   border:1px solid rgba(56,189,248,.18);
   border-radius:26px;
   padding:26px;
@@ -157,17 +154,7 @@ body{
   margin-top:6px;
 }
 
-.modal-content button:first-of-type{
-  background:linear-gradient(135deg,#2563eb,#38bdf8);
-  color:#fff;
-}
-
-.modal-content button:last-of-type{
-  background:rgba(239,68,68,.12);
-  color:var(--red);
-}
-
-/* PAINEL CLIENTES */
+/* PAINEL LATERAL DE CLIENTES */
 #painelClientes{
   position:fixed;
   top:90px;
@@ -178,6 +165,8 @@ body{
   border-radius:18px;
   padding:16px;
   display:none;
+  max-height:400px;
+  overflow-y:auto;
 }
 
 #painelClientes li{
@@ -199,11 +188,10 @@ body{
       ⬅️ Voltar ao Dashboard
     </button>
 
-    <button class="btn" onclick="abrirModalCliente()">➕ Novo Cliente</button>
-    <button class="btn" onclick="togglePainel()">📋 Clientes</button>
+    <button class="btn" onclick="abrirModalCliente()">➕</button>
+    <button class="btn" onclick="togglePainel()">📋</button>
   </div>
 </div>
-
 
 <div class="controls">
   <input type="date" id="filtroInicio">
@@ -269,6 +257,7 @@ function salvarCliente(){
     valor:Number(cValor.value),
     inicio:cInicio.value
   });
+
   localStorage.setItem("clientes",JSON.stringify(clientes));
   fecharModal();
   atualizarGrafico();
@@ -283,40 +272,49 @@ function togglePainel(){
 
 function renderClientes(){
   listaClientes.innerHTML="";
+
   clientes.forEach(c=>{
     const li=document.createElement("li");
     li.innerHTML=`
       <strong>${c.nome}</strong><br>
       R$ ${c.valor}/mês<br>
-      <button onclick="removerCliente(${c.id})">Excluir</button>
+      Início: ${c.inicio}<br>
+      <button class="btn" onclick="removerCliente(${c.id})">Excluir</button>
     `;
     listaClientes.appendChild(li);
   });
 }
 
 function removerCliente(id){
-  clientes=clientes.filter(c=>c.id!==id);
+  clientes = clientes.filter(c=>c.id!==id);
   localStorage.setItem("clientes",JSON.stringify(clientes));
   atualizarGrafico();
   renderClientes();
 }
 
 function atualizarGrafico(){
-  let labels=[];
-  let datasets=[];
+  let inicioFiltro = filtroInicio.value ? new Date(filtroInicio.value) : null;
+  let fimFiltro = filtroFim.value ? new Date(filtroFim.value) : new Date();
+
+  let labels = [];
+  let datasets = [];
 
   clientes.forEach((c,i)=>{
-    let data=new Date(c.inicio);
-    let hoje=new Date();
-    let total=0;
-    let dados=[];
+    let data = new Date(c.inicio);
+    let total = 0;
+    let dados = [];
+    let meses = [];
 
-    while(data<=hoje){
-      total+=c.valor;
-      labels.push(data.toLocaleDateString("pt-BR"));
-      dados.push(total);
+    while(data <= fimFiltro){
+      if(!inicioFiltro || data >= inicioFiltro){
+        total += c.valor;
+        meses.push(data.toLocaleDateString("pt-BR"));
+        dados.push(total);
+      }
       data.setMonth(data.getMonth()+1);
     }
+
+    labels = meses;
 
     datasets.push({
       label:c.nome,
@@ -325,8 +323,8 @@ function atualizarGrafico(){
     });
   });
 
-  chart.data.labels=labels;
-  chart.data.datasets=datasets;
+  chart.data.labels = labels;
+  chart.data.datasets = datasets;
   chart.update();
 }
 
@@ -336,15 +334,17 @@ function adicionarTarefa(){
     hora:tHora.value,
     desc:tDesc.value
   });
+
   localStorage.setItem("tarefas",JSON.stringify(tarefas));
   renderTarefas();
 }
 
 function renderTarefas(){
   listaTarefas.innerHTML="";
+
   tarefas.forEach(t=>{
     const li=document.createElement("li");
-    li.textContent=`${t.data} ${t.hora} — ${t.desc}`;
+    li.textContent = `${t.data} ${t.hora} — ${t.desc}`;
     listaTarefas.appendChild(li);
   });
 }
@@ -356,5 +356,3 @@ atualizarGrafico();
 
 </body>
 </html>
-
-
