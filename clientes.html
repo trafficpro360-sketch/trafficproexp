@@ -411,8 +411,6 @@ body{
   </nav>
 </aside>
 
-</aside>
-
 <main class="content">
 <div class="top-bar">
   <div class="header">Clientes</div>
@@ -485,6 +483,8 @@ const modalCliente = document.getElementById("modalCliente");
 const painelClientes = document.getElementById("painelClientes");
 const listaClientes = document.getElementById("listaClientes");
 const listaTarefas = document.getElementById("listaTarefas");
+const filtroInicio = document.getElementById("filtroInicio");
+const filtroFim = document.getElementById("filtroFim");
 
 
 const chart = new Chart(document.getElementById("clientesChart"),{
@@ -706,13 +706,12 @@ function editarTarefa(i){
 
 atualizarGrafico();
 atualizarPainelNotificacoes();
-
-</script>
-
 <div id="painelNotificacoes">
   <h3>Notificações</h3>
   <ul id="listaNotificacoes"></ul>
 </div>
-
+  
+</script>
+  
 </body>
 </html>
