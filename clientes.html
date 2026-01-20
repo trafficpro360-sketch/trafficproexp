@@ -716,8 +716,14 @@ function removerCliente(id){
 }
 
 function atualizarGrafico(){
-  let inicioFiltro = filtroInicio.value ? new Date(filtroInicio.value) : null;
-  let fimFiltro = filtroFim.value ? new Date(filtroFim.value) : new Date();
+  let inicioFiltro = filtroInicio.value 
+    ? converterBRparaDate(filtroInicio.value) 
+    : null;
+
+  let fimFiltro = filtroFim.value 
+    ? converterBRparaDate(filtroFim.value) 
+    : new Date();
+
   let labels = [];
   let datasets = [];
 
