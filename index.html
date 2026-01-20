@@ -466,18 +466,27 @@ input[type=number] {
   scrollbar-color: var(--border) rgba(15,23,42,.7);
 }
 
+/* ===== PADRÃO DE SCROLLBAR IGUAL AO INDEX ===== */
+
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15,23,42,.7);
+  background: rgba(2,6,23,.8);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 10px;
+  background: rgba(56,189,248,.3);
+  border-radius: 20px;
+  border: 2px solid rgba(2,6,23,.8);
 }
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56,189,248,.5);
+}
+  
   /* ========== SININHO E PAINEL DE NOTIFICAÇÕES ========== */
 
 .top-bar{
