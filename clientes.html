@@ -17,8 +17,20 @@
   --text:#e5e7eb;
   --muted:#94a3b8;
 }
-
+  
 *{margin:0;padding:0;box-sizing:border-box}
+
+/* REMOVE ÍCONE DE CALENDÁRIO E SETAS EM QUALQUER INPUT */
+input::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+input[type="text"]::-webkit-inner-spin-button,
+input[type="text"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
 body{
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, Helvetica, sans-serif;
@@ -561,11 +573,17 @@ let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
 let tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
 let notificacoes = JSON.parse(localStorage.getItem("notificacoes")) || [];
 
-function formatarDataBR(dataISO){
-  if(!dataISO) return "";
-  const d = new Date(dataISO + "T00:00:00");
+  function formatarDataBR(data){
+  if(!data) return "";
+
+  // Se já estiver no padrão brasileiro, mantém como está
+  if(data.includes("/")) return data;
+
+  // Se vier em ISO (yyyy-mm-dd), converte para dd/mm/aaaa
+  const d = new Date(data + "T00:00:00");
   return d.toLocaleDateString("pt-BR");
 }
+
   function converterBRparaDate(dataBR){
   if(!dataBR) return null;
 
@@ -826,21 +844,6 @@ window.addEventListener('scroll', function(){
   document.getElementById('painelNotificacoes').style.display = 'none';
   document.getElementById('painelClientes').style.display = 'none';
 });
-
-/* REMOVE ÍCONE DE CALENDÁRIO E SETAS EM QUALQUER INPUT */
-input::-webkit-calendar-picker-indicator {
-  display: none !important;
-  -webkit-appearance: none;
-}
-
-input[type="text"]::-webkit-inner-spin-button,
-input[type="text"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-
-
 </script>
   
 </body>
