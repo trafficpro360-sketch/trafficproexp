@@ -525,12 +525,6 @@ body{
 
   <input type="text" id="filtroFim" placeholder="dd/mm/aaaa">
 
-  <button class="btn" onclick="atualizarGrafico()">Filtrar</button>
-  <button class="btn" onclick="filtroHoje()">Hoje</button>
-  <button class="btn" onclick="filtro30()">Últimos 30 dias</button>
-  <button class="btn" onclick="filtro90()">Últimos 90 dias</button>
-  <button class="btn" onclick="filtroAno()">Este ano</button>
-
 </div>
   
 <div class="card">
@@ -539,8 +533,28 @@ body{
 </div>
 
 <div class="card chart">
+
+  <div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:16px;
+  ">
+
+    <h3>📈 Clientes — Evolução Mensal</h3>
+
+    <div style="display:flex; gap:10px;">
+      <button class="btn" onclick="filtroHoje()" style="padding:8px 12px;">Hoje</button>
+      <button class="btn" onclick="filtro30()" style="padding:8px 12px;">30 dias</button>
+      <button class="btn" onclick="filtro90()" style="padding:8px 12px;">90 dias</button>
+      <button class="btn" onclick="filtroAno()" style="padding:8px 12px;">Este ano</button>
+    </div>
+
+  </div>
+
   <canvas id="clientesChart"></canvas>
 </div>
+
 
 <div class="card tarefas">
   <h3>Tarefas</h3>
