@@ -198,54 +198,67 @@ input[type=number] {
 .charts-row canvas{width:100% !important; height:260px !important;}
 
 /* LISTAS */
-.records{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:20px;
-}
-.records .box{
-  padding:16px;
-  border-radius:22px;
-  border:1px solid var(--border);
-  background:rgba(15,23,42,.7);
-}
-.records ul{
-  list-style:none;
-  max-height:260px;
-  overflow-y:auto;
-  padding-right:10px;
-}
-.records li{
-  background:rgba(2,6,23,.6);
-  padding:12px 14px;
-  border-radius:14px;
-  margin-bottom:10px;
-  font-size:15px;
-  line-height:1.55;
+/* ===== BOTÕES EDITAR / EXCLUIR — ESTILO DA SUA IMAGEM ===== */
+
+.btn-group{
   display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
+  gap:10px;
 }
 
-/* BOTÕES EDITAR / EXCLUIR */
-.btn-group{display:flex;gap:8px}
-.btn-edit,.btn-del{
-  border:none;
-  padding:8px 12px;
+/* BASE DOS DOIS BOTÕES */
+.records li .btn-edit,
+.records li .btn-del{
+  padding:8px 14px;
   border-radius:14px;
   font-size:12px;
   cursor:pointer;
+  backdrop-filter: blur(8px);
+  transition:.25s ease;
+  border: 1px solid transparent;
 }
-.btn-edit{
-  background:rgba(56,189,248,.15);
-  color:var(--blue);
-  border:1px solid var(--blue);
+
+/* ===== EDITAR — AZUL EM VIDRO (IGUAL SUA IMAGEM) ===== */
+.records li .btn-edit{
+  background: linear-gradient(
+    135deg,
+    rgba(56,189,248,.18),
+    rgba(37,99,235,.12)
+  );
+  color: var(--blue);
+  border: 1px solid rgba(56,189,248,.55);
+  box-shadow: 0 0 12px rgba(56,189,248,.22);
 }
-.btn-del{
-  background:rgba(239,68,68,.15);
-  color:var(--red);
-  border:1px solid var(--red);
+
+/* HOVER EDITAR */
+.records li .btn-edit:hover{
+  background: linear-gradient(
+    135deg,
+    rgba(56,189,248,.28),
+    rgba(37,99,235,.18)
+  );
+  box-shadow: 0 0 16px rgba(56,189,248,.35);
+}
+
+/* ===== EXCLUIR — VERMELHO EM VIDRO (MESMO BRILHO) ===== */
+.records li .btn-del{
+  background: linear-gradient(
+    135deg,
+    rgba(239,68,68,.18),
+    rgba(185,28,28,.12)
+  );
+  color: var(--red);
+  border: 1px solid rgba(239,68,68,.55);
+  box-shadow: 0 0 12px rgba(239,68,68,.22);
+}
+
+/* HOVER EXCLUIR */
+.records li .btn-del:hover{
+  background: linear-gradient(
+    135deg,
+    rgba(239,68,68,.28),
+    rgba(185,28,28,.18)
+  );
+  box-shadow: 0 0 16px rgba(239,68,68,.35);
 }
 
 /* MODAIS */
@@ -270,15 +283,21 @@ input[type=number] {
 .modal.active{display:flex}
 
 /* ====== MODAL EXPORT (versão moderna e alinhada) ====== */
-#modalExport .modal-content{
-  background:linear-gradient(180deg,#0f172a,#020617);
-  border:1px solid var(--border);
+.modal-content{
+  background: linear-gradient(
+    180deg,
+    rgba(56,189,248,.05),
+    rgba(15,23,42,.95)
+  );
+  backdrop-filter: blur(10px);
+  border:1px solid rgba(56,189,248,.18);
   border-radius:28px;
   padding:28px 32px;
   width:360px;
-  box-shadow:0 12px 50px rgba(0,0,0,.6);
+  box-shadow:0 0 12px rgba(56,189,248,.10);
   text-align:left;
 }
+
 
 /* Título mais profissional */
 #modalExport h3{
