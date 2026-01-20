@@ -327,6 +327,12 @@ body{
 
 
 .chart{
+  height: 420px;      /* espaço extra para os botões */
+  margin-bottom: 32px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
 
 
 /* TAREFAS */
@@ -550,9 +556,10 @@ body{
   </div>
 
   <!-- ÁREA SEGURA DO GRÁFICO -->
-  <div style="flex:1; min-height:320px;">
-    <canvas id="clientesChart"></canvas>
-  </div>
+ <div style="flex:1; min-height:320px; padding:8px;">
+  <canvas id="clientesChart"></canvas>
+ </div>
+
 
 </div>
 
@@ -693,11 +700,17 @@ const chart = new Chart(document.getElementById("clientesChart"),{
   options:{
     responsive:true,
     maintainAspectRatio:false,
+
+    layout: {
+      padding: 12
+    },
+
     plugins:{
       legend:{
         labels:{ color:"#e5e7eb" }
       }
     },
+
     scales:{
       x:{ ticks:{ color:"#94a3b8" }},
       y:{ ticks:{ color:"#94a3b8" }}
@@ -705,6 +718,7 @@ const chart = new Chart(document.getElementById("clientesChart"),{
   },
   plugins:[textoDentroGrafico]
 });
+
 
 function registrarNotificacao(texto){
   const novaNotificacao = {
