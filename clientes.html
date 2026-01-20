@@ -87,8 +87,9 @@ body{
 
 .content{
   flex:1;
-  padding:36px 48px;
-  max-width:1200px;
+  padding:28px 24px;   /* mantém um respiro bonito */
+  width:100%;           /* ocupa toda a área disponível */
+  max-width:100%;       /* REMOVE o limite centralizado */
 }
 
 .header{
@@ -296,7 +297,8 @@ body{
   border-radius:26px;
   padding:26px 28px;
   box-shadow:0 8px 30px rgba(0,0,0,.35);
-  margin-bottom: 36px;   /* <-- AUMENTA O ESPAÇO */
+  margin-bottom: 36px;
+  width:100%;      /* <-- MUITO IMPORTANTE */
 }
     transition:.2s ease;
 }
