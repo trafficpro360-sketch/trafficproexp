@@ -38,6 +38,7 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
+  gap:16px;
   margin-bottom:28px;
 }
 
@@ -86,7 +87,8 @@ body{
 
 .content{
   flex:1;
-  padding:36px 40px;
+  padding:36px 48px;
+  max-width:1200px;
 }
 
 .header{
@@ -103,8 +105,10 @@ body{
 .acoes-topo{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:14px;
+  justify-content:flex-end;   /* <-- MUITO IMPORTANTE */
 }
+
 
 .btn-exportar{
   padding:10px 16px;
@@ -146,14 +150,14 @@ body{
 /* BOTÕES DE AÇÃO NAS TAREFAS — PADRÃO INDEX */
 .btn-group{
   display:flex;
-  gap:8px;
-  margin-top:6px;
+  gap:10px;
+  align-items:center;
 }
 
 .btn-edit,.btn-del,.btn-done{
   border:none;
-  padding:8px 12px;
-  border-radius:14px;
+  padding:7px 10px;
+  border-radius:12px;
   font-size:12px;
   cursor:pointer;
 }
@@ -264,10 +268,11 @@ body{
 .controls{
   display:flex;
   align-items:center;
-  gap:12px;
-  margin-bottom:28px;
+  gap:14px;
+  margin-bottom:24px;
   flex-wrap:wrap;
   width:100%;
+  justify-content:flex-start;   /* mantém alinhado à esquerda */
 }
 
 .controls input{
@@ -277,6 +282,7 @@ body{
   background:rgba(15,23,42,.8);
   color:#fff;
   font-size:15px;
+  min-width:160px;
 }
 
 /* CARD / GRÁFICO */
@@ -289,11 +295,18 @@ body{
   box-shadow:0 8px 30px rgba(0,0,0,.35);
   margin-bottom: 36px;   /* <-- AUMENTA O ESPAÇO */
 }
+    transition:.2s ease;
+}
+.card:hover{
+  transform:translateY(-2px);
+}
+
 
 .chart{
-  height:340px;
-  margin-bottom: 40px;  /* espaço específico abaixo do gráfico */
+  height:360px;      /* um pouco mais alto */
+  margin-bottom: 32px;
 }
+
 
 /* TAREFAS */
 .tarefas input{
@@ -313,10 +326,14 @@ body{
 
 .tarefas li{
   background:rgba(2,6,23,.6);
-  padding:10px;
-  border-radius:12px;
-  margin-bottom:8px;
+  padding:14px;
+  border-radius:16px;
+  margin-bottom:10px;
   font-size:14px;
+  border:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
 /* MODAL */
@@ -370,30 +387,48 @@ body{
   margin-top:8px;
   transition:.15s ease;
 }
+  
+.modal-content button:first-of-type{
+  background:linear-gradient(135deg,#2563eb,#38bdf8);
+  color:white;
+}
+
+.modal-content button:last-of-type{
+  background:rgba(239,68,68,.15);
+  color:var(--red);
+  border:1px solid var(--red);
+}
+
 
 /* PAINEL LATERAL DE CLIENTES */
 #painelClientes{
   position:fixed;
   top:90px;
   right:40px;
-  width:320px;
+  width:340px;              /* um pouco maior */
   background:rgba(15,23,42,.95);
   border:1px solid var(--border);
-  border-radius:18px;
-  padding:16px;
+  border-radius:20px;
+  padding:18px;
   display:none;
-  max-height:400px;
+  max-height:450px;         /* um pouco mais alto */
   overflow-y:auto;
   box-shadow:0 8px 30px rgba(0,0,0,.4);
+  backdrop-filter: blur(10px);
   z-index:9999;
+}
+
+#painelClientes h3{
+  margin-bottom:12px;
 }
 
 #painelClientes li{
   background:rgba(2,6,23,.6);
-  padding:10px;
-  border-radius:12px;
-  margin-bottom:8px;
+  padding:12px;
+  border-radius:14px;
+  margin-bottom:10px;
   font-size:14px;
+  border:1px solid var(--border);
 }
 
 </style>
@@ -413,29 +448,27 @@ body{
 
 <main class="content">
 <div class="top-bar">
+
   <div class="header">Clientes</div>
 
- <div class="acoes-topo">
-   
-</div>  <!-- fecha top-bar -->
+  <div class="acoes-topo">
 
+    <button class="btn-plus" onclick="abrirModalCliente()">
+      <span>+</span>
+    </button>
 
-  <button class="btn-plus" onclick="abrirModalCliente()">
-    <span>+</span>
-  </button>
+    <button class="btn-exportar" onclick="togglePainel()">
+      Meus clientes
+    </button>
 
-  <button class="btn-exportar" onclick="togglePainel()">
-    Meus clientes
-  </button>
+    <div class="notificacao-area" onclick="toggleNotificacoes()">
+      🔔
+      <span id="notifBadge">0</span>
+    </div>
 
-  <div class="notificacao-area" onclick="toggleNotificacoes()">
-    🔔
-    <span id="notifBadge">0</span>
   </div>
 
 </div>
-
-
 
 <div class="controls">
   <input type="date" id="filtroInicio">
