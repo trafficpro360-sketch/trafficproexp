@@ -619,17 +619,15 @@ const textoDentroGrafico = {
     ctx.save();
     ctx.fillStyle = "rgba(229, 231, 235, 0.35)"; // branco suave
     ctx.font = "bold 18px system-ui";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
 
     ctx.fillText(
-      "Análise de rendimento dos clientes",
-      left + width / 2,
-      top + height / 8
-    );
+     "Análise de rendimento dos clientes",
+     left + 10,
+     top + 5
+);
 
-    ctx.restore();
-  }
 };
 
 const chart = new Chart(document.getElementById("clientesChart"),{
