@@ -100,6 +100,154 @@ body{
   gap:12px;
 }
 
+.acoes-topo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.btn-exportar{
+  padding:10px 16px;
+  border-radius:14px;
+  border:1px solid var(--blue);
+  background:rgba(56,189,248,.12);
+  color:var(--blue);
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.btn-exportar:hover{
+  background:rgba(56,189,248,.22);
+}
+
+/* BOTÃO + MODERNO */
+.btn-plus{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  border:1px solid rgba(56,189,248,.4);
+  background:linear-gradient(135deg,#2563eb,#38bdf8);
+  color:white;
+  font-size:22px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:.15s ease;
+}
+
+.btn-plus:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 10px rgba(56,189,248,.4);
+}
+
+/* BOTÕES DE AÇÃO NAS TAREFAS — PADRÃO INDEX */
+.btn-group{
+  display:flex;
+  gap:8px;
+  margin-top:6px;
+}
+
+.btn-edit,.btn-del,.btn-done{
+  border:none;
+  padding:8px 12px;
+  border-radius:14px;
+  font-size:12px;
+  cursor:pointer;
+}
+
+.btn-edit{
+  background:rgba(56,189,248,.15);
+  color:var(--blue);
+  border:1px solid var(--blue);
+}
+
+.btn-del{
+  background:rgba(239,68,68,.15);
+  color:var(--red);
+  border:1px solid var(--red);
+}
+
+.btn-done{
+  background:rgba(34,197,94,.15);
+  color:var(--green);
+  border:1px solid var(--green);
+}
+
+/* tarefa concluída */
+.tarefa-concluida{
+  opacity:.6;
+  text-decoration: line-through;
+}
+
+
+
+.notificacao-area{
+  position:relative;
+  font-size:22px;
+  cursor:pointer;
+  padding:10px;
+}
+
+/* bolinha vermelha */
+#notifBadge{
+  position:absolute;
+  top:4px;
+  right:2px;
+  background:red;
+  color:white;
+  font-size:12px;
+  border-radius:50%;
+  padding:2px 6px;
+}
+
+/* painel lateral */
+#painelNotificacoes{
+  position:fixed;
+  top:90px;
+  right:40px;
+  width:320px;
+  background:rgba(15,23,42,.95);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:16px;
+  display:none;
+  max-height:400px;
+  overflow-y:auto;
+  box-shadow:0 8px 30px rgba(0,0,0,.4);
+  z-index:9999;
+}
+
+#painelNotificacoes h3{
+  margin-bottom:10px;
+  color:var(--text);
+}
+
+#painelNotificacoes li{
+  background:rgba(2,6,23,.6);
+  padding:10px;
+  border-radius:12px;
+  margin-bottom:8px;
+  font-size:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.btn-notif-del{
+  background:rgba(239,68,68,.2);
+  color:var(--red);
+  border:1px solid var(--red);
+  border-radius:10px;
+  padding:4px 8px;
+  font-size:12px;
+  cursor:pointer;
+  margin-left:10px;
+}
+
+
 /* BOTÕES */
 .btn{
   padding:12px 16px;
@@ -269,11 +417,24 @@ body{
 <div class="top-bar">
   <div class="header">Clientes</div>
 
-  <div class="acoes">
-    <button class="btn" onclick="abrirModalCliente()">➕</button>
-    <button class="btn" onclick="togglePainel()">📋</button>
+ <div class="acoes-topo">
+
+  <button class="btn-plus" onclick="abrirModalCliente()">
+    <span>+</span>
+  </button>
+
+  <button class="btn-exportar" onclick="togglePainel()">
+    Meus clientes
+  </button>
+
+  <div class="notificacao-area" onclick="toggleNotificacoes()">
+    🔔
+    <span id="notifBadge">0</span>
   </div>
+
 </div>
+
+
 
 <div class="controls">
   <input type="date" id="filtroInicio">
@@ -318,6 +479,7 @@ body{
 <script>
 let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
 let tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
+let notificacoes = JSON.parse(localStorage.getItem("notificacoes")) || [];
 
 const modalCliente = document.getElementById("modalCliente");
 const painelClientes = document.getElementById("painelClientes");
@@ -330,6 +492,61 @@ const chart = new Chart(document.getElementById("clientesChart"),{
   data:{labels:[],datasets:[]},
   options:{responsive:true,maintainAspectRatio:false}
 });
+
+function registrarNotificacao(texto){
+  const novaNotificacao = {
+    id: Date.now(),
+    texto: texto,
+    data: new Date().toISOString()
+  };
+
+  notificacoes.push(novaNotificacao);
+
+  const agora = new Date();
+  notificacoes = notificacoes.filter(n => {
+    const dataN = new Date(n.data);
+    const diff = (agora - dataN) / (1000 * 60 * 60 * 24);
+    return diff <= 3;
+  });
+
+  localStorage.setItem('notificacoes', JSON.stringify(notificacoes));
+  atualizarPainelNotificacoes();
+}
+
+function atualizarPainelNotificacoes(){
+  const lista = document.getElementById('listaNotificacoes');
+  const badge = document.getElementById('notifBadge');
+
+  lista.innerHTML = '';
+
+  notificacoes.forEach(n => {
+    const li = document.createElement('li');
+    const data = new Date(n.data).toLocaleString('pt-BR');
+
+    li.innerHTML = `
+      <div>
+        <strong>${data}</strong><br>
+        ${n.texto}
+      </div>
+      <button class="btn-notif-del" onclick="excluirNotificacao(${n.id})">✖</button>
+    `;
+
+    lista.appendChild(li);
+  });
+
+  badge.textContent = notificacoes.length;
+}
+
+function excluirNotificacao(id){
+  notificacoes = notificacoes.filter(n => n.id !== id);
+  localStorage.setItem('notificacoes', JSON.stringify(notificacoes));
+  atualizarPainelNotificacoes();
+}
+
+function toggleNotificacoes(){
+  const painel = document.getElementById('painelNotificacoes');
+  painel.style.display = painel.style.display === 'block' ? 'none' : 'block';
+}
 
 function abrirModalCliente(){
   modalCliente.classList.add("active");
@@ -348,6 +565,9 @@ function salvarCliente(){
   });
 
   localStorage.setItem("clientes",JSON.stringify(clientes));
+
+  registrarNotificacao(`Novo cliente cadastrado: ${cNome.value}`);
+
   fecharModal();
   atualizarGrafico();
   renderClientes();
@@ -375,8 +595,13 @@ function renderClientes(){
 }
 
 function removerCliente(id){
+  const cliente = clientes.find(c => c.id === id);
+
   clientes = clientes.filter(c=>c.id!==id);
   localStorage.setItem("clientes",JSON.stringify(clientes));
+
+  registrarNotificacao(`Cliente removido: ${cliente.nome}`);
+
   atualizarGrafico();
   renderClientes();
 }
@@ -418,11 +643,13 @@ function atualizarGrafico(){
 }
 
 function adicionarTarefa(){
-  tarefas.push({
-    data:tData.value,
-    hora:tHora.value,
-    desc:tDesc.value
-  });
+ tarefas.push({
+  data:tData.value,
+  hora:tHora.value,
+  desc:tDesc.value,
+  concluida:false
+ });
+
 
   localStorage.setItem("tarefas",JSON.stringify(tarefas));
   renderTarefas();
@@ -431,17 +658,61 @@ function adicionarTarefa(){
 function renderTarefas(){
   listaTarefas.innerHTML="";
 
-  tarefas.forEach(t=>{
+  tarefas.forEach((t, index)=>{
     const li=document.createElement("li");
-    li.textContent = `${t.data} ${t.hora} — ${t.desc}`;
+
+    li.innerHTML = `
+      <div class="${t.concluida ? 'tarefa-concluida' : ''}">
+        ${t.data} ${t.hora} — ${t.desc}
+      </div>
+
+      <div class="btn-group">
+        <button class="btn-edit" onclick="editarTarefa(${index})">Editar</button>
+        <button class="btn-done" onclick="concluirTarefa(${index})">
+          ${t.concluida ? 'Desfazer' : 'Concluído'}
+        </button>
+        <button class="btn-del" onclick="excluirTarefa(${index})">Excluir</button>
+      </div>
+    `;
+
     listaTarefas.appendChild(li);
   });
 }
 
+
 renderClientes();
 renderTarefas();
+function excluirTarefa(i){
+  tarefas.splice(i,1);
+  localStorage.setItem("tarefas",JSON.stringify(tarefas));
+  renderTarefas();
+}
+
+function concluirTarefa(i){
+  tarefas[i].concluida = !tarefas[i].concluida;
+  localStorage.setItem("tarefas",JSON.stringify(tarefas));
+  renderTarefas();
+}
+
+function editarTarefa(i){
+  const novaDesc = prompt("Editar tarefa:", tarefas[i].desc);
+
+  if(novaDesc){
+    tarefas[i].desc = novaDesc;
+    localStorage.setItem("tarefas",JSON.stringify(tarefas));
+    renderTarefas();
+  }
+}
+
 atualizarGrafico();
+atualizarPainelNotificacoes();
+
 </script>
+
+<div id="painelNotificacoes">
+  <h3>Notificações</h3>
+  <ul id="listaNotificacoes"></ul>
+</div>
 
 </body>
 </html>
