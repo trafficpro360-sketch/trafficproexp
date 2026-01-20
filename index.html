@@ -607,11 +607,17 @@ input[type=number] {
 <aside class="sidebar">
   <div class="logo">Finance<span style="color:#fff">Pro</span></div>
   <nav class="menu">
-    <ul>
-      <li><a onclick="mostrarAba('clientes',this)">Clientes</a></li>
-    </ul>
-  </nav>
-</aside>
+  <ul>
+    <li class="active">
+      <a onclick="window.location.href='index.html'">Dashboard</a>
+    </li>
+
+    <li>
+      <a onclick="window.location.href='clientes.html'">Clientes</a>
+    </li>
+  </ul>
+</nav>
+
 
 <main class="content">
 
@@ -793,13 +799,6 @@ function excluirNotificacao(id){
   notificacoes = notificacoes.filter(n => n.id !== id);
   localStorage.setItem('notificacoes', JSON.stringify(notificacoes));
   atualizarPainelNotificacoes();
-}
-
-function mostrarAba(id,el){
-  document.querySelectorAll('main>div').forEach(d=>d.style.display='none');
-  document.getElementById(id).style.display='block';
-  document.querySelectorAll('.menu li').forEach(li=>li.classList.remove('active'));
-  el.parentElement.classList.add('active');
 }
 
 function setTipo(tipo,el){
@@ -1170,9 +1169,9 @@ function gerarRelatorioVisual(){
 
 
 // Inicialização do sistema
-mostrarAba('dashboard',document.querySelector('.menu a'));
 atualizarFinanceiro();
 atualizarPainelNotificacoes();
+
 
 
 </script>
