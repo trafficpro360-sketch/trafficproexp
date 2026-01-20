@@ -614,20 +614,22 @@ const textoDentroGrafico = {
   id: "textoDentroGrafico",
   afterDraw(chart){
     const { ctx, chartArea } = chart;
-    const { left, right, top, bottom, width, height } = chartArea;
+    const { left, top } = chartArea;
 
     ctx.save();
-    ctx.fillStyle = "rgba(229, 231, 235, 0.35)"; // branco suave
+    ctx.fillStyle = "rgba(229, 231, 235, 0.35)";
     ctx.font = "bold 18px system-ui";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
 
     ctx.fillText(
-     "Análise de rendimento dos clientes",
-     left + 10,
-     top + 5
-);
+      "Análise de rendimento dos clientes",
+      left + 10,
+      top + 5
+    );
 
+    ctx.restore();   // ✅ MUITO IMPORTANTE (estava faltando)
+  }
 };
 
 const chart = new Chart(document.getElementById("clientesChart"),{
