@@ -289,6 +289,13 @@ body{
   min-width:160px;
 }
 
+.texto-ate{
+  color: var(--muted);
+  font-size: 15px;
+  margin: 0 6px;
+}
+
+
 /* CARD / GRÁFICO */
 .card{
   backdrop-filter:blur(16px);
@@ -501,9 +508,14 @@ body{
 
 <div class="controls">
   <input type="text" id="filtroInicio" placeholder="dd/mm/aaaa">
+
+  <span class="texto-ate">até</span>
+
   <input type="text" id="filtroFim" placeholder="dd/mm/aaaa">
+
   <button class="btn" onclick="atualizarGrafico()">Filtrar</button>
 </div>
+
 
 <div class="card chart">
   <canvas id="clientesChart"></canvas>
