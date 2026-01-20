@@ -704,8 +704,14 @@ function removerCliente(id){
 }
 
 function atualizarGrafico(){
-  let inicioFiltro = filtroInicio.value ? new Date(filtroInicio.value) : null;
-  let fimFiltro = filtroFim.value ? new Date(filtroFim.value) : new Date();
+ let inicioFiltro = filtroInicio.value 
+  ? converterBRparaDate(filtroInicio.value) 
+  : null;
+
+ let fimFiltro = filtroFim.value 
+  ? converterBRparaDate(filtroFim.value) 
+  : new Date();
+
 
   let labels = [];
   let datasets = [];
@@ -809,6 +815,19 @@ window.addEventListener('scroll', function(){
   document.getElementById('painelNotificacoes').style.display = 'none';
   document.getElementById('painelClientes').style.display = 'none';
 });
+
+/* REMOVE ÍCONE DE CALENDÁRIO E SETAS EM QUALQUER INPUT */
+input::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+input[type="text"]::-webkit-inner-spin-button,
+input[type="text"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 
 
 </script>
