@@ -610,10 +610,45 @@ const tDesc = document.getElementById("tDesc");
 
 
 
+const textoDentroGrafico = {
+  id: "textoDentroGrafico",
+  afterDraw(chart){
+    const { ctx, chartArea } = chart;
+    const { left, right, top, bottom, width, height } = chartArea;
+
+    ctx.save();
+    ctx.fillStyle = "rgba(229, 231, 235, 0.35)"; // branco suave
+    ctx.font = "bold 18px system-ui";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillText(
+      "Análise de rendimento dos clientes",
+      left + width / 2,
+      top + height / 8
+    );
+
+    ctx.restore();
+  }
+};
+
 const chart = new Chart(document.getElementById("clientesChart"),{
   type:"line",
   data:{labels:[],datasets:[]},
-  options:{responsive:true,maintainAspectRatio:false}
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{
+        labels:{ color:"#e5e7eb" }
+      }
+    },
+    scales:{
+      x:{ ticks:{ color:"#94a3b8" }},
+      y:{ ticks:{ color:"#94a3b8" }}
+    }
+  },
+  plugins:[textoDentroGrafico]
 });
 
 function registrarNotificacao(texto){
