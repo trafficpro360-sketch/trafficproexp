@@ -549,6 +549,12 @@ let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
 let tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
 let notificacoes = JSON.parse(localStorage.getItem("notificacoes")) || [];
 
+function formatarDataBR(dataISO){
+  if(!dataISO) return "";
+  const d = new Date(dataISO + "T00:00:00");
+  return d.toLocaleDateString("pt-BR");
+}
+
 const modalCliente = document.getElementById("modalCliente");
 const painelClientes = document.getElementById("painelClientes");
 const listaClientes = document.getElementById("listaClientes");
@@ -594,6 +600,12 @@ function registrarNotificacao(texto){
 function atualizarPainelNotificacoes(){
   const lista = document.getElementById('listaNotificacoes');
   const badge = document.getElementById('notifBadge');
+  const data = new Date(n.data).toLocaleString('pt-BR', {
+  dateStyle: "short",
+  timeStyle: "short"
+});
+
+
 
   lista.innerHTML = '';
 
@@ -665,7 +677,7 @@ function renderClientes(){
     li.innerHTML=`
       <strong>${c.nome}</strong><br>
       R$ ${c.valor}/mês<br>
-      Início: ${c.inicio}<br>
+      Início: ${formatarDataBR(c.inicio)}<br>
       <button class="btn" onclick="removerCliente(${c.id})">Excluir</button>
     `;
     listaClientes.appendChild(li);
@@ -700,7 +712,7 @@ function atualizarGrafico(){
     while(data <= fimFiltro){
       if(!inicioFiltro || data >= inicioFiltro){
         total += c.valor;
-        meses.push(data.toLocaleDateString("pt-BR"));
+        meses.push(formatarDataBR(data.toISOString().split("T")[0]));
         dados.push(total);
       }
       data.setMonth(data.getMonth()+1);
@@ -741,7 +753,7 @@ function renderTarefas(){
 
     li.innerHTML = `
       <div class="${t.concluida ? 'tarefa-concluida' : ''}">
-        ${t.data} ${t.hora} — ${t.desc}
+        ${formatarDataBR(t.data)} ${t.hora} — ${t.desc}
       </div>
 
       <div class="btn-group">
