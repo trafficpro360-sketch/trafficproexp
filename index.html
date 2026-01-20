@@ -752,6 +752,17 @@ let financeiro=JSON.parse(localStorage.getItem('financeiro'))||[];
 let editandoId=null;
 let deletandoId=null;
 let notificacoes = JSON.parse(localStorage.getItem('notificacoes')) || [];
+  
+  // >>> REFERÊNCIAS DO DOM (CORREÇÃO DO BUG) <<<
+const listaReceita = document.getElementById("listaReceita");
+const listaDespesa = document.getElementById("listaDespesa");
+const listaPatrimonio = document.getElementById("listaPatrimonio");
+
+const cardReceita = document.getElementById("cardReceita");
+const cardDespesa = document.getElementById("cardDespesa");
+const cardPatrimonio = document.getElementById("cardPatrimonio");
+const cardSaldo = document.getElementById("cardSaldo");
+
 
  function registrarNotificacao(texto){
   const novaNotificacao = {
@@ -1172,10 +1183,10 @@ function gerarRelatorioVisual(){
 
 
 // Inicialização do sistema
-atualizarFinanceiro();
-atualizarPainelNotificacoes();
-
-
+window.onload = function(){
+  atualizarFinanceiro();
+  atualizarPainelNotificacoes();
+};
 
 </script>
   
