@@ -228,72 +228,25 @@ input[type=number] {
   gap:12px;
 }
 
-/* ========== BOTÕES EDITAR / EXCLUIR (VERSÃO QUE FUNCIONA) ========== */
-
-/* ===== BOTÕES EDITAR / EXCLUIR — ESTILO DA SUA IMAGEM ===== */
-
-.btn-group{
-  display:flex;
-  gap:10px;
-}
-
-/* BASE DOS DOIS BOTÕES */
-.records li .btn-edit,
-.records li .btn-del{
-  padding:8px 14px;
+/* BOTÕES EDITAR / EXCLUIR */
+.btn-group{display:flex;gap:8px}
+.btn-edit,.btn-del{
+  border:none;
+  padding:8px 12px;
   border-radius:14px;
   font-size:12px;
   cursor:pointer;
-  backdrop-filter: blur(8px);
-  transition:.25s ease;
-  border: 1px solid transparent;
 }
-
-/* ===== EDITAR — AZUL EM VIDRO (IGUAL SUA IMAGEM) ===== */
-.records li .btn-edit{
-  background: linear-gradient(
-    135deg,
-    rgba(56,189,248,.18),
-    rgba(37,99,235,.12)
-  );
-  color: var(--blue);
-  border: 1px solid rgba(56,189,248,.55);
-  box-shadow: 0 0 12px rgba(56,189,248,.22);
+.btn-edit{
+  background:rgba(56,189,248,.15);
+  color:var(--blue);
+  border:1px solid var(--blue);
 }
-
-/* HOVER EDITAR */
-.records li .btn-edit:hover{
-  background: linear-gradient(
-    135deg,
-    rgba(56,189,248,.28),
-    rgba(37,99,235,.18)
-  );
-  box-shadow: 0 0 16px rgba(56,189,248,.35);
+.btn-del{
+  background:rgba(239,68,68,.15);
+  color:var(--red);
+  border:1px solid var(--red);
 }
-
-/* ===== EXCLUIR — VERMELHO EM VIDRO (MESMO BRILHO) ===== */
-.records li .btn-del{
-  background: linear-gradient(
-    135deg,
-    rgba(239,68,68,.18),
-    rgba(185,28,28,.12)
-  );
-  color: var(--red);
-  border: 1px solid rgba(239,68,68,.55);
-  box-shadow: 0 0 12px rgba(239,68,68,.22);
-}
-
-/* HOVER EXCLUIR */
-.records li .btn-del:hover{
-  background: linear-gradient(
-    135deg,
-    rgba(239,68,68,.28),
-    rgba(185,28,28,.18)
-  );
-  box-shadow: 0 0 16px rgba(239,68,68,.35);
-}
-
-
 
 /* MODAIS */
 .modal{
@@ -317,22 +270,15 @@ input[type=number] {
 .modal.active{display:flex}
 
 /* ====== MODAL EXPORT (versão moderna e alinhada) ====== */
-.modal-content{
-  background: linear-gradient(
-    180deg,
-    rgba(56,189,248,.05),
-    rgba(15,23,42,.95)
-  );
-  backdrop-filter: blur(10px);
-  border:1px solid rgba(56,189,248,.18);
+#modalExport .modal-content{
+  background:linear-gradient(180deg,#0f172a,#020617);
+  border:1px solid var(--border);
   border-radius:28px;
   padding:28px 32px;
   width:360px;
-  box-shadow:0 0 12px rgba(56,189,248,.10);
+  box-shadow:0 12px 50px rgba(0,0,0,.6);
   text-align:left;
 }
-
-
 
 /* Título mais profissional */
 #modalExport h3{
@@ -470,6 +416,23 @@ input[type=number] {
 #toast.success{border-left:4px solid var(--green)}
 #toast.error{border-left:4px solid var(--red)}
 
+/* CLIENTES */
+#clientes{display:none}
+.clientes-container{
+  max-width:600px;
+  background:rgba(15,23,42,.7);
+  border:1px solid var(--border);
+  border-radius:26px;
+  padding:24px;
+}
+.clientes-container input,
+.clientes-container button{
+  width:100%;
+  padding:14px;
+  border-radius:18px;
+  margin-bottom:12px;
+}
+
 /* === REMOVER SETAS DA BARRA DE ROLAGEM (GARANTIDO) === */
 ::-webkit-scrollbar-button:single-button {
   display: none !important;
@@ -598,7 +561,6 @@ input[type=number] {
   cursor:pointer;
 }
 
-
 </style>
 </head>
 
@@ -606,21 +568,13 @@ input[type=number] {
 
 <aside class="sidebar">
   <div class="logo">Finance<span style="color:#fff">Pro</span></div>
-
-<nav class="menu">
-  <ul>
-    <li class="active">
-      <a href="index.html">Dashboard</a>
-    </li>
-
-    <li>
-      <a href="clientes.html">Clientes</a>
-    </li>
-  </ul>
-</nav>
-
-
-
+  <nav class="menu">
+    <ul>
+      <li class="active"><a onclick="mostrarAba('dashboard',this)">Dashboard</a></li>
+      <li><a onclick="mostrarAba('clientes',this)">Clientes</a></li>
+    </ul>
+  </nav>
+</aside>
 
 <main class="content">
 
@@ -675,6 +629,18 @@ input[type=number] {
   </section>
 </div>
 
+<div id="clientes">
+  <div class="header">Clientes</div>
+  <div class="clientes-container">
+    <input id="clienteNome" placeholder="Nome completo">
+    <input id="clienteTelefone" placeholder="Telefone">
+    <input type="number" id="clienteValor" placeholder="Valor do contrato">
+    <input id="clienteData" placeholder="dd/mm/aaaa">
+    <button onclick="adicionarCliente()">Adicionar Cliente</button>
+    <ul id="listaClientes"></ul>
+  </div>
+</div>
+
 </main>
 
 <div id="painelNotificacoes">
@@ -709,31 +675,6 @@ input[type=number] {
   </div>
 </div>
 
-<!-- ===== MODAL EDITAR (PAINEL PRINCIPAL) ===== -->
-<div class="modal" id="modalEdit">
-  <div class="modal-content">
-    <h3>Editar lançamento</h3>
-
-    <input id="editValor" type="number" placeholder="Valor (R$)">
-    <input id="editMes" type="text" placeholder="dd/mm/aaaa">
-    <input id="editDesc" type="text" placeholder="Descrição">
-
-    <button onclick="salvarEdicao()">Salvar alterações</button>
-    <button onclick="fecharModal('modalEdit')">Cancelar</button>
-  </div>
-</div>
-
-<!-- ===== MODAL CONFIRMAR EXCLUSÃO ===== -->
-<div class="modal" id="modalDelete">
-  <div class="modal-content">
-    <h3>Confirmar exclusão</h3>
-    <p>Tem certeza que deseja excluir este lançamento?</p>
-
-    <button onclick="confirmarExclusao()">Sim, excluir</button>
-    <button onclick="fecharModal('modalDelete')">Cancelar</button>
-  </div>
-</div>
-
 
 <div id="toast"></div>
 
@@ -749,20 +690,10 @@ if(localStorage.getItem("logado") !== "true"){
 const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 let tipoSelecionado='receita';
 let financeiro=JSON.parse(localStorage.getItem('financeiro'))||[];
+let clientes=JSON.parse(localStorage.getItem('clientes'))||[];
 let editandoId=null;
 let deletandoId=null;
 let notificacoes = JSON.parse(localStorage.getItem('notificacoes')) || [];
-  
-  // >>> REFERÊNCIAS DO DOM (CORREÇÃO DO BUG) <<<
-const listaReceita = document.getElementById("listaReceita");
-const listaDespesa = document.getElementById("listaDespesa");
-const listaPatrimonio = document.getElementById("listaPatrimonio");
-
-const cardReceita = document.getElementById("cardReceita");
-const cardDespesa = document.getElementById("cardDespesa");
-const cardPatrimonio = document.getElementById("cardPatrimonio");
-const cardSaldo = document.getElementById("cardSaldo");
-
 
  function registrarNotificacao(texto){
   const novaNotificacao = {
@@ -813,6 +744,13 @@ function excluirNotificacao(id){
   notificacoes = notificacoes.filter(n => n.id !== id);
   localStorage.setItem('notificacoes', JSON.stringify(notificacoes));
   atualizarPainelNotificacoes();
+}
+
+function mostrarAba(id,el){
+  document.querySelectorAll('main>div').forEach(d=>d.style.display='none');
+  document.getElementById(id).style.display='block';
+  document.querySelectorAll('.menu li').forEach(li=>li.classList.remove('active'));
+  el.parentElement.classList.add('active');
 }
 
 function setTipo(tipo,el){
@@ -970,22 +908,13 @@ function atualizarFinanceiro(){
 
 /* EDIÇÃO */
 function abrirEditar(id){
-  editandoId = id;
-  const it = financeiro.find(f => f.id === id);
-
-  if(!it){
-    showToast("Erro ao localizar item para edição", "error");
-    return;
-  }
-
-  document.getElementById('editValor').value = it.valor;
-  document.getElementById('editMes').value = it.mes;
-  document.getElementById('editDesc').value = it.descricao;
-
+  editandoId=id;
+  const it=financeiro.find(f=>f.id===id);
+  editValor.value=it.valor;
+  editMes.value=it.mes;
+  editDesc.value=it.descricao;
   document.getElementById('modalEdit').classList.add('active');
 }
-
-
 
 function salvarEdicao(){
   const idx=financeiro.findIndex(f=>f.id===editandoId);
@@ -1016,6 +945,30 @@ function confirmarExclusao(){
 
 function fecharModal(id){
   document.getElementById(id).classList.remove('active');
+}
+
+/* CLIENTES */
+function adicionarCliente(){
+  const nome=clienteNome.value;
+  const val=Number(clienteValor.value);
+
+  if(!nome||!val){
+    showToast('Nome e valor são obrigatórios','error');
+    return;
+  }
+
+  clientes.push({id:Date.now(),nome,val});
+  localStorage.setItem('clientes',JSON.stringify(clientes));
+  atualizarClientes();
+}
+
+function atualizarClientes(){
+  listaClientes.innerHTML='';
+  clientes.forEach(c=>{
+    const li=document.createElement('li');
+    li.textContent=`${c.nome} — ${formatar(c.val)}`;
+    listaClientes.appendChild(li);
+  });
 }
 
 function toggleNotificacoes(){
@@ -1171,7 +1124,6 @@ function gerarRelatorioVisual(){
   `;
 
   html += `
-
   </body>
   </html>
   `;
@@ -1181,12 +1133,13 @@ function gerarRelatorioVisual(){
   fecharModal('modalExport');
 }
 
-window.onload = function(){
-  atualizarFinanceiro();
-  atualizarPainelNotificacoes();
-};
+
+// Inicialização do sistema
+mostrarAba('dashboard',document.querySelector('.menu a'));
+atualizarFinanceiro();
+atualizarClientes();
+atualizarPainelNotificacoes();
 
 </script>
 
 </body>
-</html>
