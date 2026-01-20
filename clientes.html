@@ -613,8 +613,11 @@ const tDesc = document.getElementById("tDesc");
 const textoDentroGrafico = {
   id: "textoDentroGrafico",
   afterDraw(chart){
-    const { ctx, chartArea } = chart;
-    const { left, top } = chartArea;
+    const { ctx, chartArea, scales } = chart;
+    const { left } = chartArea;
+
+    // pega a posição exata do número 160 no eixo Y
+    const y160 = scales.y.getPixelForValue(160) - 22;
 
     ctx.save();
     ctx.fillStyle = "rgba(229, 231, 235, 0.35)";
@@ -625,12 +628,13 @@ const textoDentroGrafico = {
     ctx.fillText(
       "Análise de rendimento dos clientes",
       left + 10,
-      top + 5
+      y160
     );
 
-    ctx.restore();   // ✅ MUITO IMPORTANTE (estava faltando)
+    ctx.restore();
   }
 };
+
 
 const chart = new Chart(document.getElementById("clientesChart"),{
   type:"line",
