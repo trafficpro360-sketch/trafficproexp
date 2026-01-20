@@ -600,22 +600,20 @@ function registrarNotificacao(texto){
 function atualizarPainelNotificacoes(){
   const lista = document.getElementById('listaNotificacoes');
   const badge = document.getElementById('notifBadge');
-  const data = new Date(n.data).toLocaleString('pt-BR', {
-  dateStyle: "short",
-  timeStyle: "short"
-});
-
-
 
   lista.innerHTML = '';
 
   notificacoes.forEach(n => {
     const li = document.createElement('li');
-    const data = new Date(n.data).toLocaleString('pt-BR');
+
+    const dataFormatada = new Date(n.data).toLocaleString('pt-BR', {
+      dateStyle: "short",
+      timeStyle: "short"
+    });
 
     li.innerHTML = `
       <div>
-        <strong>${data}</strong><br>
+        <strong>${dataFormatada}</strong><br>
         ${n.texto}
       </div>
       <button class="btn-notif-del" onclick="excluirNotificacao(${n.id})">✖</button>
