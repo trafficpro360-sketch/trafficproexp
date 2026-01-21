@@ -595,27 +595,6 @@ body{
   <option value="Em teste">Em teste</option>
 </select>
 
-<div id="botoesStatusModal" style="display:flex; gap:8px; margin:8px 0 12px 0;">
-
-  <button class="btn status-btn"
-    onclick="selecionarStatusModal('Ativo', this)">
-    Ativo
-  </button>
-
-  <button class="btn status-btn"
-    onclick="selecionarStatusModal('Em teste', this)">
-    Em teste
-  </button>
-
-  <button class="btn status-btn"
-    onclick="selecionarStatusModal('Inativo', this)">
-    Inativo
-  </button>
-
-</div>
-
-
-
     <button onclick="salvarCliente()">Salvar</button>
     <button onclick="fecharModal()">Cancelar</button>
   </div>
@@ -640,6 +619,28 @@ body{
       color:white;
     "
   >
+
+  <label style="display:block; margin:8px 0 4px 0; color:#94a3b8;">
+  Status do cliente:
+</label>
+
+<select id="cStatus"
+  style="
+    width:100%;
+    padding:12px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:rgba(2,6,23,.7);
+    color:white;
+    margin-bottom:10px;
+  ">
+
+  <option value="Ativo">🟢 Ativo</option>
+  <option value="Em teste">🟡 Em teste</option>
+  <option value="Inativo">🔴 Inativo</option>
+
+</select>
+
 
   <ul id="listaClientes"></ul>
 </div>
@@ -786,12 +787,13 @@ function fecharModal(){
 
 function salvarCliente(){
   clientes.push({
-    id: Date.now(),
-    nome: cNome.value,
-    valor: Number(cValor.value),
-    inicio: cInicio.value,
-    status: cStatus.value || "Ativo"
-  });
+  id: Date.now(),
+  nome: cNome.value,
+  valor: Number(cValor.value),
+  inicio: cInicio.value,
+  status: cStatus.value
+});
+
 
   localStorage.setItem("clientes", JSON.stringify(clientes));
   registrarNotificacao(`Novo cliente cadastrado: ${cNome.value}`);
@@ -1090,8 +1092,6 @@ function editarTarefa(i){
     renderTarefas();
   }
 }
-
-  function selecionarStatusModal(status, botaoClicado){
 
   // salva no select oculto
   cStatus.value = status;
