@@ -1,1 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance Pro — Controle Ads</title>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root{
+  --bg-main:#020617;
+  --border:#1e293b;
+  --blue:#38bdf8;
+  --red:#ef4444;
+  --green:#22c55e;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, Helvetica, sans-serif;
+  background:radial-gradient(1200px 600px at 10% -10%, #0f172a, #020617);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:280px;
+  backdrop-filter:blur(20px);
+  background:rgba(2,6,23,.85);
+  border-right:1px solid var(--border);
+  padding:28px;
+  border-radius: 0 28px 28px 0;
+  height:100vh;
+}
+
+.logo{
+  font-size:24px;
+  font-weight:700;
+  color:var(--blue);
+  margin-bottom:48px;
+}
+
+.menu ul{list-style:none}
+.menu li{margin-bottom:12px}
+
+.menu a{
+  display:block;
+  padding:14px 18px;
+  border-radius:18px;
+  color:var(--muted);
+  text-decoration:none;
+  transition:.2s ease;
+  font-size:15px;
+}
+
+.menu li.active a,
+.menu a:hover{
+  background:rgba(56,189,248,.18);
+  color:var(--blue);
+}
+
+/* CONTEÚDO PRINCIPAL */
+.content{
+  flex:1;
+  padding:28px 24px;
+}
+
+/* TOPO */
+.top-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:28px;
+}
+
+.header{
+  font-size:32px;
+  font-weight:700;
+}
+
+/* BOTÕES PADRÃO */
+.btn{
+  padding:12px 16px;
+  border-radius:16px;
+  border:none;
+  background:linear-gradient(135deg,#2563eb,#38bdf8);
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* CARD PADRÃO */
+.card{
+  backdrop-filter:blur(16px);
+  background:rgba(15,23,42,.7);
+  border:1px solid var(--border);
+  border-radius:26px;
+  padding:24px;
+  box-shadow:0 8px 30px rgba(0,0,0,.35);
+  margin-bottom:28px;
+}
+
+/* SELETOR DE CLIENTE */
+.seletor-cliente{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+select{
+  padding:12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(15,23,42,.8);
+  color:white;
+}
+
+/* ÁREA DE ESTRATÉGIAS */
+.estrategias-container{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap:16px;
+  margin-top:16px;
+}
+
+.estrategia-card{
+  background:rgba(2,6,23,.6);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:16px;
+}
+
+/* FILTROS */
+.filtros-ads{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:16px;
+}
+
+/* TABELA (PLANILHA MANUAL) */
+.table-wrapper{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th, td{
+  padding:10px;
+  border:1px solid var(--border);
+  text-align:left;
+}
+
+th{
+  background:rgba(56,189,248,.15);
+}
+
+td input{
+  width:100%;
+  padding:8px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:rgba(2,6,23,.7);
+  color:white;
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+  <div class="logo">Finance<span style="color:white">Pro</span></div>
+  <nav class="menu">
+    <ul>
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="clientes.html">Clientes</a></li>
+      <li class="active"><a href="controleads.html">Controle Ads</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main class="content">
+
+<div class="top-bar">
+  <div class="header">Controle Ads</div>
+</div>
+
+<!-- SELETOR DE CLIENTE -->
+<div class="card seletor-cliente">
+  <strong>Cliente:</strong>
+  <select id="clienteSelecionado">
+    <option value="">Selecione um cliente...</option>
+  </select>
+
+  <button class="btn" onclick="adicionarEstrategia()">+ Adicionar Estratégia</button>
+</div>
+
+<!-- ESTRATÉGIAS -->
+<div class="card">
+  <h3>📢 Estratégias do Cliente</h3>
+
+  <div id="estrategiasContainer" class="estrategias-container">
+    <!-- cards serão criados aqui -->
+  </div>
+</div>
+
+<!-- FILTROS -->
+<div class="card filtros-ads">
+  <button class="btn">Hoje</button>
+  <button class="btn">7 dias</button>
+  <button class="btn">30 dias</button>
+  <button class="btn">90 dias</button>
+  <button class="btn">Este mês</button>
+</div>
+
+<!-- PLANILHA MANUAL -->
+<div class="card">
+  <h3>📊 Registro Manual de Campanhas</h3>
+
+  <div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Campanha</th>
+        <th>Plataforma</th>
+        <th>Gasto (R$)</th>
+        <th>Cliques</th>
+        <th>Leads</th>
+        <th>Conversões</th>
+        <th>Receita (R$)</th>
+      </tr>
+    </thead>
+
+    <tbody id="tabelaAds">
+      <tr>
+        <td><input type="text" placeholder="dd/mm/aaaa"></td>
+        <td><input type="text"></td>
+        <td><input type="text"></td>
+        <td><input type="number"></td>
+        <td><input type="number"></td>
+        <td><input type="number"></td>
+        <td><input type="number"></td>
+        <td><input type="number"></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <button class="btn" style="margin-top:16px" onclick="novaLinha()">+ Nova linha</button>
+</div>
+
+</main>
+
+<script>
+function adicionarEstrategia(){
+  const container = document.getElementById("estrategiasContainer");
+
+  const div = document.createElement("div");
+  div.className = "estrategia-card";
+
+  div.innerHTML = `
+    <strong>Nova Estratégia</strong><br><br>
+    Nome da campanha:<br>
+    <input type="text" style="width:100%;margin-bottom:8px;"><br>
+
+    Valor total (R$):<br>
+    <input type="number" style="width:100%;margin-bottom:8px;"><br>
+
+    <span style="color:#38bdf8">Sobrou: R$ 0,00</span>
+  `;
+
+  container.appendChild(div);
+}
+
+function novaLinha(){
+  const tbody = document.getElementById("tabelaAds");
+
+  const tr = document.createElement("tr");
+
+  tr.innerHTML = `
+    <td><input type="text"></td>
+    <td><input type="text"></td>
+    <td><input type="text"></td>
+    <td><input type="number"></td>
+    <td><input type="number"></td>
+    <td><input type="number"></td>
+    <td><input type="number"></td>
+    <td><input type="number"></td>
+  `;
+
+  tbody.appendChild(tr);
+}
+</script>
+
+</body>
+</html>
