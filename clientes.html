@@ -368,20 +368,21 @@ body{
   transition:.2s ease;   /* <-- aqui dentro */
 }
 
-.card:hover{
-  transform:translateY(-2px);
+.card{
+  backdrop-filter:blur(16px);
+  background:rgba(15,23,42,.7);
+  border:1px solid var(--border);
+  border-radius:26px;
+  padding:26px 28px;
+  box-shadow:0 8px 30px rgba(0,0,0,.35);
+  margin-bottom: 36px;
+  width:100%;
+  transition:.2s ease;
 }
 
 .card:hover{
   transform:translateY(-2px);
 }
-
-    transition:.2s ease;
-}
-.card:hover{
-  transform:translateY(-2px);
-}
-
 
 .chart{
   height: 420px;      /* espaço extra para os botões */
@@ -580,9 +581,17 @@ body{
 
 <div class="linha-filtros-receita">
 
-  <div class="controls">
-    ... filtros ...
-  </div>
+<div class="controls">
+
+  <input type="text" id="filtroInicio" placeholder="dd/mm/aaaa">
+
+  <span class="texto-ate">até</span>
+
+  <input type="text" id="filtroFim" placeholder="dd/mm/aaaa">
+
+  <button class="btn" onclick="atualizarGrafico()">Filtrar</button>
+
+</div>
 
   <div class="receita-mini">
     <span id="receitaTotal">R$ 0,00</span>
