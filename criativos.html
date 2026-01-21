@@ -1,1 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance Pro — Criativos</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root{
+  --bg-main:#020617;
+  --border:#1e293b;
+  --blue:#38bdf8;
+  --red:#ef4444;
+  --green:#22c55e;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, Helvetica, sans-serif;
+  background:radial-gradient(1200px 600px at 10% -10%, #0f172a, #020617);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+}
+
+/* SIDEBAR IGUAL AO RESTO */
+.sidebar{
+  width:280px;
+  backdrop-filter:blur(20px);
+  background:rgba(2,6,23,.85);
+  border-right:1px solid var(--border);
+  padding:28px;
+  border-radius: 0 28px 28px 0;
+  height:100vh;
+}
+
+.logo{
+  font-size:24px;
+  font-weight:700;
+  color:var(--blue);
+  margin-bottom:48px;
+}
+
+.menu ul{list-style:none}
+.menu li{margin-bottom:12px}
+
+.menu a{
+  display:block;
+  padding:14px 18px;
+  border-radius:18px;
+  color:var(--muted);
+  text-decoration:none;
+  transition:.2s ease;
+  font-size:15px;
+  width:100%;
+}
+
+.menu li.active a,
+.menu a:hover{
+  background:rgba(56,189,248,.18);
+  color:var(--blue);
+}
+
+/* CONTEÚDO */
+.content{
+  flex:1;
+  padding:28px 24px;
+}
+
+.header{
+  font-size:32px;
+  font-weight:700;
+  margin-bottom:24px;
+}
+
+/* CARD PADRÃO */
+.card{
+  backdrop-filter:blur(16px);
+  background:rgba(15,23,42,.7);
+  border:1px solid var(--border);
+  border-radius:26px;
+  padding:26px 28px;
+  box-shadow:0 8px 30px rgba(0,0,0,.35);
+  margin-bottom: 28px;
+}
+
+/* LINHA SUPERIOR */
+.top-filtros{
+  display:flex;
+  gap:14px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+}
+
+/* INPUTS PADRÃO */
+input, select{
+  padding:12px 14px;
+  border-radius:16px;
+  border:1px solid var(--border);
+  background:rgba(2,6,23,.7);
+  color:white;
+  min-width:180px;
+}
+
+/* BOTÕES */
+.btn{
+  padding:12px 16px;
+  border-radius:16px;
+  border:none;
+  background:linear-gradient(135deg,#2563eb,#38bdf8);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* GRID DE CRIATIVOS */
+.grid-criativos{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap:18px;
+}
+
+/* CARD DE CRIATIVO */
+.criativo{
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:12px;
+  background:rgba(2,6,23,.6);
+}
+
+.criativo img{
+  width:100%;
+  border-radius:14px;
+  margin-bottom:8px;
+}
+
+/* TAGS */
+.tags{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-top:6px;
+}
+
+.tag{
+  background:rgba(56,189,248,.15);
+  color:var(--blue);
+  border:1px solid var(--blue);
+  border-radius:10px;
+  padding:4px 8px;
+  font-size:12px;
+}
+
+/* UPLOAD */
+.upload-area{
+  border:1px dashed var(--blue);
+  border-radius:18px;
+  padding:18px;
+  text-align:center;
+  cursor:pointer;
+  background:rgba(15,23,42,.6);
+}
+
+.upload-area:hover{
+  background:rgba(56,189,248,.05);
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+  <div class="logo">Finance<span style="color:#fff">Pro</span></div>
+  <nav class="menu">
+    <ul>
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="clientes.html">Clientes</a></li>
+      <li class="active"><a href="criativos.html">Criativos</a></li>
+      <li><a href="controleads.html">Controle Ads</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main class="content">
+
+<div class="header">Criativos</div>
+
+<div class="card">
+
+<div class="top-filtros">
+
+<select id="clienteFiltro" onchange="renderCriativos()">
+  <option value="">Selecione um cliente</option>
+</select>
+
+<input id="buscaCriativo" placeholder="🔍 Buscar criativo..." onkeyup="renderCriativos()">
+
+<input id="novaTag" placeholder="Adicionar etiqueta (tag)">
+
+<button class="btn" onclick="adicionarTagTemporaria()">+ Tag</button>
+
+</div>
+
+<div class="upload-area" onclick="document.getElementById('inputImagem').click()">
+  Clique para adicionar imagem
+</div>
+
+<input type="file" id="inputImagem" accept="image/*" hidden onchange="previewImagem(event)">
+
+<div id="tagsTemp" class="tags" style="margin:10px 0;"></div>
+
+<button class="btn" onclick="salvarCriativo()">Salvar Criativo</button>
+
+</div>
+
+<div class="card">
+<h3 style="margin-bottom:16px;">Meus Criativos</h3>
+<div class="grid-criativos" id="gridCriativos"></div>
+</div>
+
+</main>
+
+<script>
+let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+let criativos = JSON.parse(localStorage.getItem("criativos")) || [];
+let tagsTemp = [];
+let imagemTemp = null;
+
+/* CARREGAR CLIENTES NO SELECT */
+function carregarClientes(){
+  const sel = document.getElementById("clienteFiltro");
+  sel.innerHTML = `<option value="">Selecione um cliente</option>`;
+
+  clientes.forEach(c=>{
+    const opt = document.createElement("option");
+    opt.value = c.id;
+    opt.textContent = c.nome;
+    sel.appendChild(opt);
+  });
+}
+
+/* PREVIEW DA IMAGEM */
+function previewImagem(e){
+  const file = e.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function(ev){
+    imagemTemp = ev.target.result;
+  };
+
+  reader.readAsDataURL(file);
+}
+
+/* ADICIONAR TAG */
+function adicionarTagTemporaria(){
+  const tag = document.getElementById("novaTag").value.trim();
+  if(!tag) return;
+
+  tagsTemp.push(tag);
+  document.getElementById("novaTag").value = "";
+  renderTagsTemp();
+}
+
+function renderTagsTemp(){
+  const box = document.getElementById("tagsTemp");
+  box.innerHTML = "";
+
+  tagsTemp.forEach(t=>{
+    const span = document.createElement("span");
+    span.className = "tag";
+    span.textContent = t;
+    box.appendChild(span);
+  });
+}
+
+/* SALVAR CRIATIVO */
+function salvarCriativo(){
+  const clienteId = document.getElementById("clienteFiltro").value;
+
+  if(!clienteId){
+    alert("Selecione um cliente!");
+    return;
+  }
+
+  if(!imagemTemp){
+    alert("Selecione uma imagem!");
+    return;
+  }
+
+  criativos.push({
+    id: Date.now(),
+    clienteId,
+    imagem: imagemTemp,
+    tags: [...tagsTemp]
+  });
+
+  localStorage.setItem("criativos", JSON.stringify(criativos));
+
+  imagemTemp = null;
+  tagsTemp = [];
+  document.getElementById("tagsTemp").innerHTML = "";
+
+  renderCriativos();
+}
+
+/* RENDERIZAR CRIATIVOS */
+function renderCriativos(){
+  const grid = document.getElementById("gridCriativos");
+  const clienteId = document.getElementById("clienteFiltro").value;
+  const busca = document.getElementById("buscaCriativo").value.toLowerCase();
+
+  grid.innerHTML = "";
+
+  let lista = criativos.filter(c => !clienteId || c.clienteId === clienteId);
+
+  lista = lista.filter(c =>
+    c.tags.join(" ").toLowerCase().includes(busca)
+  );
+
+  lista.forEach(c=>{
+    const div = document.createElement("div");
+    div.className = "criativo";
+
+    div.innerHTML = `
+      <img src="${c.imagem}">
+      <div class="tags">
+        ${c.tags.map(t=>`<span class="tag">${t}</span>`).join("")}
+      </div>
+    `;
+
+    grid.appendChild(div);
+  });
+}
+
+/* INICIALIZAR */
+carregarClientes();
+renderCriativos();
+</script>
+
+</body>
+</html>
 
