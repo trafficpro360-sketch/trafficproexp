@@ -296,12 +296,12 @@ body{
   display:flex;
   align-items:center;
   gap:14px;
-  - margin-bottom:24px;
-  + margin-bottom:0;
+  margin-bottom:0;   /* você quis reduzir o espaço */
   flex-wrap:wrap;
   width:100%;
-  justify-content:flex-start;   /* mantém alinhado à esquerda */
+  justify-content:flex-start;
 }
+
 
 .controls input{
   padding:13px 16px;
@@ -364,8 +364,18 @@ body{
   padding:26px 28px;
   box-shadow:0 8px 30px rgba(0,0,0,.35);
   margin-bottom: 36px;
-  width:100%;      /* <-- MUITO IMPORTANTE */
+  width:100%;
+  transition:.2s ease;   /* <-- aqui dentro */
 }
+
+.card:hover{
+  transform:translateY(-2px);
+}
+
+.card:hover{
+  transform:translateY(-2px);
+}
+
     transition:.2s ease;
 }
 .card:hover{
@@ -571,21 +581,13 @@ body{
 <div class="linha-filtros-receita">
 
   <div class="controls">
+    ... filtros ...
+  </div>
 
-  <input type="text" id="filtroInicio" placeholder="dd/mm/aaaa">
-
-  <span class="texto-ate">até</span>
-
-  <input type="text" id="filtroFim" placeholder="dd/mm/aaaa">
-
-  <button class="btn" onclick="atualizarGrafico()">Filtrar</button>
-
-  <!-- RECEITA TOTAL ALINHADA À DIREITA -->
   <div class="receita-mini">
-  <span class="label">Receita Total:</span>
-  <span id="receitaTotal">R$ 0,00</span>
-</div>
-
+    <span id="receitaTotal">R$ 0,00</span>
+    <span class="label">Receita Total</span>
+  </div>
 
 </div>
 
