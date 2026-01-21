@@ -949,11 +949,23 @@ function renderClientes(){
 
 
 function removerCliente(id){
- const cliente = clientes.find(c => c.id === id);
 
-if(cliente){
-  registrarNotificacao(`Cliente removido: ${cliente.nome}`);
+  const cliente = clientes.find(c => c.id === id);
+
+  if(cliente){
+    registrarNotificacao(`Cliente removido: ${cliente.nome}`);
+  }
+
+  // 👉 AQUI É O QUE ESTAVA FALTANDO 👇
+  clientes = clientes.filter(c => c.id !== id);
+
+  localStorage.setItem("clientes", JSON.stringify(clientes));
+
+  atualizarGrafico();
+  calcularReceitaTotal();
+  renderClientes();
 }
+
 
 
   atualizarGrafico();
