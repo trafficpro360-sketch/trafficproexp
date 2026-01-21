@@ -280,6 +280,12 @@ body{
   white-space:nowrap;
 }
 
+  /* COR PADRÃO DOS BOTÕES DE STATUS */
+.status-btn{
+  background:#2563eb !important; /* azul padrão */
+}
+
+
 /* FILTRO DE DATAS */
 .controls{
   display:flex;
@@ -557,15 +563,11 @@ body{
 
   </div>
 
-  <!-- ÁREA SEGURA DO GRÁFICO -->
- <div style="flex:1; min-height:320px; padding:8px;">
-  <canvas id="clientesChart"></canvas>
- </div>
-
+  <div style="flex:1; min-height:320px; padding:8px;">
+    <canvas id="clientesChart"></canvas>
+  </div>
 
 </div>
-
-
 
 <div class="card tarefas">
   <h3>Tarefas</h3>
@@ -594,24 +596,24 @@ body{
 </select>
 
 <div style="display:flex; gap:8px; margin:8px 0 12px 0;">
-  <button class="btn" 
-    style="background:#22c55e; font-size:12px; padding:8px; flex:1;"
+
+  <button class="btn status-btn"
     onclick="cStatus.value='Ativo'">
     Ativo
   </button>
 
-  <button class="btn" 
-    style="background:#facc15; color:#020617; font-size:12px; padding:8px; flex:1;"
+  <button class="btn status-btn"
     onclick="cStatus.value='Em teste'">
     Em teste
   </button>
 
-  <button class="btn" 
-    style="background:#ef4444; font-size:12px; padding:8px; flex:1;"
+  <button class="btn status-btn"
     onclick="cStatus.value='Inativo'">
     Inativo
   </button>
+
 </div>
+
 
     <button onclick="salvarCliente()">Salvar</button>
     <button onclick="fecharModal()">Cancelar</button>
@@ -897,9 +899,9 @@ function renderClientes(){
 
 <div style="display:flex; gap:6px; margin-top:6px;">
 
-  <button class="btn" 
+  <button class="btn status-btn" 
     style="
-      background:${c.status === 'Ativo' ? '#22c55e' : 'linear-gradient(135deg,#2563eb,#38bdf8)'};
+      background:${c.status === 'Ativo' ? '#22c55e' : '#2563eb'};
       font-size:12px; 
       padding:8px;
     "
@@ -907,9 +909,9 @@ function renderClientes(){
     Ativo
   </button>
 
-  <button class="btn" 
+  <button class="btn status-btn" 
     style="
-      background:${c.status === 'Em teste' ? '#facc15' : 'linear-gradient(135deg,#2563eb,#38bdf8)'};
+      background:${c.status === 'Em teste' ? '#facc15' : '#2563eb'};
       color:${c.status === 'Em teste' ? '#020617' : 'white'};
       font-size:12px; 
       padding:8px;
@@ -918,9 +920,9 @@ function renderClientes(){
     Em teste
   </button>
 
-  <button class="btn" 
+  <button class="btn status-btn" 
     style="
-      background:${c.status === 'Inativo' ? '#ef4444' : 'linear-gradient(135deg,#2563eb,#38bdf8)'};
+      background:${c.status === 'Inativo' ? '#ef4444' : '#2563eb'};
       font-size:12px; 
       padding:8px;
     "
@@ -929,6 +931,7 @@ function renderClientes(){
   </button>
 
 </div>
+
 
 
 
