@@ -877,53 +877,75 @@ function renderClientes(){
   listaClientes.innerHTML="";
 
   clientes.forEach(c=>{
-    const li=document.createElement("li");
-   li.innerHTML=`
-  <div style="display:flex; gap:6px; margin-top:6px;">
+    const li = document.createElement("li");
 
-  <button class="btn status-btn" 
-    style="
-      background:${c.status === 'Ativo' ? '#22c55e' : '#2563eb'};
-      font-size:12px; 
-      padding:8px;
-    "
-    onclick="mudarStatus(${c.id}, 'Ativo')">
-    Ativo
-  </button>
+    li.innerHTML = `
+  <div style="display:flex; flex-direction:column; gap:6px;">
 
-  <button class="btn status-btn" 
-    style="
-      background:${c.status === 'Em teste' ? '#facc15' : '#2563eb'};
-      color:${c.status === 'Em teste' ? '#020617' : 'white'};
-      font-size:12px; 
-      padding:8px;
-    "
-    onclick="mudarStatus(${c.id}, 'Em teste')">
-    Em teste
-  </button>
+    <strong style="font-size:15px;">${c.nome}</strong>
 
-  <button class="btn status-btn" 
-    style="
-      background:${c.status === 'Inativo' ? '#ef4444' : '#2563eb'};
-      font-size:12px; 
-      padding:8px;
-    "
-    onclick="mudarStatus(${c.id}, 'Inativo')">
-    Inativo
-  </button>
+    <span style="color:#38bdf8;">
+      ${Number(c.valor).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} / mês
+    </span>
 
-</div>
+    <span>
+      Status: 
+      <strong style="color:${
+        c.status === "Ativo" ? "#22c55e" :
+        c.status === "Em teste" ? "#facc15" :
+        "#ef4444"
+      }">
+        ${c.status || "Ativo"}
+      </strong>
+    </span>
+
+    <div style="display:flex; gap:6px; margin-top:6px;">
+
+      <button class="btn status-btn" 
+        style="
+          background:${c.status === 'Ativo' ? '#22c55e' : '#2563eb'};
+          font-size:12px; 
+          padding:8px;
+        "
+        onclick="mudarStatus(${c.id}, 'Ativo')">
+        Ativo
+      </button>
+
+      <button class="btn status-btn" 
+        style="
+          background:${c.status === 'Em teste' ? '#facc15' : '#2563eb'};
+          color:${c.status === 'Em teste' ? '#020617' : 'white'};
+          font-size:12px; 
+          padding:8px;
+        "
+        onclick="mudarStatus(${c.id}, 'Em teste')">
+        Em teste
+      </button>
+
+      <button class="btn status-btn" 
+        style="
+          background:${c.status === 'Inativo' ? '#ef4444' : '#2563eb'};
+          font-size:12px; 
+          padding:8px;
+        "
+        onclick="mudarStatus(${c.id}, 'Inativo')">
+        Inativo
+      </button>
+
+    </div>
 
     <button class="btn" onclick="removerCliente(${c.id})" 
       style="margin-top:6px; width:100%;">
       Excluir
     </button>
+
   </div>
 `;
 
     listaClientes.appendChild(li);
   });
 }
+
 
 function removerCliente(id){
  const cliente = clientes.find(c => c.id === id);
