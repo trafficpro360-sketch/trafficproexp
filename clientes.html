@@ -589,11 +589,27 @@ body{
     <input id="cValor" type="number" placeholder="Valor mensal (R$)">
     <input id="cInicio" type="text" placeholder="dd/mm/aaaa">
 
-<select id="cStatus" style="display:none;">
-  <option value="Ativo">Ativo</option>
-  <option value="Inativo">Inativo</option>
-  <option value="Em teste">Em teste</option>
+<label style="display:block; margin:8px 0 4px 0; color:#94a3b8;">
+  Status do cliente:
+</label>
+
+<select id="cStatus"
+  style="
+    width:100%;
+    padding:12px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:rgba(2,6,23,.7);
+    color:white;
+    margin-bottom:10px;
+  ">
+
+  <option value="Ativo" selected>🟢 Ativo</option>
+  <option value="Em teste">🟡 Em teste</option>
+  <option value="Inativo">🔴 Inativo</option>
+
 </select>
+
 
     <button onclick="salvarCliente()">Salvar</button>
     <button onclick="fecharModal()">Cancelar</button>
@@ -619,28 +635,6 @@ body{
       color:white;
     "
   >
-
-  <label style="display:block; margin:8px 0 4px 0; color:#94a3b8;">
-  Status do cliente:
-</label>
-
-<select id="cStatus"
-  style="
-    width:100%;
-    padding:12px;
-    border-radius:14px;
-    border:1px solid var(--border);
-    background:rgba(2,6,23,.7);
-    color:white;
-    margin-bottom:10px;
-  ">
-
-  <option value="Ativo">🟢 Ativo</option>
-  <option value="Em teste">🟡 Em teste</option>
-  <option value="Inativo">🔴 Inativo</option>
-
-</select>
-
 
   <ul id="listaClientes"></ul>
 </div>
@@ -1090,31 +1084,6 @@ function editarTarefa(i){
     tarefas[i].desc = novaDesc;
     localStorage.setItem("tarefas",JSON.stringify(tarefas));
     renderTarefas();
-  }
-}
-
-  // salva no select oculto
-  cStatus.value = status;
-
-  // pega todos os botões do modal
-  const botoes = document.querySelectorAll("#botoesStatusModal .status-btn");
-
-  // volta TODOS para azul
-  botoes.forEach(b => {
-    b.style.background = "#2563eb";
-    b.style.color = "white";
-  });
-
-  // agora colore SOMENTE o botão clicado
-  if(status === "Ativo"){
-    botaoClicado.style.background = "#22c55e"; // verde
-  }
-  else if(status === "Em teste"){
-    botaoClicado.style.background = "#facc15"; // amarelo
-    botaoClicado.style.color = "#020617";
-  }
-  else if(status === "Inativo"){
-    botaoClicado.style.background = "#ef4444"; // vermelho
   }
 }
 
