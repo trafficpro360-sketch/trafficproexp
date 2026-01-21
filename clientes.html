@@ -790,7 +790,7 @@ function salvarCliente(){
     nome: cNome.value,
     valor: Number(cValor.value),
     inicio: cInicio.value,
-    status: cStatus.value
+    status: cStatus.value || "Ativo"
   });
 
   localStorage.setItem("clientes", JSON.stringify(clientes));
@@ -971,9 +971,9 @@ function removerCliente(id){
   atualizarGrafico();
   calcularReceitaTotal();
   renderClientes();
-}
 
-  function mudarStatus(id, novoStatus){
+function mudarStatus(id, novoStatus){
+
   clientes = clientes.map(c => {
     if(c.id === id){
       return {...c, status: novoStatus};
