@@ -89,6 +89,10 @@ body{
   transition:.2s ease;
   font-size:15px;
 }
+ 
+  .menu a{
+  width: 100%;      /* FAZ A LINHA IR ATÉ O FIM */
+}
 
 .menu li.active a,
 .menu a:hover{
@@ -133,6 +137,7 @@ body{
   cursor:pointer;
   transition:.2s;
 }
+  
 
 .btn-exportar:hover{
   background:rgba(56,189,248,.22);
@@ -323,23 +328,31 @@ body{
   width:100%;
 }
 
-/* card pequeno da receita */
 .receita-mini{
-  width:260px;          /* tamanho bonito */
-  padding:18px 20px;
-  margin-bottom:0;      /* evita espaço extra */
+  margin-left:auto;
+  padding:12px 16px;
+  border-radius:18px;
+  border:1px solid var(--border);
+  background:rgba(15,23,42,.8);
+
+  /* IMPORTANTE 👇 */
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:180px;
 }
 
-.receita-mini h3{
-  font-size:16px;
-  margin-bottom:6px;
+.receita-mini .label{
+  font-size:14px;
+  color:var(--muted);
 }
 
-.receita-mini p{
-  font-size:18px;
-  font-weight:700;
-  color:var(--blue);
+#receitaTotal{
+  font-size:15px;
+  font-weight:600;
+  color:#38bdf8;
 }
+
 
 
 /* CARD / GRÁFICO */
@@ -558,22 +571,23 @@ body{
 <div class="linha-filtros-receita">
 
   <div class="controls">
-    <input type="text" id="filtroInicio" placeholder="dd/mm/aaaa">
 
-    <span class="texto-ate">até</span>
+  <input type="text" id="filtroInicio" placeholder="dd/mm/aaaa">
 
-    <input type="text" id="filtroFim" placeholder="dd/mm/aaaa">
+  <span class="texto-ate">até</span>
 
-    <button class="btn" onclick="atualizarGrafico()">Filtrar</button>
-  </div>
+  <input type="text" id="filtroFim" placeholder="dd/mm/aaaa">
 
-  <div class="card receita-mini">
-    <h3>💰 Receita Total</h3>
-    <p id="receitaTotal">Calculando...</p>
-  </div>
+  <button class="btn" onclick="atualizarGrafico()">Filtrar</button>
 
+  <!-- RECEITA TOTAL ALINHADA À DIREITA -->
+  <div class="receita-mini">
+  <span class="label">Receita Total:</span>
+  <span id="receitaTotal">R$ 0,00</span>
 </div>
 
+
+</div>
 
 <div class="card chart">
 
