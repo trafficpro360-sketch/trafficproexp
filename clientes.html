@@ -595,24 +595,25 @@ body{
   <option value="Em teste">Em teste</option>
 </select>
 
-<div style="display:flex; gap:8px; margin:8px 0 12px 0;">
+<div id="botoesStatusModal" style="display:flex; gap:8px; margin:8px 0 12px 0;">
 
   <button class="btn status-btn"
-    onclick="cStatus.value='Ativo'">
+    onclick="selecionarStatusModal('Ativo', this)">
     Ativo
   </button>
 
   <button class="btn status-btn"
-    onclick="cStatus.value='Em teste'">
+    onclick="selecionarStatusModal('Em teste', this)">
     Em teste
   </button>
 
   <button class="btn status-btn"
-    onclick="cStatus.value='Inativo'">
+    onclick="selecionarStatusModal('Inativo', this)">
     Inativo
   </button>
 
 </div>
+
 
 
     <button onclick="salvarCliente()">Salvar</button>
@@ -1077,6 +1078,34 @@ function editarTarefa(i){
     renderTarefas();
   }
 }
+
+  function selecionarStatusModal(status, botaoClicado){
+
+  // salva no select oculto
+  cStatus.value = status;
+
+  // pega todos os botões do modal
+  const botoes = document.querySelectorAll("#botoesStatusModal .status-btn");
+
+  // volta TODOS para azul
+  botoes.forEach(b => {
+    b.style.background = "#2563eb";
+    b.style.color = "white";
+  });
+
+  // agora colore SOMENTE o botão clicado
+  if(status === "Ativo"){
+    botaoClicado.style.background = "#22c55e"; // verde
+  }
+  else if(status === "Em teste"){
+    botaoClicado.style.background = "#facc15"; // amarelo
+    botaoClicado.style.color = "#020617";
+  }
+  else if(status === "Inativo"){
+    botaoClicado.style.background = "#ef4444"; // vermelho
+  }
+}
+
 
 renderClientes();
 renderTarefas();
