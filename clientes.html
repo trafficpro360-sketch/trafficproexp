@@ -879,25 +879,7 @@ function renderClientes(){
   clientes.forEach(c=>{
     const li=document.createElement("li");
    li.innerHTML=`
-  <div style="display:flex; flex-direction:column; gap:6px;">
-    <strong style="font-size:15px;">${c.nome}</strong>
-
-    <span style="color:#38bdf8;">
-      ${Number(c.valor).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} / mês
-    </span>
-
-    <span>
-  Status: 
-  <strong style="color:${
-    c.status === "Ativo" ? "#22c55e" :
-    c.status === "Em teste" ? "#facc15" :
-    "#ef4444"
-  }">
-    ${c.status || "Ativo"}
-  </strong>
-</span>
-
-<div style="display:flex; gap:6px; margin-top:6px;">
+  <div style="display:flex; gap:6px; margin-top:6px;">
 
   <button class="btn status-btn" 
     style="
@@ -931,10 +913,6 @@ function renderClientes(){
   </button>
 
 </div>
-
-
-
-
 
     <button class="btn" onclick="removerCliente(${c.id})" 
       style="margin-top:6px; width:100%;">
